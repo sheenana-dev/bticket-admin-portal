@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Admin Portal: Users, Revenue &amp; Content</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1110; color: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px; gap: 60px; min-height: 100vh;
+  }
+  h1 { font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 700px; line-height: 1.6; }
+  h2.section-label {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  /* ---- Browser frame ---- */
+  .browser-frame {
+    width: 100%; max-width: 1200px;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px #333;
+    background: #fff;
+  }
+  .browser-bar {
+    background: #2d2a2a; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots div { width: 12px; height: 12px; border-radius: 50%; }
+  .browser-dots .red { background: #ff5f57; }
+  .browser-dots .yellow { background: #ffbd2e; }
+  .browser-dots .green { background: #56A66F; }
+  .browser-url {
+    flex: 1; background: #2a2525; border-radius: 6px;
+    padding: 6px 12px; font-size: 12px; color: #888;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .browser-url .lock { color: #56A66F; font-size: 11px; }
+
+  .portal-layout {
+    display: flex; min-height: 860px;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: 230px; background: #221F1F; padding: 0;
+    flex-shrink: 0; display: flex; flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 18px 16px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #2d2a2a;
+  }
+  .sidebar-logo-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #fff;
+  }
+  .sidebar-logo-text { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .sidebar-logo-sub { font-size: 10px; color: #666; font-weight: 500; }
+
+  .sidebar-nav { padding: 10px 0; flex: 1; overflow-y: auto; }
+  .sidebar-section {
+    font-size: 9px; font-weight: 700; color: #555;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 14px 16px 6px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 16px; font-size: 12.5px; color: #888;
+    cursor: pointer; border-left: 3px solid transparent;
+    transition: all 0.15s; position: relative;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.04); color: #ccc; }
+  .sidebar-item.active {
+    background: rgba(107,155,125,0.12); color: #205C50;
+    border-left-color: #205C50; font-weight: 600;
+  }
+  .sidebar-item .icon { font-size: 15px; width: 22px; text-align: center; flex-shrink: 0; }
+  .sidebar-badge {
+    position: absolute; right: 12px;
+    background: #EE4036; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+  }
+  .sidebar-badge.orange { background: #F9A250; }
+
+  .sidebar-profile {
+    padding: 14px 16px; border-top: 1px solid #2d2a2a;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+  }
+  .sidebar-profile-info { flex: 1; }
+  .sidebar-profile-name { font-size: 12px; font-weight: 600; color: #ddd; }
+  .sidebar-profile-role { font-size: 10px; color: #666; }
+  .sidebar-profile-gear { color: #555; font-size: 16px; cursor: pointer; }
+  .sidebar-profile-gear:hover { color: #888; }
+
+  /* ---- Main content ---- */
+  .main-content {
+    flex: 1; background: #f5f6f8; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .topbar {
+    background: #fff; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #e8e8ef;
+  }
+  .topbar-title { font-size: 18px; font-weight: 700; color: #221F1F; }
+  .topbar-subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  .content-body { padding: 24px; flex: 1; }
+
+  /* ---- Cards ---- */
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    padding: 20px;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title { font-size: 14px; font-weight: 700; color: #221F1F; }
+  .card-subtitle { font-size: 12px; color: #888; }
+  .card-link { font-size: 12px; color: #205C50; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .card-link:hover { text-decoration: underline; }
+
+  /* ---- Stats row ---- */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: #fff; border-radius: 12px; padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-card-top { display: flex; align-items: center; justify-content: space-between; }
+  .stat-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .stat-icon.orange { background: #fff3e0; }
+  .stat-icon.blue { background: #e0f5fb; }
+  .stat-icon.green { background: #e8f2ee; }
+  .stat-icon.purple { background: #f3e5f5; }
+  .stat-icon.red { background: #ffe8ef; }
+  .stat-label { font-size: 12px; color: #888; font-weight: 500; }
+  .stat-value { font-size: 26px; font-weight: 800; color: #221F1F; }
+  .stat-change { font-size: 11px; font-weight: 600; }
+  .stat-change.up { color: #56A66F; }
+  .stat-change.down { color: #EE4036; }
+
+  /* ---- Tables ---- */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table thead th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 10px 12px; border-bottom: 1px solid #eee;
+  }
+  .data-table tbody td {
+    padding: 12px; font-size: 13px; color: #333;
+    border-bottom: 1px solid #f0f0f5;
+    vertical-align: middle;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: #fafbfc; }
+
+  /* ---- Badges ---- */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.pending { background: #fff3e0; color: #F9A250; }
+  .badge.approved { background: #e8f2ee; color: #56A66F; }
+  .badge.rejected { background: #ffe8ef; color: #EE4036; }
+  .badge.flagged { background: #ffe8ef; color: #EE4036; }
+  .badge.active { background: #e8f2ee; color: #56A66F; }
+  .badge.expired { background: #ffe8ef; color: #EE4036; }
+  .badge.free { background: #f0f0f5; color: #666; }
+  .badge.suspended { background: #fff3e0; color: #F9A250; }
+  .badge.draft { background: #f0f0f5; color: #888; }
+  .badge.annual { background: #e0f5fb; color: #50C9EF; font-size: 9px; padding: 2px 6px; margin-left: 4px; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 14px; border-radius: 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; border: none;
+    transition: all 0.15s; text-decoration: none;
+    font-family: inherit;
+  }
+  .btn-primary { background: #205C50; color: #fff; }
+  .btn-primary:hover { background: #5a8a6c; }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .btn-outline { background: transparent; color: #205C50; border: 1.5px solid #205C50; }
+  .btn-outline:hover { background: #f0f7f3; }
+  .btn-ghost { background: transparent; color: #888; border: 1px solid #ddd; }
+  .btn-ghost:hover { background: #f5f5f5; color: #333; }
+  .btn-warning { background: transparent; color: #F9A250; border: 1.5px solid #F9A250; }
+  .btn-warning:hover { background: #FFF8E1; }
+  .btn-reject { background: transparent; color: #EE4036; border: 1.5px solid #EE4036; }
+  .btn-reject:hover { background: #FFF0F0; }
+
+  /* ---- User avatar ---- */
+  .user-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .user-avatar.purple { background: #9c27b0; }
+  .user-avatar.blue { background: #1976d2; }
+  .user-avatar.orange { background: #F9A250; }
+  .user-avatar.teal { background: #00796b; }
+  .user-info { display: flex; align-items: center; gap: 10px; }
+  .user-name { font-weight: 600; color: #221F1F; font-size: 13px; }
+
+  /* ---- Status dots ---- */
+  .status-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 6px;
+    vertical-align: middle;
+  }
+  .status-dot.green { background: #56A66F; }
+  .status-dot.red { background: #EE4036; }
+  .status-dot.orange { background: #F9A250; }
+  .status-dot.gray { background: #bbb; }
+
+  /* ---- Filter tabs ---- */
+  .filter-tabs {
+    display: flex; gap: 0; margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+  }
+  .filter-tab {
+    padding: 10px 18px; font-size: 12.5px; font-weight: 600;
+    color: #888; cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -2px; transition: all 0.15s;
+  }
+  .filter-tab:hover { color: #555; }
+  .filter-tab.active {
+    color: #205C50; border-bottom-color: #205C50;
+  }
+  .filter-tab .count {
+    font-size: 11px; font-weight: 500; color: #aaa;
+    margin-left: 4px;
+  }
+  .filter-tab.active .count { color: #205C50; }
+
+  /* ---- Search bar ---- */
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: #f5f6f8; border: 1.5px solid #e0e0e8;
+    border-radius: 8px; padding: 7px 12px; font-size: 12px;
+    color: #888; min-width: 200px;
+  }
+  .search-bar:focus-within { border-color: #205C50; }
+
+  /* ---- Pagination ---- */
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; font-size: 12px; color: #888;
+  }
+  .pagination-pages { display: flex; gap: 4px; }
+  .page-btn {
+    width: 30px; height: 30px; border-radius: 6px;
+    border: 1px solid #ddd; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: #333;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .page-btn:hover { background: #f5f6f8; }
+  .page-btn.active { background: #205C50; color: #fff; border-color: #205C50; }
+
+  /* ---- Chart bars ---- */
+  .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; margin-top: 12px; }
+  .chart-bar {
+    flex: 1; border-radius: 4px 4px 0 0; background: #205C50;
+    transition: opacity 0.15s; cursor: pointer; position: relative;
+  }
+  .chart-bar:hover { opacity: 0.8; }
+  .chart-bar.dark { background: #4a7a5d; }
+  .chart-bar.light { background: #a8d5ba; }
+  .chart-labels { display: flex; gap: 6px; margin-top: 6px; }
+  .chart-label { flex: 1; text-align: center; font-size: 10px; color: #888; }
+  .chart-value { flex: 1; text-align: center; font-size: 9px; color: #666; font-weight: 600; }
+
+  /* ---- Stacked bar ---- */
+  .stacked-bar-container { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding: 0 10px; }
+  .stacked-bar-group {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .stacked-bar {
+    width: 100%; border-radius: 3px 3px 0 0;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .stacked-bar:hover { opacity: 0.85; }
+  .stacked-bar:first-child { border-radius: 3px 3px 0 0; }
+  .stacked-bar-label { font-size: 10px; color: #888; margin-top: 6px; text-align: center; }
+  .stacked-bar-total { font-size: 9px; color: #555; font-weight: 600; margin-top: 2px; text-align: center; }
+
+  /* ---- Horizontal bars ---- */
+  .h-bar-group { margin-bottom: 14px; }
+  .h-bar-label {
+    display: flex; justify-content: space-between; font-size: 12px;
+    margin-bottom: 5px;
+  }
+  .h-bar-label-text { color: #333; font-weight: 600; }
+  .h-bar-label-value { color: #888; }
+  .h-bar-track {
+    height: 24px; background: #f0f0f5; border-radius: 6px;
+    overflow: hidden;
+  }
+  .h-bar-fill {
+    height: 100%; border-radius: 6px;
+    display: flex; align-items: center; padding-left: 10px;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  /* ---- Donut chart ---- */
+  .donut-container { display: flex; align-items: center; gap: 20px; }
+  .donut-chart {
+    width: 120px; height: 120px; border-radius: 50%;
+    background: conic-gradient(#205C50 0deg 295.2deg, #4a7a5d 295.2deg 360deg);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .donut-hole {
+    width: 70px; height: 70px; border-radius: 50%;
+    background: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .donut-hole-value { font-size: 18px; font-weight: 800; color: #221F1F; }
+  .donut-hole-label { font-size: 9px; color: #888; }
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+  .donut-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #333; }
+  .donut-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ---- Two-col layout ---- */
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 20px; }
+
+  /* ---- Key metrics ---- */
+  .metric-row {
+    display: flex; justify-content: space-between; padding: 9px 0;
+    border-bottom: 1px solid #f0f0f5; font-size: 13px;
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: #888; font-weight: 500; }
+  .metric-value { font-weight: 700; color: #221F1F; }
+
+  /* ---- Churn reasons ---- */
+  .churn-reason {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; font-size: 12px;
+  }
+  .churn-reason-bar {
+    height: 6px; border-radius: 3px; background: #205C50;
+  }
+  .churn-reason-text { color: #555; flex: 1; min-width: 0; }
+  .churn-reason-pct { color: #333; font-weight: 700; font-size: 12px; white-space: nowrap; }
+
+  /* ---- Content tabs ---- */
+  .content-tabs {
+    display: flex; gap: 0; margin-bottom: 24px;
+    background: #fff; border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .content-tab {
+    padding: 12px 24px; font-size: 13px; font-weight: 600;
+    color: #888; cursor: pointer; transition: all 0.15s;
+    border-bottom: 2px solid transparent;
+  }
+  .content-tab:hover { color: #555; background: #fafbfc; }
+  .content-tab.active {
+    color: #205C50; border-bottom-color: #205C50; background: #f0f7f3;
+  }
+
+  /* ---- Banner cards ---- */
+  .banner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .banner-card {
+    background: #fff; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .banner-preview {
+    height: 100px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+    padding: 16px; text-align: center; line-height: 1.4;
+  }
+  .banner-card-body { padding: 14px; }
+  .banner-meta { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .banner-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+  /* ---- Sort arrows ---- */
+  .sort-arrows {
+    display: inline-flex; flex-direction: column; gap: 0;
+    font-size: 10px; line-height: 1; color: #aaa; cursor: pointer;
+    vertical-align: middle;
+  }
+  .sort-arrows:hover { color: #205C50; }
+
+  /* ---- Collection table ---- */
+  .collection-cover {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+
+  /* ---- Utility ---- */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .gap-20 { gap: 20px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .mb-4 { margin-bottom: 4px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-24 { margin-bottom: 24px; }
+  .text-sm { font-size: 12px; }
+  .text-xs { font-size: 11px; }
+  .text-muted { color: #888; }
+  .fw-600 { font-weight: 600; }
+  .fw-700 { font-weight: 700; }
+  .text-center { text-align: center; }
+  .text-green { color: #56A66F; }
+</style>
+</head>
+<body>
+
+<h1>B-Ticket Admin Portal</h1>
+<p class="subtitle">Remaining admin screens: User &amp; Subscriber Management, Revenue &amp; Analytics, and Content Management. B2B2C digital coupon platform for the Philippines.</p>
+
+<!-- ========================================================= -->
+<!-- SCREEN 1: USER & SUBSCRIBER MANAGEMENT                    -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 1 &mdash; User &amp; Subscriber Management</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/users
+    </div>
+  </div>
+
+  <div class="portal-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ea;</span> Merchants
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ab;</span> Coupons
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4e2;</span> Ads
+        </div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c2;</span> Categories
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3a8;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div class="topbar-title">Users &amp; Subscribers</div>
+        <div class="topbar-right">
+          <div class="search-bar">
+            &#x1f50d; Search users...
+          </div>
+          <button class="btn btn-outline">&#x1f4e5; Export CSV</button>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value">4,832</div>
+              </div>
+              <div class="stat-icon blue">&#x1f465;</div>
+            </div>
+            <div class="stat-change up">&#x2191; 18% vs last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Active Subscribers</div>
+                <div class="stat-value" style="color: #205C50;">2,847</div>
+              </div>
+              <div class="stat-icon green">&#x1f451;</div>
+            </div>
+            <div style="margin-top: 2px;">
+              <span class="badge active" style="font-size: 10px;">&#x20b1;99/mo</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Free Users</div>
+                <div class="stat-value">1,985</div>
+              </div>
+              <div class="stat-icon purple">&#x1f464;</div>
+            </div>
+            <div class="stat-change" style="color: #888;">41% of total users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Churn Rate</div>
+                <div class="stat-value">4.2%</div>
+              </div>
+              <div class="stat-icon green">&#x1f4c9;</div>
+            </div>
+            <div class="stat-change up">&#x2193; Down from 5.1% &mdash; improving</div>
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="filter-tabs">
+            <div class="filter-tab active">All <span class="count">(4,832)</span></div>
+            <div class="filter-tab">Subscribers <span class="count">(2,847)</span></div>
+            <div class="filter-tab">Free Users <span class="count">(1,985)</span></div>
+            <div class="filter-tab">Expired <span class="count">(312)</span></div>
+          </div>
+
+          <!-- Users Table -->
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Savings</th>
+                <th>Redemptions</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1: Maria Santos -->
+              <tr>
+                <td>
+                  <div class="user-info">
+                    <div class="user-avatar">MS</div>
+                    <div class="user-name">Maria Santos</div>
+                  </div>
+                </td>
+                <td style="font-size: 12px; color: #666;">maria.santos@gmail.com</td>
+                <td style="font-size: 12px; color: #666;">+63 917 123 4567</td>
+                <td><span class="badge active">Premium &#x20b1;99/mo</span></td>
+                <td><span class="status-dot green"></span>Active</td>
+                <td style="font-size: 12px; color: #888;">Jan 15, 2026</td>
+                <td style="font-weight: 600; color: #205C50;">&#x20b1;12,450</td>
+                <td style="font-weight: 600;">47</td>
+                <td>
+                  <button class="btn btn-sm btn-outline">View</button>
+                  <button class="btn btn-sm btn-warning">Suspend</button>
+                </td>
+              </tr>
+              <!-- Row 2: Carlos Reyes -->
+              <tr>
+                <td>
+                  <div class="user-info">
+                    <div class="user-avatar blue">CR</div>
+                    <div class="user-name">Carlos Reyes</div>
+                  </div>
+                </td>
+                <td style="font-size: 12px; color: #666;">carlos.reyes@yahoo.com</td>
+                <td style="font-size: 12px; color: #666;">+63 918 234 5678</td>
+                <td>
+                  <span class="badge active">Premium &#x20b1;949/yr</span>
+                  <span class="badge annual">Annual</span>
+                </td>
+                <td><span class="status-dot green"></span>Active</td>
+                <td style="font-size: 12px; color: #888;">Feb 3, 2026</td>
+                <td style="font-weight: 600; color: #205C50;">&#x20b1;8,200</td>
+                <td style="font-weight: 600;">31</td>
+                <td>
+                  <button class="btn btn-sm btn-outline">View</button>
+                  <button class="btn btn-sm btn-warning">Suspend</button>
+                </td>
+              </tr>
+              <!-- Row 3: Yuki Tanaka -->
+              <tr>
+                <td>
+                  <div class="user-info">
+                    <div class="user-avatar teal">YT</div>
+                    <div class="user-name">Yuki Tanaka</div>
+                  </div>
+                </td>
+                <td style="font-size: 12px; color: #666;">yuki.tanaka@gmail.com</td>
+                <td style="font-size: 12px; color: #666;">+63 920 345 6789</td>
+                <td><span class="badge free">Free</span></td>
+                <td><span class="status-dot green"></span>Active</td>
+                <td style="font-size: 12px; color: #888;">Mar 1, 2026</td>
+                <td style="font-weight: 600; color: #888;">&#x20b1;0</td>
+                <td style="font-weight: 600; color: #888;">0</td>
+                <td>
+                  <button class="btn btn-sm btn-outline">View</button>
+                  <button class="btn btn-sm btn-warning">Suspend</button>
+                </td>
+              </tr>
+              <!-- Row 4: Angela Lopez -->
+              <tr>
+                <td>
+                  <div class="user-info">
+                    <div class="user-avatar orange">AL</div>
+                    <div class="user-name">Angela Lopez</div>
+                  </div>
+                </td>
+                <td style="font-size: 12px; color: #666;">angela.lopez@outlook.com</td>
+                <td style="font-size: 12px; color: #666;">+63 917 456 7890</td>
+                <td><span class="badge expired">Expired</span></td>
+                <td><span class="status-dot red"></span>Expired</td>
+                <td style="font-size: 12px; color: #888;">Dec 10, 2025</td>
+                <td style="font-weight: 600; color: #205C50;">&#x20b1;5,600</td>
+                <td style="font-weight: 600;">22</td>
+                <td>
+                  <button class="btn btn-sm btn-outline">View</button>
+                </td>
+              </tr>
+              <!-- Row 5: Kenji Watanabe -->
+              <tr>
+                <td>
+                  <div class="user-info">
+                    <div class="user-avatar purple">KW</div>
+                    <div class="user-name">Kenji Watanabe</div>
+                  </div>
+                </td>
+                <td style="font-size: 12px; color: #666;">kenji.w@gmail.com</td>
+                <td style="font-size: 12px; color: #666;">+63 919 567 8901</td>
+                <td><span class="badge active">Premium &#x20b1;99/mo</span></td>
+                <td>
+                  <span class="status-dot orange"></span>
+                  <span class="badge suspended">Suspended</span>
+                </td>
+                <td style="font-size: 12px; color: #888;">Nov 5, 2025</td>
+                <td style="font-weight: 600; color: #205C50;">&#x20b1;3,100</td>
+                <td style="font-weight: 600;">15</td>
+                <td>
+                  <button class="btn btn-sm btn-outline">View</button>
+                  <button class="btn btn-sm btn-primary">Unsuspend</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <div>Showing 5 of 4,832 users</div>
+            <div class="pagination-pages">
+              <div class="page-btn">&laquo;</div>
+              <div class="page-btn active">1</div>
+              <div class="page-btn">2</div>
+              <div class="page-btn">3</div>
+              <div class="page-btn">...</div>
+              <div class="page-btn">967</div>
+              <div class="page-btn">&raquo;</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscriber Growth Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">&#x1f4c8; Subscriber Growth (Last 6 Months)</div>
+            <div class="stat-change up" style="font-size: 13px; font-weight: 700;">+137% growth since October</div>
+          </div>
+          <div class="chart-bars" style="height: 140px; align-items: flex-end; gap: 12px;">
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+              <div style="font-size: 10px; font-weight: 700; color: #555; margin-bottom: 4px;">1,200</div>
+              <div class="chart-bar" style="width: 100%; height: 42%;"></div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+              <div style="font-size: 10px; font-weight: 700; color: #555; margin-bottom: 4px;">1,580</div>
+              <div class="chart-bar" style="width: 100%; height: 55%;"></div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+              <div style="font-size: 10px; font-weight: 700; color: #555; margin-bottom: 4px;">1,890</div>
+              <div class="chart-bar" style="width: 100%; height: 66%;"></div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+              <div style="font-size: 10px; font-weight: 700; color: #555; margin-bottom: 4px;">2,210</div>
+              <div class="chart-bar" style="width: 100%; height: 78%;"></div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+              <div style="font-size: 10px; font-weight: 700; color: #555; margin-bottom: 4px;">2,540</div>
+              <div class="chart-bar" style="width: 100%; height: 89%;"></div>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+              <div style="font-size: 10px; font-weight: 700; color: #221F1F; margin-bottom: 4px;">2,847</div>
+              <div class="chart-bar" style="width: 100%; height: 100%; background: #4a7a5d;"></div>
+            </div>
+          </div>
+          <div class="chart-labels" style="gap: 12px; margin-top: 8px;">
+            <div class="chart-label">Oct</div>
+            <div class="chart-label">Nov</div>
+            <div class="chart-label">Dec</div>
+            <div class="chart-label">Jan</div>
+            <div class="chart-label">Feb</div>
+            <div class="chart-label" style="font-weight: 700; color: #205C50;">Mar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================================= -->
+<!-- SCREEN 2: REVENUE & ANALYTICS DASHBOARD                   -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 2 &mdash; Revenue &amp; Analytics Dashboard</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/revenue
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 1100px;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ea;</span> Merchants
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ab;</span> Coupons
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4e2;</span> Ads
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c2;</span> Categories
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3a8;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div class="topbar-title">Revenue &amp; Analytics</div>
+        <div class="topbar-right">
+          <div class="search-bar" style="min-width: 160px; cursor: pointer;">
+            &#x1f4c5; Last 12 Months &#x25bc;
+          </div>
+          <button class="btn btn-primary">&#x1f4e5; Export Report</button>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <!-- Revenue Summary Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Total MRR</div>
+            <div class="stat-value" style="font-size: 28px; color: #205C50;">&#x20b1;373,400</div>
+            <div style="font-size: 11px; color: #888; line-height: 1.5;">
+              Subscriptions: &#x20b1;284,000<br>
+              Ads: &#x20b1;89,400
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total ARR (Projected)</div>
+            <div class="stat-value" style="font-size: 28px;">&#x20b1;4,480,800</div>
+            <div style="font-size: 11px; color: #888;">Based on current MRR</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Revenue Growth</div>
+            <div class="stat-value" style="font-size: 28px; color: #56A66F;">+23%</div>
+            <div class="stat-change up">&#x2191; Month-over-month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">LTV:CAC Ratio</div>
+            <div class="stat-value" style="font-size: 28px; color: #56A66F;">4.2:1</div>
+            <div class="stat-change up">&#x2713; Healthy ratio (>3:1)</div>
+          </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-col">
+          <!-- LEFT COLUMN (60%) -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+
+            <!-- MRR Breakdown Chart -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">&#x1f4ca; MRR Breakdown (6 Months)</div>
+                <div style="display: flex; gap: 16px; font-size: 11px;">
+                  <span style="display: flex; align-items: center; gap: 4px;">
+                    <span style="width: 10px; height: 10px; border-radius: 2px; background: #205C50; display: inline-block;"></span>
+                    <span style="color: #888;">Subscriptions</span>
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 4px;">
+                    <span style="width: 10px; height: 10px; border-radius: 2px; background: #4a7a5d; display: inline-block;"></span>
+                    <span style="color: #888;">Ad Revenue</span>
+                  </span>
+                </div>
+              </div>
+              <div class="stacked-bar-container">
+                <!-- Oct: 142K (sub: 98K, ads: 44K) -->
+                <div class="stacked-bar-group">
+                  <div class="stacked-bar" style="background: #4a7a5d; height: 31%; min-height: 4px;"></div>
+                  <div class="stacked-bar" style="background: #205C50; height: 69%; border-radius: 0;"></div>
+                  <div class="stacked-bar-label">Oct</div>
+                  <div class="stacked-bar-total">&#x20b1;142K</div>
+                </div>
+                <!-- Nov: 185K -->
+                <div class="stacked-bar-group">
+                  <div class="stacked-bar" style="background: #4a7a5d; height: 30%; min-height: 4px;"></div>
+                  <div class="stacked-bar" style="background: #205C50; height: 70%; border-radius: 0;"></div>
+                  <div class="stacked-bar-label">Nov</div>
+                  <div class="stacked-bar-total">&#x20b1;185K</div>
+                </div>
+                <!-- Dec: 223K -->
+                <div class="stacked-bar-group">
+                  <div class="stacked-bar" style="background: #4a7a5d; height: 28%; min-height: 4px;"></div>
+                  <div class="stacked-bar" style="background: #205C50; height: 72%; border-radius: 0;"></div>
+                  <div class="stacked-bar-label">Dec</div>
+                  <div class="stacked-bar-total">&#x20b1;223K</div>
+                </div>
+                <!-- Jan: 278K -->
+                <div class="stacked-bar-group">
+                  <div class="stacked-bar" style="background: #4a7a5d; height: 26%; min-height: 4px;"></div>
+                  <div class="stacked-bar" style="background: #205C50; height: 74%; border-radius: 0;"></div>
+                  <div class="stacked-bar-label">Jan</div>
+                  <div class="stacked-bar-total">&#x20b1;278K</div>
+                </div>
+                <!-- Feb: 328K -->
+                <div class="stacked-bar-group">
+                  <div class="stacked-bar" style="background: #4a7a5d; height: 25%; min-height: 4px;"></div>
+                  <div class="stacked-bar" style="background: #205C50; height: 75%; border-radius: 0;"></div>
+                  <div class="stacked-bar-label">Feb</div>
+                  <div class="stacked-bar-total">&#x20b1;328K</div>
+                </div>
+                <!-- Mar: 373.4K -->
+                <div class="stacked-bar-group">
+                  <div class="stacked-bar" style="background: #4a7a5d; height: 24%; min-height: 4px;"></div>
+                  <div class="stacked-bar" style="background: #205C50; height: 76%; border-radius: 0;"></div>
+                  <div class="stacked-bar-label" style="font-weight: 700; color: #205C50;">Mar</div>
+                  <div class="stacked-bar-total" style="font-weight: 800; color: #221F1F;">&#x20b1;373K</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Revenue by Source -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Revenue by Source</div>
+              </div>
+              <div class="h-bar-group">
+                <div class="h-bar-label">
+                  <span class="h-bar-label-text">Subscription Revenue</span>
+                  <span class="h-bar-label-value">&#x20b1;284,000 (76%)</span>
+                </div>
+                <div class="h-bar-track">
+                  <div class="h-bar-fill" style="width: 76%; background: #205C50;">76%</div>
+                </div>
+              </div>
+              <div class="h-bar-group">
+                <div class="h-bar-label">
+                  <span class="h-bar-label-text">Ad Revenue</span>
+                  <span class="h-bar-label-value">&#x20b1;89,400 (24%)</span>
+                </div>
+                <div class="h-bar-track">
+                  <div class="h-bar-fill" style="width: 24%; background: #4a7a5d;">24%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Spending Merchants -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">&#x1f3ea; Top Spending Merchants (Ad Revenue)</div>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Merchant</th>
+                    <th>Ad Format</th>
+                    <th>Monthly Spend</th>
+                    <th>Since</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 700; color: #205C50;">1</td>
+                    <td style="font-weight: 600;">Maple Tree BGC</td>
+                    <td><span class="badge active">Hero Banner</span></td>
+                    <td style="font-weight: 700;">&#x20b1;15,000</td>
+                    <td style="color: #888;">Jan 2026</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 700; color: #205C50;">2</td>
+                    <td style="font-weight: 600;">Tokyo Ramen</td>
+                    <td><span class="badge" style="background: #e0f5fb; color: #50C9EF;">Full-Screen</span></td>
+                    <td style="font-weight: 700;">&#x20b1;25,000</td>
+                    <td style="color: #888;">Feb 2026</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 700; color: #205C50;">3</td>
+                    <td style="font-weight: 600;">Pizza Republic</td>
+                    <td><span class="badge" style="background: #fff3e0; color: #F9A250;">Top Banner</span></td>
+                    <td style="font-weight: 700;">&#x20b1;8,000</td>
+                    <td style="color: #888;">Mar 2026</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 700; color: #205C50;">4</td>
+                    <td style="font-weight: 600;">Glow Up Salon</td>
+                    <td><span class="badge" style="background: #f3e5f5; color: #7b1fa2;">Pop-up</span></td>
+                    <td style="font-weight: 700;">&#x20b1;20,000</td>
+                    <td style="color: #888;">Mar 2026</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 700; color: #205C50;">5</td>
+                    <td style="font-weight: 600;">Sushi Nori</td>
+                    <td><span class="badge active">Hero Banner</span></td>
+                    <td style="font-weight: 700;">&#x20b1;15,000</td>
+                    <td style="color: #888;">Jan 2026</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN (40%) -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+
+            <!-- Subscription Breakdown -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Subscription Breakdown</div>
+              </div>
+              <div class="donut-container">
+                <div class="donut-chart">
+                  <div class="donut-hole">
+                    <div class="donut-hole-value">2,847</div>
+                    <div class="donut-hole-label">Active</div>
+                  </div>
+                </div>
+                <div class="donut-legend">
+                  <div class="donut-legend-item">
+                    <div class="donut-legend-dot" style="background: #205C50;"></div>
+                    <div>
+                      <div style="font-weight: 600;">Monthly (&#x20b1;99/mo)</div>
+                      <div style="font-size: 11px; color: #888;">2,340 subscribers (82%)</div>
+                    </div>
+                  </div>
+                  <div class="donut-legend-item">
+                    <div class="donut-legend-dot" style="background: #4a7a5d;"></div>
+                    <div>
+                      <div style="font-weight: 600;">Annual (&#x20b1;949/yr)</div>
+                      <div style="font-size: 11px; color: #888;">507 subscribers (18%)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 14px; padding: 10px 12px; background: #f0f7f3; border-radius: 8px; font-size: 11px; color: #56A66F; font-weight: 600;">
+                &#x1f4a1; Annual subscribers have 3x lower churn
+              </div>
+            </div>
+
+            <!-- Churn Analysis -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">&#x1f4c9; Churn Analysis</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div style="background: #ffe8ef; border-radius: 8px; padding: 12px; text-align: center;">
+                  <div style="font-size: 20px; font-weight: 800; color: #EE4036;">4.2%</div>
+                  <div style="font-size: 10px; color: #EE4036; font-weight: 500;">Monthly Churn</div>
+                </div>
+                <div style="background: #e8f2ee; border-radius: 8px; padding: 12px; text-align: center;">
+                  <div style="font-size: 20px; font-weight: 800; color: #56A66F;">86</div>
+                  <div style="font-size: 10px; color: #56A66F; font-weight: 500;">Net Churned</div>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #f0f0f5;">
+                <span style="color: #888;">Churned this month</span>
+                <span style="font-weight: 700; color: #EE4036;">120</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #f0f0f5;">
+                <span style="color: #888;">Recovered (re-subscribed)</span>
+                <span style="font-weight: 700; color: #56A66F;">34</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; margin-bottom: 14px;">
+                <span style="color: #888;">Net churn</span>
+                <span style="font-weight: 700; color: #221F1F;">86</span>
+              </div>
+
+              <div style="font-size: 11px; font-weight: 700; color: #221F1F; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Top Churn Reasons</div>
+              <div class="churn-reason">
+                <div class="churn-reason-text">"Not enough merchants near me"</div>
+                <div class="churn-reason-pct">38%</div>
+              </div>
+              <div style="height: 6px; background: #f0f0f5; border-radius: 3px; margin-bottom: 10px; overflow: hidden;">
+                <div style="height: 100%; width: 38%; background: #EE4036; border-radius: 3px;"></div>
+              </div>
+              <div class="churn-reason">
+                <div class="churn-reason-text">"Too expensive"</div>
+                <div class="churn-reason-pct">22%</div>
+              </div>
+              <div style="height: 6px; background: #f0f0f5; border-radius: 3px; margin-bottom: 10px; overflow: hidden;">
+                <div style="height: 100%; width: 22%; background: #F9A250; border-radius: 3px;"></div>
+              </div>
+              <div class="churn-reason">
+                <div class="churn-reason-text">"Don't use it enough"</div>
+                <div class="churn-reason-pct">18%</div>
+              </div>
+              <div style="height: 6px; background: #f0f0f5; border-radius: 3px; margin-bottom: 10px; overflow: hidden;">
+                <div style="height: 100%; width: 18%; background: #ffbd2e; border-radius: 3px;"></div>
+              </div>
+              <div class="churn-reason">
+                <div class="churn-reason-text">"Found better alternative"</div>
+                <div class="churn-reason-pct">12%</div>
+              </div>
+              <div style="height: 6px; background: #f0f0f5; border-radius: 3px; margin-bottom: 10px; overflow: hidden;">
+                <div style="height: 100%; width: 12%; background: #90caf9; border-radius: 3px;"></div>
+              </div>
+              <div class="churn-reason">
+                <div class="churn-reason-text">Other</div>
+                <div class="churn-reason-pct">10%</div>
+              </div>
+              <div style="height: 6px; background: #f0f0f5; border-radius: 3px; overflow: hidden;">
+                <div style="height: 100%; width: 10%; background: #bbb; border-radius: 3px;"></div>
+              </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">&#x1f4cb; Key Metrics</div>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">CAC (Consumer)</span>
+                <span class="metric-value">&#x20b1;85</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">LTV (Consumer)</span>
+                <span class="metric-value">&#x20b1;356</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Payback Period</span>
+                <span class="metric-value">0.9 months</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">ARPU</span>
+                <span class="metric-value">&#x20b1;99.70</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">Net Revenue Retention</span>
+                <span class="metric-value" style="color: #56A66F;">108%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================================= -->
+<!-- SCREEN 3: CONTENT MANAGEMENT                              -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 3 &mdash; Content Management</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/content
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 1200px;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ea;</span> Merchants
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ab;</span> Coupons
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4e2;</span> Ads
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c2;</span> Categories
+        </div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f3a8;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Content Management</div>
+          <div class="topbar-subtitle">Manage categories, featured content, and app banners</div>
+        </div>
+        <div class="topbar-right">
+        </div>
+      </div>
+
+      <div class="content-body">
+        <!-- Content Tabs -->
+        <div class="content-tabs">
+          <div class="content-tab active">&#x1f4c2; Categories</div>
+          <div class="content-tab">&#x1f5bc;&#xfe0f; Featured Banners</div>
+          <div class="content-tab">&#x1f4da; Collections</div>
+        </div>
+
+        <!-- CATEGORIES SECTION -->
+        <div class="card mb-24">
+          <div class="card-header">
+            <div class="card-title">&#x1f4c2; Categories</div>
+            <button class="btn btn-primary">+ Add Category</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Icon</th>
+                <th>Category Name</th>
+                <th>Slug</th>
+                <th>Merchants</th>
+                <th>Coupons</th>
+                <th>Sort Order</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-size: 20px;">&#x1f37d;</td>
+                <td style="font-weight: 600;">Food &amp; Beverage</td>
+                <td><code style="background: #f0f0f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #666;">food-beverage</code></td>
+                <td style="font-weight: 600;">89</td>
+                <td style="font-weight: 600;">312</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #f0f0f5; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #555;">1</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <span class="sort-arrows">&#x25B2;&#x25BC;</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;">&#x1f3af;</td>
+                <td style="font-weight: 600;">Leisure</td>
+                <td><code style="background: #f0f0f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #666;">leisure</code></td>
+                <td style="font-weight: 600;">18</td>
+                <td style="font-weight: 600;">45</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #f0f0f5; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #555;">2</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <span class="sort-arrows">&#x25B2;&#x25BC;</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;">&#x1f486;</td>
+                <td style="font-weight: 600;">Wellness &amp; Beauty</td>
+                <td><code style="background: #f0f0f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #666;">wellness-beauty</code></td>
+                <td style="font-weight: 600;">22</td>
+                <td style="font-weight: 600;">67</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #f0f0f5; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #555;">3</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <span class="sort-arrows">&#x25B2;&#x25BC;</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;">&#x1f6cd;</td>
+                <td style="font-weight: 600;">Retail &amp; Lifestyle</td>
+                <td><code style="background: #f0f0f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #666;">retail-lifestyle</code></td>
+                <td style="font-weight: 600;">8</td>
+                <td style="font-weight: 600;">23</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #f0f0f5; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #555;">4</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <span class="sort-arrows">&#x25B2;&#x25BC;</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;">&#x1f527;</td>
+                <td style="font-weight: 600;">Services</td>
+                <td><code style="background: #f0f0f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #666;">services</code></td>
+                <td style="font-weight: 600;">4</td>
+                <td style="font-weight: 600;">12</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #f0f0f5; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #555;">5</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <span class="sort-arrows">&#x25B2;&#x25BC;</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;">&#x1f4da;</td>
+                <td style="font-weight: 600;">Learning</td>
+                <td><code style="background: #f0f0f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #666;">learning</code></td>
+                <td style="font-weight: 600;">2</td>
+                <td style="font-weight: 600;">5</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #f0f0f5; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #555;">6</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <span class="sort-arrows">&#x25B2;&#x25BC;</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;">&#x1f3e8;</td>
+                <td style="font-weight: 600;">Accommodation</td>
+                <td><code style="background: #f0f0f5; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #666;">accommodation</code></td>
+                <td style="font-weight: 600; color: #aaa;">0</td>
+                <td style="font-weight: 600; color: #aaa;">0</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 4px; background: #f0f0f5; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #555;">7</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <span class="sort-arrows">&#x25B2;&#x25BC;</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- FEATURED BANNERS SECTION -->
+        <div class="card mb-24">
+          <div class="card-header">
+            <div class="card-title">&#x1f5bc;&#xfe0f; Home Screen Banners</div>
+            <button class="btn btn-primary">+ Add Banner</button>
+          </div>
+          <div class="banner-grid">
+            <!-- Banner 1 -->
+            <div class="banner-card">
+              <div class="banner-preview" style="background: linear-gradient(135deg, #205C50 0%, #4a7a5d 50%, #2d5a3f 100%);">
+                Enjoy up to 50% OFF on B-ticket!
+              </div>
+              <div class="banner-card-body">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                  <span class="badge active">
+                    <span class="status-dot green" style="margin-right: 4px;"></span>Active
+                  </span>
+                  <span style="font-size: 11px; color: #888; font-weight: 600;">Slot 1</span>
+                </div>
+                <div class="banner-meta">Link: Home screen</div>
+                <div class="banner-actions">
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <button class="btn btn-sm btn-reject">Deactivate</button>
+                  <span class="sort-arrows" style="font-size: 14px;">&#x25B2;&#x25BC;</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Banner 2 -->
+            <div class="banner-card">
+              <div class="banner-preview" style="background: linear-gradient(135deg, #221F1F 0%, #2d2a2a 50%, #3a3a5e 100%);">
+                Advertise with us!
+              </div>
+              <div class="banner-card-body">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                  <span class="badge active">
+                    <span class="status-dot green" style="margin-right: 4px;"></span>Active
+                  </span>
+                  <span style="font-size: 11px; color: #888; font-weight: 600;">Slot 2</span>
+                </div>
+                <div class="banner-meta">Link: /advertise</div>
+                <div class="banner-actions">
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <button class="btn btn-sm btn-reject">Deactivate</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Banner 3 -->
+            <div class="banner-card">
+              <div class="banner-preview" style="background: linear-gradient(135deg, #F9A250 0%, #f57c00 50%, #F9A250 100%);">
+                Celebrate your birthday with cool treats!
+              </div>
+              <div class="banner-card-body">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                  <span class="badge draft">
+                    <span class="status-dot gray" style="margin-right: 4px;"></span>Draft
+                  </span>
+                  <span style="font-size: 11px; color: #888; font-weight: 600;">Slot 3</span>
+                </div>
+                <div class="banner-meta">Link: &mdash;</div>
+                <div class="banner-actions">
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <button class="btn btn-sm btn-primary">Activate</button>
+                  <button class="btn btn-sm btn-reject">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLLECTIONS SECTION -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">&#x1f4da; Curated Collections</div>
+            <button class="btn btn-primary">+ Create Collection</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 44px;"></th>
+                <th>Collection Name</th>
+                <th>Merchants</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="collection-cover" style="background: linear-gradient(135deg, #EE4036, #EE4036);">&#x2B50;</div>
+                </td>
+                <td style="font-weight: 600;">Most Popular</td>
+                <td style="font-weight: 600;">25</td>
+                <td><span class="badge active">Active</span></td>
+                <td><button class="btn btn-sm btn-outline">Edit</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="collection-cover" style="background: linear-gradient(135deg, #205C50, #4a7a5d);">&#x1f3ab;</div>
+                </td>
+                <td style="font-weight: 600;">B-Ticket Exclusives</td>
+                <td style="font-weight: 600;">12</td>
+                <td><span class="badge active">Active</span></td>
+                <td><button class="btn btn-sm btn-outline">Edit</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="collection-cover" style="background: linear-gradient(135deg, #2196f3, #50C9EF);">&#x1f4cd;</div>
+                </td>
+                <td style="font-weight: 600;">Popular Near You</td>
+                <td style="font-size: 11px; color: #888; font-style: italic;">Auto-generated</td>
+                <td><span class="badge active">Active</span></td>
+                <td><button class="btn btn-sm btn-ghost">Settings</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="collection-cover" style="background: linear-gradient(135deg, #e91e63, #ad1457);">&#x2764;&#xfe0f;</div>
+                </td>
+                <td style="font-weight: 600;">Date Night Spots</td>
+                <td style="font-weight: 600;">8</td>
+                <td><span class="badge active">Active</span></td>
+                <td><button class="btn btn-sm btn-outline">Edit</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="collection-cover" style="background: linear-gradient(135deg, #F9A250, #F9A250);">&#x1f43e;</div>
+                </td>
+                <td style="font-weight: 600;">Pet-Friendly Venues</td>
+                <td style="font-weight: 600;">5</td>
+                <td><span class="badge draft">Draft</span></td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <button class="btn btn-sm btn-primary">Activate</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="collection-cover" style="background: linear-gradient(135deg, #9c27b0, #6a1b9a);">&#x1f378;</div>
+                </td>
+                <td style="font-weight: 600;">Girls' Night Out</td>
+                <td style="font-weight: 600;">6</td>
+                <td><span class="badge active">Active</span></td>
+                <td><button class="btn btn-sm btn-outline">Edit</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="collection-cover" style="background: linear-gradient(135deg, #455a64, #263238);">&#x1f4bc;</div>
+                </td>
+                <td style="font-weight: 600;">Business Meeting Spots</td>
+                <td style="font-weight: 600;">4</td>
+                <td><span class="badge draft">Draft</span></td>
+                <td>
+                  <button class="btn btn-sm btn-outline">Edit</button>
+                  <button class="btn btn-sm btn-primary">Activate</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

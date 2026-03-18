@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Admin Portal: Dashboard & Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1110; color: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px; gap: 60px; min-height: 100vh;
+  }
+  h1 { font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 700px; line-height: 1.6; }
+  h2.section-label {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  /* ---- Browser frame ---- */
+  .browser-frame {
+    width: 100%; max-width: 1200px;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px #333;
+    background: #fff;
+  }
+  .browser-bar {
+    background: #2d2a2a; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots div { width: 12px; height: 12px; border-radius: 50%; }
+  .browser-dots .red { background: #ff5f57; }
+  .browser-dots .yellow { background: #ffbd2e; }
+  .browser-dots .green { background: #56A66F; }
+  .browser-url {
+    flex: 1; background: #2a2525; border-radius: 6px;
+    padding: 6px 12px; font-size: 12px; color: #888;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .browser-url .lock { color: #56A66F; font-size: 11px; }
+
+  .portal-layout {
+    display: flex; min-height: 860px;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: 230px; background: #221F1F; padding: 0;
+    flex-shrink: 0; display: flex; flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 18px 16px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #2d2a2a;
+  }
+  .sidebar-logo-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #fff;
+  }
+  .sidebar-logo-text { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .sidebar-logo-sub { font-size: 10px; color: #666; font-weight: 500; }
+
+  .sidebar-nav { padding: 10px 0; flex: 1; overflow-y: auto; }
+  .sidebar-section {
+    font-size: 9px; font-weight: 700; color: #555;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 14px 16px 6px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 16px; font-size: 12.5px; color: #888;
+    cursor: pointer; border-left: 3px solid transparent;
+    transition: all 0.15s; position: relative;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.04); color: #ccc; }
+  .sidebar-item.active {
+    background: rgba(107,155,125,0.12); color: #205C50;
+    border-left-color: #205C50; font-weight: 600;
+  }
+  .sidebar-item .icon { font-size: 15px; width: 22px; text-align: center; flex-shrink: 0; }
+  .sidebar-badge {
+    position: absolute; right: 12px;
+    background: #EE4036; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+  }
+  .sidebar-badge.orange { background: #F9A250; }
+
+  .sidebar-profile {
+    padding: 14px 16px; border-top: 1px solid #2d2a2a;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+  }
+  .sidebar-profile-info { flex: 1; }
+  .sidebar-profile-name { font-size: 12px; font-weight: 600; color: #ddd; }
+  .sidebar-profile-role { font-size: 10px; color: #666; }
+  .sidebar-profile-gear { color: #555; font-size: 16px; cursor: pointer; }
+  .sidebar-profile-gear:hover { color: #888; }
+
+  /* ---- Main content ---- */
+  .main-content {
+    flex: 1; background: #f5f6f8; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .topbar {
+    background: #fff; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #e8e8ef;
+  }
+  .topbar-title { font-size: 18px; font-weight: 700; color: #221F1F; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-date { font-size: 12px; color: #888; }
+  .topbar-notif {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: #f5f6f8; display: flex; align-items: center;
+    justify-content: center; font-size: 16px; cursor: pointer;
+    position: relative;
+  }
+  .topbar-notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #EE4036; border: 2px solid #fff;
+  }
+  .topbar-admin {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: #333;
+  }
+  .topbar-admin-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  .content-body { padding: 24px; flex: 1; }
+
+  /* ---- Cards ---- */
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    padding: 20px;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title { font-size: 14px; font-weight: 700; color: #221F1F; }
+  .card-subtitle { font-size: 12px; color: #888; }
+  .card-link { font-size: 12px; color: #205C50; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .card-link:hover { text-decoration: underline; }
+
+  /* ---- Stats row ---- */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: #fff; border-radius: 12px; padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-card-top { display: flex; align-items: center; justify-content: space-between; }
+  .stat-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .stat-icon.orange { background: #fff3e0; }
+  .stat-icon.blue { background: #e0f5fb; }
+  .stat-icon.green { background: #e8f2ee; }
+  .stat-icon.purple { background: #f3e5f5; }
+  .stat-label { font-size: 12px; color: #888; font-weight: 500; }
+  .stat-value { font-size: 26px; font-weight: 800; color: #221F1F; }
+  .stat-change { font-size: 11px; font-weight: 600; }
+  .stat-change.up { color: #56A66F; }
+  .stat-change.down { color: #EE4036; }
+
+  /* ---- Tables ---- */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table thead th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 10px 12px; border-bottom: 1px solid #eee;
+  }
+  .data-table tbody td {
+    padding: 12px; font-size: 13px; color: #333;
+    border-bottom: 1px solid #f0f0f5;
+    vertical-align: middle;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: #fafbfc; }
+
+  .merchant-name { font-weight: 600; color: #221F1F; }
+  .merchant-category { font-size: 11px; color: #888; }
+  .merchant-location { font-size: 12px; color: #666; }
+  .time-ago { font-size: 12px; color: #888; }
+
+  /* ---- Badges ---- */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.pending { background: #fff3e0; color: #F9A250; }
+  .badge.approved { background: #e8f2ee; color: #56A66F; }
+  .badge.rejected { background: #ffe8ef; color: #EE4036; }
+  .badge.flagged { background: #ffe8ef; color: #EE4036; }
+  .badge.active { background: #e8f2ee; color: #56A66F; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 14px; border-radius: 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; border: none;
+    transition: all 0.15s; text-decoration: none;
+    font-family: inherit;
+  }
+  .btn-primary { background: #205C50; color: #fff; }
+  .btn-primary:hover { background: #5a8a6c; }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .btn-approve { background: #56A66F; color: #fff; }
+  .btn-approve:hover { background: #218838; }
+  .btn-reject { background: transparent; color: #EE4036; border: 1.5px solid #EE4036; }
+  .btn-reject:hover { background: #FFF0F0; }
+  .btn-warning { background: transparent; color: #F9A250; border: 1.5px solid #F9A250; }
+  .btn-warning:hover { background: #FFF8E1; }
+  .btn-outline { background: transparent; color: #205C50; border: 1.5px solid #205C50; }
+  .btn-outline:hover { background: #f0f7f3; }
+  .btn-ghost { background: transparent; color: #888; border: 1px solid #ddd; }
+  .btn-ghost:hover { background: #f5f5f5; color: #333; }
+
+  /* ---- Activity feed ---- */
+  .activity-item {
+    display: flex; gap: 12px; padding: 10px 0;
+    border-bottom: 1px solid #f0f0f5;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 5px; flex-shrink: 0;
+  }
+  .activity-dot.green { background: #56A66F; }
+  .activity-dot.orange { background: #F9A250; }
+  .activity-dot.red { background: #EE4036; }
+  .activity-dot.blue { background: #2196f3; }
+  .activity-text { font-size: 12.5px; color: #444; line-height: 1.4; flex: 1; }
+  .activity-time { font-size: 11px; color: #aaa; white-space: nowrap; }
+
+  /* ---- Bottom grid ---- */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
+  .bottom-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 12px; }
+
+  .mini-stat { text-align: center; }
+  .mini-stat-value { font-size: 22px; font-weight: 800; color: #221F1F; }
+  .mini-stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+
+  /* ---- Bar chart placeholder ---- */
+  .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 100px; margin-top: 12px; }
+  .chart-bar {
+    flex: 1; border-radius: 4px 4px 0 0; background: #205C50;
+    transition: opacity 0.15s; cursor: pointer; position: relative;
+  }
+  .chart-bar:hover { opacity: 0.8; }
+  .chart-bar.light { background: #a8d5ba; }
+  .chart-labels { display: flex; gap: 6px; margin-top: 4px; }
+  .chart-label { flex: 1; text-align: center; font-size: 9px; color: #aaa; }
+
+  /* ---- Screen 2: Detail view ---- */
+  .detail-layout { display: grid; grid-template-columns: 1fr 320px; gap: 0; flex: 1; }
+  .detail-main { padding: 24px; overflow-y: auto; }
+  .detail-sidebar {
+    background: #fff; border-left: 1px solid #e8e8ef;
+    padding: 24px; overflow-y: auto;
+  }
+
+  .detail-section { margin-bottom: 24px; }
+  .detail-section-title {
+    font-size: 13px; font-weight: 700; color: #221F1F;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .detail-row {
+    display: flex; padding: 7px 0; font-size: 13px;
+    border-bottom: 1px solid #f5f5f8;
+  }
+  .detail-label { width: 140px; color: #888; font-weight: 500; flex-shrink: 0; font-size: 12px; }
+  .detail-value { color: #333; flex: 1; font-size: 12.5px; }
+
+  .doc-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: #f8f9fb; border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .doc-item-left { display: flex; align-items: center; gap: 10px; }
+  .doc-icon { font-size: 16px; }
+  .doc-name { font-size: 12.5px; font-weight: 500; color: #333; }
+  .doc-status { font-size: 14px; }
+  .doc-link { font-size: 11px; color: #205C50; font-weight: 600; cursor: pointer; }
+
+  .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .photo-thumb {
+    aspect-ratio: 1; border-radius: 8px; background: #f0f0f5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; cursor: pointer;
+  }
+  .photo-thumb:hover { background: #e8e8ef; }
+  .photo-label { font-size: 9px; color: #888; text-align: center; margin-top: 4px; }
+
+  /* Admin action panel */
+  .action-status {
+    padding: 10px 16px; border-radius: 8px;
+    text-align: center; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px; margin-bottom: 16px;
+  }
+  .action-status.pending { background: #fff3e0; color: #F9A250; }
+
+  .admin-notes-textarea {
+    width: 100%; border: 1.5px solid #e0e0e8; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; font-family: inherit;
+    resize: vertical; min-height: 70px; color: #333;
+    transition: border-color 0.15s;
+  }
+  .admin-notes-textarea:focus { outline: none; border-color: #205C50; }
+  .admin-notes-textarea::placeholder { color: #bbb; }
+
+  .action-buttons { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .action-btn {
+    width: 100%; padding: 10px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    border: none; font-family: inherit; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .action-btn.approve { background: #56A66F; color: #fff; }
+  .action-btn.approve:hover { background: #218838; }
+  .action-btn.reject { background: #fff; color: #EE4036; border: 1.5px solid #EE4036; }
+  .action-btn.reject:hover { background: #FFF0F0; }
+  .action-btn.changes { background: #fff; color: #F9A250; border: 1.5px solid #F9A250; }
+  .action-btn.changes:hover { background: #FFF8E1; }
+
+  .checklist { margin-top: 16px; }
+  .checklist-title { font-size: 12px; font-weight: 700; color: #221F1F; margin-bottom: 10px; }
+  .checklist-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; font-size: 12px; color: #555;
+  }
+  .checklist-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid #ccc; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 10px; cursor: pointer; flex-shrink: 0;
+  }
+  .checklist-box.checked { background: #205C50; border-color: #205C50; color: #fff; }
+
+  /* ---- Screen 3: Coupon moderation ---- */
+  .coupon-expanded {
+    background: #f8f9fb; padding: 16px 20px; border-radius: 0 0 10px 10px;
+    margin: -1px 0 8px 0; border: 1px solid #eee; border-top: none;
+  }
+  .coupon-expanded-inner {
+    display: grid; grid-template-columns: 1fr 180px 200px; gap: 20px;
+    align-items: start;
+  }
+  .coupon-details-list { font-size: 12px; color: #555; }
+  .coupon-details-list div { padding: 3px 0; }
+  .coupon-details-list strong { color: #333; }
+
+  /* Mini phone preview */
+  .mini-phone {
+    width: 160px; height: 280px; border-radius: 20px;
+    background: #221F1F; border: 2px solid #333;
+    overflow: hidden; margin: 0 auto;
+  }
+  .mini-phone-notch {
+    width: 60px; height: 6px; background: #333;
+    border-radius: 0 0 8px 8px; margin: 0 auto;
+  }
+  .mini-phone-screen { padding: 8px; }
+  .mini-phone-card {
+    background: #fff; border-radius: 10px;
+    overflow: hidden; margin-top: 6px;
+  }
+  .mini-phone-card-img {
+    height: 60px; background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .mini-phone-card-body { padding: 8px; }
+  .mini-phone-card-title { font-size: 8px; font-weight: 700; color: #333; }
+  .mini-phone-card-merchant { font-size: 7px; color: #888; }
+  .mini-phone-card-discount {
+    margin-top: 4px; padding: 3px 6px; background: #EE4036;
+    color: #fff; border-radius: 4px; font-size: 8px;
+    font-weight: 700; display: inline-block;
+  }
+  .mini-phone-card-btn {
+    margin-top: 6px; width: 100%; padding: 4px;
+    background: #205C50; color: #fff; border: none;
+    border-radius: 6px; font-size: 7px; font-weight: 700;
+    text-align: center;
+  }
+
+  .flag-reason {
+    background: #ffe8ef; border-radius: 6px; padding: 8px 12px;
+    font-size: 11px; color: #EE4036; margin-top: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ---- Utility ---- */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .gap-20 { gap: 20px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-4 { margin-bottom: 4px; }
+  .text-sm { font-size: 12px; }
+  .text-muted { color: #888; }
+  .fw-600 { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>B-Ticket Admin Portal</h1>
+<p class="subtitle">Internal admin dashboard for managing merchant applications, coupon moderation, platform analytics, and system configuration. B2B2C digital coupon platform for the Philippines.</p>
+
+<!-- ========================================================= -->
+<!-- SCREEN 1: DASHBOARD OVERVIEW                              -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 1 — Dashboard Overview</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/dashboard
+    </div>
+  </div>
+
+  <div class="portal-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+          <span class="sidebar-badge orange">12</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ea;</span> Merchants
+          <span class="sidebar-badge">5</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ab;</span> Coupons
+          <span class="sidebar-badge orange">4</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c1;</span> Categories
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f5bc;&#xfe0f;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div class="topbar-title">Admin Dashboard</div>
+        <div class="topbar-right">
+          <div class="topbar-date">March 18, 2026</div>
+          <div class="topbar-notif">
+            &#x1f514;
+            <div class="topbar-notif-dot"></div>
+          </div>
+          <div class="topbar-admin">
+            <div class="topbar-admin-avatar">AU</div>
+            Admin User
+          </div>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Pending Applications</div>
+                <div class="stat-value" style="color: #F9A250;">12</div>
+              </div>
+              <div class="stat-icon orange">&#x1f4cb;</div>
+            </div>
+            <div class="stat-change down">&#x2191; 3 new today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Active Merchants</div>
+                <div class="stat-value">143</div>
+              </div>
+              <div class="stat-icon blue">&#x1f3ea;</div>
+            </div>
+            <div class="stat-change up">&#x2191; 12% vs last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Active Coupons</div>
+                <div class="stat-value">487</div>
+              </div>
+              <div class="stat-icon green">&#x1f3ab;</div>
+            </div>
+            <div class="stat-change up">&#x2191; 8% vs last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Today's Redemptions</div>
+                <div class="stat-value">1,284</div>
+              </div>
+              <div class="stat-icon purple">&#x1f4f1;</div>
+            </div>
+            <div class="stat-change up">&#x2191; 23% vs yesterday</div>
+          </div>
+        </div>
+
+        <!-- Pending Approvals Table -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <div class="card-title">&#x23f3; Pending Merchant Approvals</div>
+            <a class="card-link">View All Merchants &#x2192;</a>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Merchant Name</th>
+                <th>Category</th>
+                <th>Location</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="merchant-name">Tokyo Ramen House</span></td>
+                <td><span class="merchant-category">Food &amp; Beverage</span></td>
+                <td><span class="merchant-location">BGC, Taguig</span></td>
+                <td><span class="time-ago">2h ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+              <tr>
+                <td><span class="merchant-name">Glow Up Salon</span></td>
+                <td><span class="merchant-category">Wellness &amp; Beauty</span></td>
+                <td><span class="merchant-location">Makati</span></td>
+                <td><span class="time-ago">5h ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+              <tr>
+                <td><span class="merchant-name">Pizza Republic</span></td>
+                <td><span class="merchant-category">Food &amp; Beverage</span></td>
+                <td><span class="merchant-location">Quezon City</span></td>
+                <td><span class="time-ago">1 day ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+              <tr>
+                <td><span class="merchant-name">Zen Fitness Gym</span></td>
+                <td><span class="merchant-category">Leisure</span></td>
+                <td><span class="merchant-location">Mandaluyong</span></td>
+                <td><span class="time-ago">1 day ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+              <tr>
+                <td><span class="merchant-name">Kuya J Restaurant</span></td>
+                <td><span class="merchant-category">Food &amp; Beverage</span></td>
+                <td><span class="merchant-location">Pasig</span></td>
+                <td><span class="time-ago">2 days ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bottom Grid: Activity + Quick Stats -->
+        <div class="bottom-grid">
+          <!-- Recent Activity -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">&#x1f4ac; Recent Activity</div>
+              <a class="card-link">View All</a>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot orange"></div>
+              <div class="activity-text">
+                <strong>Maple Tree BGC</strong> submitted new coupon for review
+                <div class="activity-time">30 min ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot green"></div>
+              <div class="activity-text">
+                <strong>Sushi Nori &mdash; Makati</strong> approved by Admin
+                <div class="activity-time">2h ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot green"></div>
+              <div class="activity-text">
+                <strong>Botejyu BGC</strong> coupon "50% Off Ramen" approved
+                <div class="activity-time">3h ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot red"></div>
+              <div class="activity-text">
+                <strong>Sweet Tooth Bakery</strong> application rejected &mdash; incomplete documents
+                <div class="activity-time">5h ago</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">&#x1f4c8; Quick Stats</div>
+              <a class="card-link">Full Analytics &#x2192;</a>
+            </div>
+            <div class="bottom-grid-3">
+              <div class="mini-stat">
+                <div class="mini-stat-value" style="color: #205C50;">&#x20b1;89,400</div>
+                <div class="mini-stat-label">Revenue MRR</div>
+              </div>
+              <div class="mini-stat">
+                <div class="mini-stat-value">2,847</div>
+                <div class="mini-stat-label">Subscribers</div>
+              </div>
+              <div class="mini-stat">
+                <div class="mini-stat-value">94.2%</div>
+                <div class="mini-stat-label">Uptime</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px;">
+              <div style="font-size: 11px; color: #888; font-weight: 600; margin-bottom: 4px;">Monthly Redemptions</div>
+              <div class="chart-bars">
+                <div class="chart-bar light" style="height: 40%;"></div>
+                <div class="chart-bar light" style="height: 52%;"></div>
+                <div class="chart-bar light" style="height: 48%;"></div>
+                <div class="chart-bar light" style="height: 55%;"></div>
+                <div class="chart-bar light" style="height: 60%;"></div>
+                <div class="chart-bar light" style="height: 65%;"></div>
+                <div class="chart-bar" style="height: 58%;"></div>
+                <div class="chart-bar" style="height: 72%;"></div>
+                <div class="chart-bar" style="height: 80%;"></div>
+                <div class="chart-bar" style="height: 75%;"></div>
+                <div class="chart-bar" style="height: 88%;"></div>
+                <div class="chart-bar" style="height: 100%;"></div>
+              </div>
+              <div class="chart-labels">
+                <div class="chart-label">Apr</div>
+                <div class="chart-label">May</div>
+                <div class="chart-label">Jun</div>
+                <div class="chart-label">Jul</div>
+                <div class="chart-label">Aug</div>
+                <div class="chart-label">Sep</div>
+                <div class="chart-label">Oct</div>
+                <div class="chart-label">Nov</div>
+                <div class="chart-label">Dec</div>
+                <div class="chart-label">Jan</div>
+                <div class="chart-label">Feb</div>
+                <div class="chart-label">Mar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end content-body -->
+    </div><!-- end main-content -->
+  </div><!-- end portal-layout -->
+</div><!-- end browser-frame -->
+
+
+<!-- ========================================================= -->
+<!-- SCREEN 2: MERCHANT APPLICATION REVIEW (Detail View)       -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 2 — Merchant Application Review</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/merchants/review/tokyo-ramen-house
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 940px;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+          <span class="sidebar-badge orange">12</span>
+        </div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f3ea;</span> Merchants
+          <span class="sidebar-badge">5</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ab;</span> Coupons
+          <span class="sidebar-badge orange">4</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c1;</span> Categories
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f5bc;&#xfe0f;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="color: #888; cursor: pointer; font-size: 18px;">&#x2190;</span>
+          <div>
+            <div class="topbar-title">Tokyo Ramen House</div>
+            <div style="font-size: 11px; color: #888;">Application Review &bull; Submitted 2h ago</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-date">March 18, 2026</div>
+          <div class="topbar-admin">
+            <div class="topbar-admin-avatar">AU</div>
+            Admin User
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-layout">
+        <!-- Left: Application Details -->
+        <div class="detail-main">
+
+          <!-- Business Information -->
+          <div class="card detail-section">
+            <div class="detail-section-title">&#x1f3e2; Business Information</div>
+            <div class="detail-row">
+              <div class="detail-label">Business Name</div>
+              <div class="detail-value" style="font-weight: 600;">Tokyo Ramen House</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Category</div>
+              <div class="detail-value"><span class="badge active">Food &amp; Beverage</span></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Owner</div>
+              <div class="detail-value">Kenji Tanaka</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Email</div>
+              <div class="detail-value" style="color: #205C50;">kenji@tokyoramen.ph</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Phone</div>
+              <div class="detail-value">+63 917 555 1234</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Address</div>
+              <div class="detail-value">Unit 205, High Street South Block, BGC, Taguig</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Description</div>
+              <div class="detail-value" style="line-height: 1.5;">Authentic Japanese ramen house serving traditional tonkotsu, miso, and shoyu ramen since 2020. Our broth is simmered for 18 hours using premium pork bones imported from Kagoshima...</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Business Hours</div>
+              <div class="detail-value">Mon&ndash;Sun 11:00 AM &ndash; 10:00 PM</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Average Price</div>
+              <div class="detail-value">&#x20b1;400&ndash;800 / person</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Social Media</div>
+              <div class="detail-value">
+                <span style="color: #205C50; font-weight: 500; margin-right: 12px; cursor: pointer;">&#x1f310; Facebook</span>
+                <span style="color: #205C50; font-weight: 500; cursor: pointer;">&#x1f4f7; Instagram</span>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Plan Selected</div>
+              <div class="detail-value"><span style="background: #205C50; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">Pro</span> &#x20b1;3,999/mo</div>
+            </div>
+            <div class="detail-row" style="border-bottom: none;">
+              <div class="detail-label">Submitted</div>
+              <div class="detail-value">March 16, 2026</div>
+            </div>
+          </div>
+
+          <!-- Documents -->
+          <div class="card detail-section">
+            <div class="detail-section-title">&#x1f4c4; Documents</div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <span class="doc-icon">&#x1f4c4;</span>
+                <div>
+                  <div class="doc-name">Business Permit</div>
+                  <div style="font-size: 10px; color: #aaa;">PDF &bull; 2.4 MB</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="doc-status" style="color: #56A66F;">&#x2713;</span>
+                <span class="doc-link">View Document</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <span class="doc-icon">&#x1f4c4;</span>
+                <div>
+                  <div class="doc-name">BIR Registration</div>
+                  <div style="font-size: 10px; color: #aaa;">PDF &bull; 1.1 MB</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="doc-status" style="color: #56A66F;">&#x2713;</span>
+                <span class="doc-link">View Document</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <span class="doc-icon">&#x1f4c4;</span>
+                <div>
+                  <div class="doc-name">Valid ID (Government-issued)</div>
+                  <div style="font-size: 10px; color: #aaa;">JPG &bull; 3.8 MB</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="doc-status" style="color: #56A66F;">&#x2713;</span>
+                <span class="doc-link">View Document</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <span class="doc-icon">&#x1f4dd;</span>
+                <div>
+                  <div class="doc-name">B-Ticket Merchant Contract</div>
+                  <div style="font-size: 10px; color: #56A66F; font-weight: 500;">Signed by Kenji Tanaka on Mar 16, 2026</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="doc-status" style="color: #56A66F;">&#x2713;</span>
+                <span class="doc-link">View Signed Contract</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Photos -->
+          <div class="card detail-section">
+            <div class="detail-section-title">&#x1f4f8; Photos</div>
+            <div class="photo-grid">
+              <div>
+                <div class="photo-thumb" style="background: #fff3e0;">&#x1f35c;</div>
+                <div class="photo-label">Logo</div>
+              </div>
+              <div>
+                <div class="photo-thumb" style="background: #e8f2ee;">&#x1f3ea;</div>
+                <div class="photo-label">Cover Photo</div>
+              </div>
+              <div>
+                <div class="photo-thumb" style="background: #e0f5fb;">&#x1f4f8;</div>
+                <div class="photo-label">Interior</div>
+              </div>
+              <div>
+                <div class="photo-thumb" style="background: #ffe8ef;">&#x1f363;</div>
+                <div class="photo-label">Food Photos</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Admin Actions Panel -->
+        <div class="detail-sidebar">
+          <div class="action-status pending">&#x23f3; PENDING REVIEW</div>
+
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 12px; font-weight: 700; color: #221F1F; margin-bottom: 8px;">Admin Notes</div>
+            <textarea class="admin-notes-textarea" placeholder="Add internal notes for the team..."></textarea>
+          </div>
+
+          <div class="action-buttons">
+            <button class="action-btn approve">&#x2713; Approve Merchant</button>
+            <button class="action-btn reject">&#x2715; Reject Application</button>
+            <button class="action-btn changes">&#x23f8; Request Changes</button>
+          </div>
+
+          <!-- Reason field (shown when reject/request changes) -->
+          <div style="margin-bottom: 16px; background: #fff8e1; border-radius: 8px; padding: 12px;">
+            <div style="font-size: 11px; font-weight: 700; color: #F9A250; margin-bottom: 6px;">Reason (shown when Reject or Request Changes is selected)</div>
+            <textarea class="admin-notes-textarea" placeholder="Provide a reason for rejection or changes needed..." style="border-color: #F9A250; min-height: 60px;"></textarea>
+          </div>
+
+          <div class="checklist">
+            <div class="checklist-title">Verification Checklist</div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Business information verified
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Photos are appropriate
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Documents are valid
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Contract is signed
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box"></div>
+              Business exists (Google Maps verified)
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee;">
+            <div style="font-size: 11px; color: #888; margin-bottom: 6px;">Assignment</div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: #205C50; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff;">AU</div>
+              <span style="font-size: 12px; color: #333; font-weight: 500;">Admin User</span>
+              <span style="font-size: 10px; color: #888;">&bull; Assigned just now</span>
+            </div>
+          </div>
+        </div>
+      </div><!-- end detail-layout -->
+    </div><!-- end main-content -->
+  </div><!-- end portal-layout -->
+</div><!-- end browser-frame -->
+
+
+<!-- ========================================================= -->
+<!-- SCREEN 3: COUPON MODERATION QUEUE                         -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 3 — Coupon Moderation Queue</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/coupons/moderation
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 920px;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+          <span class="sidebar-badge orange">12</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ea;</span> Merchants
+          <span class="sidebar-badge">5</span>
+        </div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f3ab;</span> Coupons
+          <span class="sidebar-badge orange">4</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c1;</span> Categories
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f5bc;&#xfe0f;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Coupon Moderation</div>
+          <div style="font-size: 11px; color: #888;">4 coupons pending review</div>
+        </div>
+        <div class="topbar-right">
+          <!-- Tab-style filters -->
+          <div style="display: flex; gap: 2px; background: #f0f0f5; border-radius: 8px; padding: 2px;">
+            <div style="padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff; color: #221F1F; box-shadow: 0 1px 2px rgba(0,0,0,0.08); cursor: pointer;">Pending <span style="color: #F9A250;">4</span></div>
+            <div style="padding: 6px 14px; border-radius: 6px; font-size: 12px; color: #888; cursor: pointer;">Active</div>
+            <div style="padding: 6px 14px; border-radius: 6px; font-size: 12px; color: #888; cursor: pointer;">Rejected</div>
+          </div>
+          <div class="topbar-admin">
+            <div class="topbar-admin-avatar">AU</div>
+            Admin User
+          </div>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <!-- Coupon Moderation Table -->
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-header">
+            <div class="card-title">&#x1f3ab; Pending Coupon Approvals</div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-ghost btn-sm">&#x1f50d; Filter</button>
+              <button class="btn btn-ghost btn-sm">&#x2195; Sort</button>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Coupon Title</th>
+                <th>Merchant</th>
+                <th>Discount</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="merchant-name">50% Off Hanger Steak</span></td>
+                <td><span style="font-size: 12px; color: #555;">Maple Tree BGC</span></td>
+                <td><span style="font-size: 12px; font-weight: 600; color: #EE4036;">50% off</span></td>
+                <td><span class="time-ago">1h ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td style="text-align: right;">
+                  <button class="btn btn-primary btn-sm" style="margin-right: 4px;">Review</button>
+                  <button class="btn btn-outline btn-sm">Quick Approve</button>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="merchant-name">Free Matcha Latte</span></td>
+                <td><span style="font-size: 12px; color: #555;">Caf&eacute; Selina</span></td>
+                <td><span style="font-size: 12px; font-weight: 600; color: #EE4036;">100% off</span></td>
+                <td><span class="time-ago">3h ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td style="text-align: right;">
+                  <button class="btn btn-primary btn-sm" style="margin-right: 4px;">Review</button>
+                  <button class="btn btn-outline btn-sm">Quick Approve</button>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="merchant-name">&#x20b1;500 Off Full Course</span></td>
+                <td><span style="font-size: 12px; color: #555;">Tokyo Ramen House</span></td>
+                <td><span style="font-size: 12px; font-weight: 600; color: #205C50;">&#x20b1;500 off</span></td>
+                <td><span class="time-ago">5h ago</span></td>
+                <td><span class="badge pending">Pending</span></td>
+                <td style="text-align: right;">
+                  <button class="btn btn-primary btn-sm">Review</button>
+                </td>
+              </tr>
+              <tr style="background: #fff5f5;">
+                <td><span class="merchant-name">Buy 1 Get 1 Massage</span> <span style="font-size: 10px; color: #EE4036;">&#x26a0;</span></td>
+                <td><span style="font-size: 12px; color: #555;">Zen Spa</span></td>
+                <td><span style="font-size: 12px; font-weight: 600; color: #EE4036;">BOGO</span></td>
+                <td><span class="time-ago">1 day ago</span></td>
+                <td><span class="badge flagged">&#x1f6a9; Flagged</span></td>
+                <td style="text-align: right;">
+                  <button class="btn btn-primary btn-sm">Review</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Expanded Coupon Detail: Coupon 1 (50% Off Hanger Steak) -->
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">&#x1f50d; Coupon Detail &mdash; 50% Off Hanger Steak</div>
+              <div class="card-subtitle">Maple Tree BGC &bull; Submitted 1h ago</div>
+            </div>
+            <span class="badge pending">Pending</span>
+          </div>
+          <div class="coupon-expanded-inner">
+            <!-- Coupon Details -->
+            <div class="coupon-details-list">
+              <div><strong>Title:</strong> 50% Off Hanger Steak</div>
+              <div><strong>Merchant:</strong> Maple Tree BGC</div>
+              <div><strong>Category:</strong> Food &amp; Beverage</div>
+              <div><strong>Discount Type:</strong> Percentage &mdash; 50% off</div>
+              <div><strong>Original Price:</strong> &#x20b1;980</div>
+              <div><strong>Discounted Price:</strong> &#x20b1;490</div>
+              <div><strong>Validity:</strong> March 20 &ndash; April 20, 2026</div>
+              <div><strong>Max Redemptions:</strong> 200</div>
+              <div><strong>Terms:</strong> Valid for dine-in only. One per table per visit. Cannot be combined with other promos.</div>
+              <div style="margin-top: 10px; display: flex; gap: 8px;">
+                <button class="btn btn-approve btn-sm">&#x2713; Approve</button>
+                <button class="btn btn-reject btn-sm">&#x2715; Reject</button>
+                <button class="btn btn-warning btn-sm">&#x23f8; Request Changes</button>
+              </div>
+            </div>
+
+            <!-- Mini Phone Preview -->
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; text-align: center;">Consumer Preview</div>
+              <div class="mini-phone">
+                <div class="mini-phone-notch"></div>
+                <div class="mini-phone-screen">
+                  <div style="font-size: 7px; color: #888; text-align: center; padding: 4px 0;">b-ticket</div>
+                  <div class="mini-phone-card">
+                    <div class="mini-phone-card-img">&#x1f969;</div>
+                    <div class="mini-phone-card-body">
+                      <div class="mini-phone-card-title">50% Off Hanger Steak</div>
+                      <div class="mini-phone-card-merchant">Maple Tree BGC</div>
+                      <div class="mini-phone-card-discount">50% OFF</div>
+                      <div class="mini-phone-card-btn">Claim Coupon</div>
+                    </div>
+                  </div>
+                  <div style="margin-top: 6px; padding: 4px 6px; background: rgba(255,255,255,0.1); border-radius: 6px;">
+                    <div style="font-size: 7px; color: #888;">&#x20b1;980 <span style="text-decoration: line-through; color: #555;">&#x2192;</span> <span style="color: #56A66F; font-weight: 700;">&#x20b1;490</span></div>
+                    <div style="font-size: 6px; color: #666; margin-top: 2px;">Valid until Apr 20, 2026</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick stats for this coupon -->
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Merchant History</div>
+              <div style="background: #f8f9fb; border-radius: 8px; padding: 12px;">
+                <div style="font-size: 11px; color: #555; margin-bottom: 4px;">Previous coupons: <strong style="color: #333;">8</strong></div>
+                <div style="font-size: 11px; color: #555; margin-bottom: 4px;">Avg. rating: <strong style="color: #333;">4.6/5</strong></div>
+                <div style="font-size: 11px; color: #555; margin-bottom: 4px;">Total redemptions: <strong style="color: #333;">1,240</strong></div>
+                <div style="font-size: 11px; color: #555;">Member since: <strong style="color: #333;">Aug 2025</strong></div>
+              </div>
+              <div style="margin-top: 10px; background: #e8f2ee; border-radius: 8px; padding: 10px;">
+                <div style="font-size: 11px; font-weight: 600; color: #56A66F;">&#x2713; Risk Assessment: Low</div>
+                <div style="font-size: 10px; color: #555; margin-top: 2px;">50% discount is within normal range for this category.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expanded Coupon Detail: Flagged Coupon (Buy 1 Get 1 Massage) -->
+        <div class="card" style="border-left: 3px solid #EE4036;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">&#x1f6a9; Flagged Coupon &mdash; Buy 1 Get 1 Massage</div>
+              <div class="card-subtitle">Zen Spa &bull; Submitted 1 day ago</div>
+            </div>
+            <span class="badge flagged">&#x1f6a9; Flagged</span>
+          </div>
+          <div class="coupon-expanded-inner">
+            <div class="coupon-details-list">
+              <div><strong>Title:</strong> Buy 1 Get 1 Massage</div>
+              <div><strong>Merchant:</strong> Zen Spa</div>
+              <div><strong>Category:</strong> Wellness &amp; Beauty</div>
+              <div><strong>Discount Type:</strong> BOGO (Buy 1 Get 1)</div>
+              <div><strong>Original Price:</strong> &#x20b1;1,500</div>
+              <div><strong>Discounted Price:</strong> &#x20b1;1,500 (get 2)</div>
+              <div><strong>Validity:</strong> March 22 &ndash; April 22, 2026</div>
+              <div><strong>Max Redemptions:</strong> 50</div>
+              <div><strong>Terms:</strong> Valid for 60-min Swedish massage only. By appointment.</div>
+
+              <div class="flag-reason">
+                <span>&#x26a0;&#xfe0f;</span>
+                <div>
+                  <strong>Auto-flagged:</strong> Discount exceeds 80% &mdash; verify with merchant that this BOGO offer is sustainable and intentional.
+                </div>
+              </div>
+
+              <div style="margin-top: 12px; display: flex; gap: 8px;">
+                <button class="btn btn-approve btn-sm">&#x2713; Approve Anyway</button>
+                <button class="btn btn-reject btn-sm">&#x2715; Reject</button>
+                <button class="btn btn-warning btn-sm">&#x23f8; Request Changes</button>
+              </div>
+            </div>
+
+            <!-- Mini Phone Preview -->
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; text-align: center;">Consumer Preview</div>
+              <div class="mini-phone">
+                <div class="mini-phone-notch"></div>
+                <div class="mini-phone-screen">
+                  <div style="font-size: 7px; color: #888; text-align: center; padding: 4px 0;">b-ticket</div>
+                  <div class="mini-phone-card">
+                    <div class="mini-phone-card-img" style="background: linear-gradient(135deg, #9c27b0, #7b1fa2);">&#x1f487;</div>
+                    <div class="mini-phone-card-body">
+                      <div class="mini-phone-card-title">Buy 1 Get 1 Massage</div>
+                      <div class="mini-phone-card-merchant">Zen Spa</div>
+                      <div class="mini-phone-card-discount" style="background: #9c27b0;">BOGO</div>
+                      <div class="mini-phone-card-btn">Claim Coupon</div>
+                    </div>
+                  </div>
+                  <div style="margin-top: 6px; padding: 4px 6px; background: rgba(255,255,255,0.1); border-radius: 6px;">
+                    <div style="font-size: 7px; color: #888;">&#x20b1;1,500 for 2 sessions</div>
+                    <div style="font-size: 6px; color: #666; margin-top: 2px;">Valid until Apr 22, 2026</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk assessment -->
+            <div>
+              <div style="font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Merchant History</div>
+              <div style="background: #f8f9fb; border-radius: 8px; padding: 12px;">
+                <div style="font-size: 11px; color: #555; margin-bottom: 4px;">Previous coupons: <strong style="color: #333;">2</strong></div>
+                <div style="font-size: 11px; color: #555; margin-bottom: 4px;">Avg. rating: <strong style="color: #333;">4.2/5</strong></div>
+                <div style="font-size: 11px; color: #555; margin-bottom: 4px;">Total redemptions: <strong style="color: #333;">89</strong></div>
+                <div style="font-size: 11px; color: #555;">Member since: <strong style="color: #333;">Jan 2026</strong></div>
+              </div>
+              <div style="margin-top: 10px; background: #fff3e0; border-radius: 8px; padding: 10px;">
+                <div style="font-size: 11px; font-weight: 600; color: #F9A250;">&#x26a0; Risk Assessment: Medium</div>
+                <div style="font-size: 10px; color: #555; margin-top: 2px;">BOGO effectively offers 50% discount. Merchant is relatively new (2 months). Recommend verifying sustainability.</div>
+              </div>
+              <div style="margin-top: 10px;">
+                <div style="font-size: 11px; font-weight: 600; color: #333; margin-bottom: 4px;">Admin Contact Log</div>
+                <div style="font-size: 10px; color: #888;">No prior contact logged.</div>
+                <button class="btn btn-ghost btn-sm" style="margin-top: 6px;">&#x1f4de; Contact Merchant</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end content-body -->
+    </div><!-- end main-content -->
+  </div><!-- end portal-layout -->
+</div><!-- end browser-frame -->
+
+
+<div style="height: 40px;"></div>
+
+</body>
+</html>

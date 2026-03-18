@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Admin Portal (Interactive)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1110; color: #333;
+    display: flex; height: 100vh;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: 260px; background: linear-gradient(180deg, #1a3a32 0%, #0f2620 100%);
+    flex-shrink: 0; display: flex; flex-direction: column;
+    height: 100vh; overflow: hidden;
+  }
+  .sidebar-logo {
+    padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .sidebar-logo-title {
+    font-size: 20px; font-weight: 800; color: #fff; letter-spacing: 0.5px;
+  }
+  .sidebar-logo-sub {
+    font-size: 11px; color: #84BEA1; font-weight: 500; letter-spacing: 0.5px;
+  }
+  .sidebar-search {
+    margin: 0 16px 16px; padding: 8px 14px;
+    background: rgba(255,255,255,0.08); border-radius: 20px;
+    font-size: 12px; color: #84BEA1; display: flex;
+    align-items: center; justify-content: space-between;
+    cursor: pointer; border: 1px solid rgba(255,255,255,0.06);
+  }
+  .sidebar-search:hover { background: rgba(255,255,255,0.12); }
+  .sidebar-search-kbd {
+    font-size: 10px; color: #5a8a6c; background: rgba(255,255,255,0.08);
+    padding: 2px 6px; border-radius: 4px; font-weight: 600;
+  }
+
+  .sidebar-nav { flex: 1; overflow-y: auto; padding: 0 0 10px; }
+  .sidebar-section {
+    font-size: 9px; font-weight: 700; color: #5a8a6c;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 18px 20px 8px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; font-size: 13px; color: #a8c8b8;
+    cursor: pointer; margin: 1px 10px;
+    border-radius: 8px; position: relative;
+    transition: all 0.15s;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .sidebar-item.active {
+    background: #205C50; color: #fff; font-weight: 600;
+  }
+  .sidebar-badge {
+    position: absolute; right: 12px;
+    background: #F9A250; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+  }
+
+  .sidebar-profile {
+    padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+  .sidebar-profile-info { flex: 1; }
+  .sidebar-profile-name { font-size: 12px; font-weight: 600; color: #fff; }
+  .sidebar-profile-role { font-size: 10px; color: #84BEA1; }
+
+  /* ---- Main content ---- */
+  .main-area {
+    flex: 1; display: flex; flex-direction: column;
+    height: 100vh; overflow: hidden; background: #f5f6f8;
+  }
+  .topbar {
+    background: #fff; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #e8e8ef; flex-shrink: 0;
+  }
+  .topbar-title { font-size: 18px; font-weight: 700; color: #221F1F; }
+  .topbar-subtitle { font-size: 11px; color: #888; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-date { font-size: 12px; color: #888; }
+  .topbar-notif {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: #f5f6f8; display: flex; align-items: center;
+    justify-content: center; font-size: 16px; cursor: pointer;
+    position: relative;
+  }
+  .topbar-notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #EE4036; border: 2px solid #fff;
+  }
+  .topbar-admin {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: #333;
+  }
+  .topbar-admin-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  .content-body { padding: 24px; flex: 1; overflow-y: auto; }
+
+  /* ---- Screen container ---- */
+  .screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+  .screen.active { display: flex; }
+
+  /* ---- Cards ---- */
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    padding: 20px;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title { font-size: 14px; font-weight: 700; color: #221F1F; }
+  .card-subtitle { font-size: 12px; color: #888; }
+  .card-link { font-size: 12px; color: #205C50; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .card-link:hover { text-decoration: underline; }
+
+  /* ---- Stats row ---- */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: #fff; border-radius: 12px; padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-card-top { display: flex; align-items: center; justify-content: space-between; }
+  .stat-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .stat-icon.orange { background: #fff3e0; }
+  .stat-icon.blue { background: #e0f5fb; }
+  .stat-icon.green { background: #e8f2ee; }
+  .stat-icon.purple { background: #f3e5f5; }
+  .stat-label { font-size: 12px; color: #888; font-weight: 500; }
+  .stat-value { font-size: 26px; font-weight: 800; color: #221F1F; }
+  .stat-change { font-size: 11px; font-weight: 600; }
+  .stat-change.up { color: #56A66F; }
+  .stat-change.down { color: #EE4036; }
+
+  /* ---- Tables ---- */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table thead th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 10px 12px; border-bottom: 1px solid #eee;
+  }
+  .data-table tbody td {
+    padding: 12px; font-size: 13px; color: #333;
+    border-bottom: 1px solid #f0f0f5;
+    vertical-align: middle;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: #fafbfc; }
+
+  .merchant-name { font-weight: 600; color: #221F1F; }
+  .merchant-category { font-size: 11px; color: #888; }
+  .merchant-location { font-size: 12px; color: #666; }
+  .time-ago { font-size: 12px; color: #888; }
+
+  /* ---- Badges ---- */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.pending { background: #fff3e0; color: #F9A250; }
+  .badge.approved { background: #e8f2ee; color: #56A66F; }
+  .badge.rejected { background: #ffe8ef; color: #EE4036; }
+  .badge.flagged { background: #ffe8ef; color: #EE4036; }
+  .badge.active { background: #e8f2ee; color: #56A66F; }
+  .badge.free { background: #e0f5fb; color: #50C9EF; }
+  .badge.expired { background: #ffe8ef; color: #EE4036; }
+  .badge.suspended { background: #fff3e0; color: #F9A250; }
+  .badge.annual { background: #f3e5f5; color: #7b1fa2; }
+  .badge.draft { background: #f0f0f5; color: #888; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 14px; border-radius: 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; border: none;
+    transition: all 0.15s; text-decoration: none;
+    font-family: inherit;
+  }
+  .btn-primary { background: #205C50; color: #fff; }
+  .btn-primary:hover { background: #5a8a6c; }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .btn-approve { background: #56A66F; color: #fff; }
+  .btn-approve:hover { background: #218838; }
+  .btn-reject { background: transparent; color: #EE4036; border: 1.5px solid #EE4036; }
+  .btn-reject:hover { background: #FFF0F0; }
+  .btn-warning { background: transparent; color: #F9A250; border: 1.5px solid #F9A250; }
+  .btn-warning:hover { background: #FFF8E1; }
+  .btn-outline { background: transparent; color: #205C50; border: 1.5px solid #205C50; }
+  .btn-outline:hover { background: #f0f7f3; }
+  .btn-ghost { background: transparent; color: #888; border: 1px solid #ddd; }
+  .btn-ghost:hover { background: #f5f5f5; color: #333; }
+
+  /* ---- Activity feed ---- */
+  .activity-item {
+    display: flex; gap: 12px; padding: 10px 0;
+    border-bottom: 1px solid #f0f0f5;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 5px; flex-shrink: 0;
+  }
+  .activity-dot.green { background: #56A66F; }
+  .activity-dot.orange { background: #F9A250; }
+  .activity-dot.red { background: #EE4036; }
+  .activity-dot.blue { background: #2196f3; }
+  .activity-text { font-size: 12.5px; color: #444; line-height: 1.4; flex: 1; }
+  .activity-time { font-size: 11px; color: #aaa; white-space: nowrap; }
+
+  /* ---- Bottom grid ---- */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
+  .bottom-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 12px; }
+
+  .mini-stat { text-align: center; }
+  .mini-stat-value { font-size: 22px; font-weight: 800; color: #221F1F; }
+  .mini-stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+
+  /* ---- Bar chart ---- */
+  .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 100px; margin-top: 12px; }
+  .chart-bar {
+    flex: 1; border-radius: 4px 4px 0 0; background: #205C50;
+    transition: opacity 0.15s; cursor: pointer; position: relative;
+  }
+  .chart-bar:hover { opacity: 0.8; }
+  .chart-bar.light { background: #a8d5ba; }
+  .chart-bar.dark { background: #4a7a5d; }
+  .chart-labels { display: flex; gap: 6px; margin-top: 4px; }
+  .chart-label { flex: 1; text-align: center; font-size: 9px; color: #aaa; }
+
+  /* ---- Detail layout ---- */
+  .detail-layout { display: grid; grid-template-columns: 1fr 320px; gap: 0; flex: 1; overflow: hidden; }
+  .detail-main { padding: 24px; overflow-y: auto; }
+  .detail-sidebar {
+    background: #fff; border-left: 1px solid #e8e8ef;
+    padding: 24px; overflow-y: auto;
+  }
+
+  .detail-section { margin-bottom: 24px; }
+  .detail-section-title {
+    font-size: 13px; font-weight: 700; color: #221F1F;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .detail-row {
+    display: flex; padding: 7px 0; font-size: 13px;
+    border-bottom: 1px solid #f5f5f8;
+  }
+  .detail-label { width: 140px; color: #888; font-weight: 500; flex-shrink: 0; font-size: 12px; }
+  .detail-value { color: #333; flex: 1; font-size: 12.5px; }
+
+  .doc-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: #f8f9fb; border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .doc-item-left { display: flex; align-items: center; gap: 10px; }
+  .doc-icon { font-size: 16px; }
+  .doc-name { font-size: 12.5px; font-weight: 500; color: #333; }
+  .doc-link { font-size: 11px; color: #205C50; font-weight: 600; cursor: pointer; }
+
+  .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .photo-thumb {
+    aspect-ratio: 1; border-radius: 8px; background: #f0f0f5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; cursor: pointer;
+  }
+  .photo-thumb:hover { background: #e8e8ef; }
+  .photo-label { font-size: 9px; color: #888; text-align: center; margin-top: 4px; }
+
+  /* Admin action panel */
+  .action-status {
+    padding: 10px 16px; border-radius: 8px;
+    text-align: center; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px; margin-bottom: 16px;
+  }
+  .action-status.pending { background: #fff3e0; color: #F9A250; }
+
+  .admin-notes-textarea {
+    width: 100%; border: 1.5px solid #e0e0e8; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; font-family: inherit;
+    resize: vertical; min-height: 70px; color: #333;
+    transition: border-color 0.15s;
+  }
+  .admin-notes-textarea:focus { outline: none; border-color: #205C50; }
+  .admin-notes-textarea::placeholder { color: #bbb; }
+
+  .action-buttons { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .action-btn {
+    width: 100%; padding: 10px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    border: none; font-family: inherit; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .action-btn.approve { background: #56A66F; color: #fff; }
+  .action-btn.approve:hover { background: #218838; }
+  .action-btn.reject { background: #fff; color: #EE4036; border: 1.5px solid #EE4036; }
+  .action-btn.reject:hover { background: #FFF0F0; }
+  .action-btn.changes { background: #fff; color: #F9A250; border: 1.5px solid #F9A250; }
+  .action-btn.changes:hover { background: #FFF8E1; }
+
+  .checklist { margin-top: 16px; }
+  .checklist-title { font-size: 12px; font-weight: 700; color: #221F1F; margin-bottom: 10px; }
+  .checklist-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; font-size: 12px; color: #555;
+  }
+  .checklist-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid #ccc; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 10px; cursor: pointer; flex-shrink: 0;
+  }
+  .checklist-box.checked { background: #205C50; border-color: #205C50; color: #fff; }
+
+  /* ---- Coupon moderation ---- */
+  .coupon-expanded-inner {
+    display: grid; grid-template-columns: 1fr 180px 200px; gap: 20px;
+    align-items: start;
+  }
+  .coupon-details-list { font-size: 12px; color: #555; }
+  .coupon-details-list div { padding: 3px 0; }
+  .coupon-details-list strong { color: #333; }
+
+  /* Mini phone preview */
+  .mini-phone {
+    width: 160px; height: 280px; border-radius: 20px;
+    background: #221F1F; border: 2px solid #333;
+    overflow: hidden; margin: 0 auto;
+  }
+  .mini-phone-notch {
+    width: 60px; height: 6px; background: #333;
+    border-radius: 0 0 8px 8px; margin: 0 auto;
+  }
+  .mini-phone-screen { padding: 8px; }
+  .mini-phone-card {
+    background: #fff; border-radius: 10px;
+    overflow: hidden; margin-top: 6px;
+  }
+  .mini-phone-card-img {
+    height: 60px; background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .mini-phone-card-body { padding: 8px; }
+  .mini-phone-card-title { font-size: 8px; font-weight: 700; color: #333; }
+  .mini-phone-card-merchant { font-size: 7px; color: #888; }
+  .mini-phone-card-discount {
+    margin-top: 4px; padding: 3px 6px; background: #EE4036;
+    color: #fff; border-radius: 4px; font-size: 8px;
+    font-weight: 700; display: inline-block;
+  }
+  .mini-phone-card-btn {
+    margin-top: 6px; width: 100%; padding: 4px;
+    background: #205C50; color: #fff; border: none;
+    border-radius: 6px; font-size: 7px; font-weight: 700;
+    text-align: center;
+  }
+
+  .flag-reason {
+    background: #ffe8ef; border-radius: 6px; padding: 8px 12px;
+    font-size: 11px; color: #EE4036; margin-top: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ---- Filter tabs ---- */
+  .filter-tabs {
+    display: flex; gap: 0; margin-bottom: 16px;
+    border-bottom: 2px solid #e8e8ef;
+  }
+  .filter-tab {
+    padding: 10px 18px; font-size: 12.5px; font-weight: 600;
+    color: #888; cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -2px; transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-tab:hover { color: #555; }
+  .filter-tab.active {
+    color: #205C50; border-bottom-color: #205C50;
+  }
+  .filter-tab .tab-count, .filter-tab .count {
+    background: #e8e8ef; color: #888; font-size: 10px;
+    padding: 2px 7px; border-radius: 10px; font-weight: 700;
+  }
+  .filter-tab.active .tab-count, .filter-tab.active .count {
+    background: #e8f2ee; color: #56A66F;
+  }
+
+  /* ---- Format pills ---- */
+  .format-pill {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; white-space: nowrap;
+  }
+  .format-pill.hero { background: #e8f2ee; color: #56A66F; }
+  .format-pill.top { background: #e0f5fb; color: #50C9EF; }
+  .format-pill.fullscreen { background: #f3e5f5; color: #7b1fa2; }
+  .format-pill.popup { background: #fff3e0; color: #F9A250; }
+
+  /* ---- Paid indicator ---- */
+  .paid-indicator {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: #56A66F;
+  }
+  .paid-check {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #e8f2ee; display: flex; align-items: center;
+    justify-content: center; font-size: 10px; color: #56A66F;
+  }
+
+  /* ---- Creative thumbnail ---- */
+  .creative-thumb {
+    width: 80px; height: 30px; border-radius: 4px;
+    overflow: hidden; flex-shrink: 0;
+  }
+
+  /* ---- Slot bars ---- */
+  .slot-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid #f0f0f5;
+  }
+  .slot-row:last-child { border-bottom: none; }
+  .slot-label {
+    width: 120px; font-size: 12.5px; font-weight: 600;
+    color: #333; flex-shrink: 0;
+  }
+  .slot-bar-bg {
+    flex: 1; height: 10px; background: #e8e8ef;
+    border-radius: 5px; overflow: hidden;
+  }
+  .slot-bar-fill {
+    height: 100%; border-radius: 5px;
+    transition: width 0.3s;
+  }
+  .slot-bar-fill.green { background: #205C50; }
+  .slot-bar-fill.orange { background: #F9A250; }
+  .slot-count {
+    width: 60px; font-size: 12px; color: #888;
+    font-weight: 600; text-align: right; flex-shrink: 0;
+  }
+
+  /* ---- Circular progress ---- */
+  .circular-progress {
+    position: relative; width: 48px; height: 48px;
+  }
+  .circular-progress svg { transform: rotate(-90deg); }
+  .circular-progress .progress-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px; font-weight: 700; color: #221F1F;
+  }
+
+  .slot-summary {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0 0; margin-top: 8px; border-top: 1px solid #e8e8ef;
+    font-size: 12.5px; color: #555;
+  }
+  .slot-summary strong { color: #221F1F; font-weight: 700; }
+
+  /* ---- Creative preview ---- */
+  .creative-preview-area {
+    background: #221F1F; border-radius: 10px; padding: 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .creative-preview-banner {
+    border-radius: 8px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; text-align: center;
+    line-height: 1.3;
+  }
+  .file-info { font-size: 11px; color: #888; text-align: center; }
+  .dimension-check {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11.5px; padding: 4px 0;
+  }
+  .dimension-check.pass { color: #56A66F; }
+
+  .mini-phone-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 2px; margin-bottom: 6px;
+  }
+  .mini-phone-logo { font-size: 8px; font-weight: 800; color: #205C50; }
+  .mini-phone-icons { font-size: 8px; color: #888; }
+
+  .history-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: #f8f9fb; border-radius: 8px;
+    margin-bottom: 8px; font-size: 12px;
+  }
+  .history-item-details { flex: 1; }
+  .history-item-name { font-weight: 600; color: #333; font-size: 12.5px; }
+  .history-item-meta { color: #888; font-size: 11px; margin-top: 2px; }
+  .history-item-status { font-size: 11px; font-weight: 600; color: #56A66F; }
+
+  .risk-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .risk-badge.low { background: #e8f2ee; color: #56A66F; }
+  .risk-badge.medium { background: #fff3e0; color: #F9A250; }
+
+  .rejection-panel {
+    margin-top: 12px; padding: 16px; background: #fef8f8;
+    border: 1.5px solid #ffe8ef; border-radius: 8px;
+  }
+  .rejection-panel select {
+    width: 100%; padding: 8px 12px; border: 1.5px solid #e0e0e8;
+    border-radius: 6px; font-family: inherit; font-size: 12px;
+    color: #333; margin-bottom: 10px; background: #fff;
+  }
+  .rejection-panel textarea {
+    width: 100%; border: 1.5px solid #e0e0e8; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; font-family: inherit;
+    resize: vertical; min-height: 60px; color: #333; margin-bottom: 10px;
+  }
+  .rejection-panel .btn-reject-confirm {
+    width: 100%; padding: 10px; border-radius: 8px;
+    background: #EE4036; color: #fff; font-size: 13px;
+    font-weight: 700; cursor: pointer; border: none;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .rejection-panel .btn-reject-confirm:hover { background: #e55555; }
+
+  .refund-note {
+    margin-top: 16px; padding: 12px 14px; background: #f0f7ff;
+    border: 1px solid #d0e4f5; border-radius: 8px;
+    font-size: 11.5px; color: #555; line-height: 1.5;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .refund-note .info-icon {
+    color: #2196f3; font-size: 14px; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ---- User avatar ---- */
+  .user-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .user-avatar.purple { background: #9c27b0; }
+  .user-avatar.blue { background: #1976d2; }
+  .user-avatar.orange { background: #F9A250; }
+  .user-avatar.teal { background: #00796b; }
+  .user-info { display: flex; align-items: center; gap: 10px; }
+  .user-name { font-weight: 600; color: #221F1F; font-size: 13px; }
+
+  .status-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 6px;
+    vertical-align: middle;
+  }
+  .status-dot.green { background: #56A66F; }
+  .status-dot.red { background: #EE4036; }
+  .status-dot.orange { background: #F9A250; }
+  .status-dot.gray { background: #bbb; }
+
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: #f5f6f8; border: 1.5px solid #e0e0e8;
+    border-radius: 8px; padding: 7px 12px; font-size: 12px;
+    color: #888; min-width: 200px;
+  }
+
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; font-size: 12px; color: #888;
+  }
+  .pagination-pages { display: flex; gap: 4px; }
+  .page-btn {
+    width: 30px; height: 30px; border-radius: 6px;
+    border: 1px solid #ddd; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: #333;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .page-btn:hover { background: #f5f6f8; }
+  .page-btn.active { background: #205C50; color: #fff; border-color: #205C50; }
+
+  .two-col { display: grid; grid-template-columns: 3fr 2fr; gap: 20px; }
+
+  .metric-row {
+    display: flex; justify-content: space-between; padding: 9px 0;
+    border-bottom: 1px solid #f0f0f5; font-size: 13px;
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: #888; font-weight: 500; }
+  .metric-value { font-weight: 700; color: #221F1F; }
+
+  .churn-reason {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; font-size: 12px;
+  }
+  .churn-reason-text { color: #555; flex: 1; min-width: 0; }
+  .churn-reason-pct { color: #333; font-weight: 700; font-size: 12px; white-space: nowrap; }
+
+  .stacked-bar-container { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding: 0 10px; }
+  .stacked-bar-group {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0;
+    height: 100%; justify-content: flex-end;
+  }
+  .stacked-bar {
+    width: 100%; border-radius: 3px 3px 0 0;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .stacked-bar:hover { opacity: 0.85; }
+  .stacked-bar-label { font-size: 10px; color: #888; margin-top: 6px; text-align: center; }
+  .stacked-bar-total { font-size: 9px; color: #555; font-weight: 600; margin-top: 2px; text-align: center; }
+
+  .h-bar-group { margin-bottom: 14px; }
+  .h-bar-label {
+    display: flex; justify-content: space-between; font-size: 12px;
+    margin-bottom: 5px;
+  }
+  .h-bar-label-text { color: #333; font-weight: 600; }
+  .h-bar-label-value { color: #888; }
+  .h-bar-track {
+    height: 24px; background: #f0f0f5; border-radius: 6px;
+    overflow: hidden;
+  }
+  .h-bar-fill {
+    height: 100%; border-radius: 6px;
+    display: flex; align-items: center; padding-left: 10px;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  .donut-container { display: flex; align-items: center; gap: 20px; }
+  .donut-chart {
+    width: 120px; height: 120px; border-radius: 50%;
+    background: conic-gradient(#205C50 0deg 295.2deg, #4a7a5d 295.2deg 360deg);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .donut-hole {
+    width: 70px; height: 70px; border-radius: 50%;
+    background: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .donut-hole-value { font-size: 18px; font-weight: 800; color: #221F1F; }
+  .donut-hole-label { font-size: 9px; color: #888; }
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+  .donut-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #333; }
+  .donut-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  .content-tabs {
+    display: flex; gap: 0; margin-bottom: 24px;
+    background: #fff; border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .content-tab {
+    padding: 12px 24px; font-size: 13px; font-weight: 600;
+    color: #888; cursor: pointer; transition: all 0.15s;
+    border-bottom: 2px solid transparent;
+  }
+  .content-tab:hover { color: #555; background: #fafbfc; }
+  .content-tab.active {
+    color: #205C50; border-bottom-color: #205C50; background: #f0f7f3;
+  }
+
+  .banner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .banner-card {
+    background: #fff; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .banner-preview {
+    height: 100px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+    padding: 16px; text-align: center; line-height: 1.4;
+  }
+  .banner-card-body { padding: 14px; }
+  .banner-meta { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .banner-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+  .sort-arrows {
+    display: inline-flex; flex-direction: column; gap: 0;
+    font-size: 10px; line-height: 1; color: #aaa; cursor: pointer;
+    vertical-align: middle;
+  }
+  .sort-arrows:hover { color: #205C50; }
+
+  .collection-cover {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+
+  /* ---- Reason panel ---- */
+  .reason-panel {
+    display: none; margin-top: 12px; background: #fff8e1; border-radius: 8px; padding: 12px;
+  }
+  .reason-panel.visible { display: block; }
+  .reason-panel textarea {
+    width: 100%; border: 1.5px solid #F9A250; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; font-family: inherit;
+    resize: vertical; min-height: 60px; color: #333; margin-top: 6px;
+  }
+  .reason-panel-title {
+    font-size: 11px; font-weight: 700; color: #F9A250; margin-bottom: 6px;
+  }
+
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 8px; background: #f5f6f8;
+    cursor: pointer; font-size: 14px; color: #888; border: none;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .back-btn:hover { background: #e8e8ef; color: #333; }
+
+  .stat-card.clickable { cursor: pointer; transition: box-shadow 0.15s; }
+  .stat-card.clickable:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+  .mb-24 { margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-title">B-Ticket</div>
+    <div class="sidebar-logo-sub">Admin Portal</div>
+  </div>
+  <div class="sidebar-search">
+    <span>Search...</span>
+    <span class="sidebar-search-kbd">Ctrl+K</span>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="sidebar-section">OVERVIEW</div>
+    <div class="sidebar-item active" data-screen="dashboard">
+      Dashboard
+      <span class="sidebar-badge">12</span>
+    </div>
+
+    <div class="sidebar-section">MANAGEMENT</div>
+    <div class="sidebar-item" data-screen="merchants">
+      Merchants
+      <span class="sidebar-badge">12</span>
+    </div>
+    <div class="sidebar-item" data-screen="coupons">
+      Coupons
+      <span class="sidebar-badge">24</span>
+    </div>
+    <div class="sidebar-item" data-screen="ads">
+      Ad Approvals
+      <span class="sidebar-badge">3</span>
+    </div>
+
+    <div class="sidebar-section">CONTENT</div>
+    <div class="sidebar-item" data-screen="users">
+      Users &amp; Subscribers
+    </div>
+    <div class="sidebar-item" data-screen="revenue">
+      Revenue &amp; Analytics
+    </div>
+    <div class="sidebar-item" data-screen="content">
+      Content Management
+    </div>
+    <div class="sidebar-item" data-screen="categories">
+      Categories
+    </div>
+
+    <div class="sidebar-section">ADMIN</div>
+    <div class="sidebar-item" data-screen="settings">
+      Settings
+    </div>
+  </div>
+
+  <div class="sidebar-profile">
+    <div class="sidebar-avatar">SC</div>
+    <div class="sidebar-profile-info">
+      <div class="sidebar-profile-name">Sheena C.</div>
+      <div class="sidebar-profile-role">Super Admin</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAIN AREA ================= -->
+<div class="main-area">
+
+<!-- ===== SCREEN: DASHBOARD ===== -->
+<div class="screen active" id="screen-dashboard">
+  <div class="topbar">
+    <div class="topbar-title">Admin Dashboard</div>
+    <div class="topbar-right">
+      <div class="topbar-date">March 18, 2026</div>
+      <div class="topbar-notif">&#x1f514;<div class="topbar-notif-dot"></div></div>
+      <div class="topbar-admin"><div class="topbar-admin-avatar">SC</div>Sheena C.</div>
+    </div>
+  </div>
+  <div class="content-body">
+    <div class="stats-row">
+      <div class="stat-card clickable" onclick="navigateTo('merchants')">
+        <div class="stat-card-top">
+          <div><div class="stat-label">Pending Applications</div><div class="stat-value" style="color:#F9A250;">12</div></div>
+          <div class="stat-icon orange">&#x1f4cb;</div>
+        </div>
+        <div class="stat-change down">&#x2191; 3 new today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div><div class="stat-label">Active Merchants</div><div class="stat-value">143</div></div>
+          <div class="stat-icon blue">&#x1f3ea;</div>
+        </div>
+        <div class="stat-change up">&#x2191; 12% vs last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div><div class="stat-label">Active Coupons</div><div class="stat-value">487</div></div>
+          <div class="stat-icon green">&#x1f3ab;</div>
+        </div>
+        <div class="stat-change up">&#x2191; 8% vs last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <div><div class="stat-label">Today's Redemptions</div><div class="stat-value">1,284</div></div>
+          <div class="stat-icon purple">&#x1f4f1;</div>
+        </div>
+        <div class="stat-change up">&#x2191; 23% vs yesterday</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-header">
+        <div class="card-title">&#x23f3; Pending Merchant Approvals</div>
+        <a class="card-link" onclick="navigateTo('merchants')">View All Merchants &#x2192;</a>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Merchant Name</th><th>Category</th><th>Location</th><th>Submitted</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><span class="merchant-name">Tokyo Ramen House</span></td><td><span class="merchant-category">Food &amp; Beverage</span></td><td><span class="merchant-location">BGC, Taguig</span></td><td><span class="time-ago">2h ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+          <tr><td><span class="merchant-name">Glow Up Salon</span></td><td><span class="merchant-category">Wellness &amp; Beauty</span></td><td><span class="merchant-location">Makati</span></td><td><span class="time-ago">5h ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+          <tr><td><span class="merchant-name">Pizza Republic</span></td><td><span class="merchant-category">Food &amp; Beverage</span></td><td><span class="merchant-location">Quezon City</span></td><td><span class="time-ago">1 day ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+          <tr><td><span class="merchant-name">Zen Fitness Gym</span></td><td><span class="merchant-category">Leisure</span></td><td><span class="merchant-location">Mandaluyong</span></td><td><span class="time-ago">1 day ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+          <tr><td><span class="merchant-name">Kuya J Restaurant</span></td><td><span class="merchant-category">Food &amp; Beverage</span></td><td><span class="merchant-location">Pasig</span></td><td><span class="time-ago">2 days ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bottom-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-title">&#x1f4ac; Recent Activity</div><a class="card-link">View All</a></div>
+        <div class="activity-item"><div class="activity-dot orange"></div><div class="activity-text"><strong>Maple Tree BGC</strong> submitted new coupon for review<div class="activity-time">30 min ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot green"></div><div class="activity-text"><strong>Sushi Nori &mdash; Makati</strong> approved by Admin<div class="activity-time">2h ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot green"></div><div class="activity-text"><strong>Botejyu BGC</strong> coupon "50% Off Ramen" approved<div class="activity-time">3h ago</div></div></div>
+        <div class="activity-item"><div class="activity-dot red"></div><div class="activity-text"><strong>Sweet Tooth Bakery</strong> application rejected &mdash; incomplete documents<div class="activity-time">5h ago</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">&#x1f4c8; Quick Stats</div><a class="card-link" onclick="navigateTo('revenue')">Full Analytics &#x2192;</a></div>
+        <div class="bottom-grid-3">
+          <div class="mini-stat"><div class="mini-stat-value" style="color:#205C50;">&#x20b1;89,400</div><div class="mini-stat-label">Revenue MRR</div></div>
+          <div class="mini-stat"><div class="mini-stat-value">2,847</div><div class="mini-stat-label">Subscribers</div></div>
+          <div class="mini-stat"><div class="mini-stat-value">94.2%</div><div class="mini-stat-label">Uptime</div></div>
+        </div>
+        <div style="margin-top:16px;">
+          <div style="font-size:11px;color:#888;font-weight:600;margin-bottom:4px;">Monthly Redemptions</div>
+          <div class="chart-bars">
+            <div class="chart-bar light" style="height:40%;"></div><div class="chart-bar light" style="height:52%;"></div><div class="chart-bar light" style="height:48%;"></div><div class="chart-bar light" style="height:55%;"></div><div class="chart-bar light" style="height:60%;"></div><div class="chart-bar light" style="height:65%;"></div>
+            <div class="chart-bar" style="height:58%;"></div><div class="chart-bar" style="height:72%;"></div><div class="chart-bar" style="height:80%;"></div><div class="chart-bar" style="height:75%;"></div><div class="chart-bar" style="height:88%;"></div><div class="chart-bar" style="height:100%;"></div>
+          </div>
+          <div class="chart-labels"><div class="chart-label">Apr</div><div class="chart-label">May</div><div class="chart-label">Jun</div><div class="chart-label">Jul</div><div class="chart-label">Aug</div><div class="chart-label">Sep</div><div class="chart-label">Oct</div><div class="chart-label">Nov</div><div class="chart-label">Dec</div><div class="chart-label">Jan</div><div class="chart-label">Feb</div><div class="chart-label">Mar</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: MERCHANTS ===== -->
+<div class="screen" id="screen-merchants">
+  <div id="merchants-list">
+    <div class="topbar">
+      <div><div class="topbar-title">Merchant Management</div><div class="topbar-subtitle">12 pending applications</div></div>
+      <div class="topbar-right">
+        <div style="display:flex;gap:2px;background:#f0f0f5;border-radius:8px;padding:2px;">
+          <div class="merchant-tab" data-tab="pending" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;background:#fff;color:#221F1F;box-shadow:0 1px 2px rgba(0,0,0,0.08);cursor:pointer;">Pending <span style="color:#F9A250;">12</span></div>
+          <div class="merchant-tab" data-tab="active" style="padding:6px 14px;border-radius:6px;font-size:12px;color:#888;cursor:pointer;">Active</div>
+          <div class="merchant-tab" data-tab="rejected" style="padding:6px 14px;border-radius:6px;font-size:12px;color:#888;cursor:pointer;">Rejected</div>
+        </div>
+        <div class="topbar-admin"><div class="topbar-admin-avatar">SC</div>Sheena C.</div>
+      </div>
+    </div>
+    <div class="content-body">
+      <div class="card">
+        <div class="card-header"><div class="card-title">&#x1f3ea; Merchant Applications</div><a class="card-link">Export Report &#x2192;</a></div>
+        <table class="data-table">
+          <thead><tr><th>Merchant Name</th><th>Category</th><th>Location</th><th>Submitted</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><span class="merchant-name">Tokyo Ramen House</span></td><td><span class="merchant-category">Food &amp; Beverage</span></td><td><span class="merchant-location">BGC, Taguig</span></td><td><span class="time-ago">2h ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+            <tr><td><span class="merchant-name">Glow Up Salon</span></td><td><span class="merchant-category">Wellness &amp; Beauty</span></td><td><span class="merchant-location">Makati</span></td><td><span class="time-ago">5h ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+            <tr><td><span class="merchant-name">Pizza Republic</span></td><td><span class="merchant-category">Food &amp; Beverage</span></td><td><span class="merchant-location">Quezon City</span></td><td><span class="time-ago">1 day ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+            <tr><td><span class="merchant-name">Zen Fitness Gym</span></td><td><span class="merchant-category">Leisure</span></td><td><span class="merchant-location">Mandaluyong</span></td><td><span class="time-ago">1 day ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+            <tr><td><span class="merchant-name">Kuya J Restaurant</span></td><td><span class="merchant-category">Food &amp; Beverage</span></td><td><span class="merchant-location">Pasig</span></td><td><span class="time-ago">2 days ago</span></td><td><span class="badge pending">Pending</span></td><td><button class="btn btn-primary btn-sm" onclick="showMerchantDetail()">Review</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="merchants-detail" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="back-btn" onclick="hideMerchantDetail()">&#x2190;</button>
+        <div><div class="topbar-title">Tokyo Ramen House</div><div style="font-size:11px;color:#888;">Application Review &bull; Submitted 2h ago</div></div>
+      </div>
+      <div class="topbar-right"><div class="topbar-date">March 18, 2026</div><div class="topbar-admin"><div class="topbar-admin-avatar">SC</div>Sheena C.</div></div>
+    </div>
+    <div class="detail-layout">
+      <div class="detail-main">
+        <div class="card detail-section">
+          <div class="detail-section-title">&#x1f3e2; Business Information</div>
+          <div class="detail-row"><div class="detail-label">Business Name</div><div class="detail-value" style="font-weight:600;">Tokyo Ramen House</div></div>
+          <div class="detail-row"><div class="detail-label">Category</div><div class="detail-value"><span class="badge active">Food &amp; Beverage</span></div></div>
+          <div class="detail-row"><div class="detail-label">Owner</div><div class="detail-value">Kenji Tanaka</div></div>
+          <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value" style="color:#205C50;">kenji@tokyoramen.ph</div></div>
+          <div class="detail-row"><div class="detail-label">Phone</div><div class="detail-value">+63 917 555 1234</div></div>
+          <div class="detail-row"><div class="detail-label">Address</div><div class="detail-value">Unit 205, High Street South Block, BGC, Taguig</div></div>
+          <div class="detail-row"><div class="detail-label">Description</div><div class="detail-value" style="line-height:1.5;">Authentic Japanese ramen house serving traditional tonkotsu, miso, and shoyu ramen since 2020. Our broth is simmered for 18 hours using premium pork bones imported from Kagoshima...</div></div>
+          <div class="detail-row"><div class="detail-label">Business Hours</div><div class="detail-value">Mon&ndash;Sun 11:00 AM &ndash; 10:00 PM</div></div>
+          <div class="detail-row"><div class="detail-label">Average Price</div><div class="detail-value">&#x20b1;400&ndash;800 / person</div></div>
+          <div class="detail-row"><div class="detail-label">Social Media</div><div class="detail-value"><span style="color:#205C50;font-weight:500;margin-right:12px;cursor:pointer;">&#x1f310; Facebook</span><span style="color:#205C50;font-weight:500;cursor:pointer;">&#x1f4f7; Instagram</span></div></div>
+          <div class="detail-row"><div class="detail-label">Plan Selected</div><div class="detail-value"><span style="background:#205C50;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;">Pro</span> &#x20b1;3,999/mo</div></div>
+          <div class="detail-row" style="border-bottom:none;"><div class="detail-label">Submitted</div><div class="detail-value">March 16, 2026</div></div>
+        </div>
+        <div class="card detail-section">
+          <div class="detail-section-title">&#x1f4c4; Documents</div>
+          <div class="doc-item"><div class="doc-item-left"><span class="doc-icon">&#x1f4c4;</span><div><div class="doc-name">Business Permit</div><div style="font-size:10px;color:#aaa;">PDF &bull; 2.4 MB</div></div></div><div style="display:flex;align-items:center;gap:10px;"><span style="color:#56A66F;font-size:14px;">&#x2713;</span><span class="doc-link">View Document</span></div></div>
+          <div class="doc-item"><div class="doc-item-left"><span class="doc-icon">&#x1f4c4;</span><div><div class="doc-name">BIR Registration</div><div style="font-size:10px;color:#aaa;">PDF &bull; 1.1 MB</div></div></div><div style="display:flex;align-items:center;gap:10px;"><span style="color:#56A66F;font-size:14px;">&#x2713;</span><span class="doc-link">View Document</span></div></div>
+          <div class="doc-item"><div class="doc-item-left"><span class="doc-icon">&#x1f4c4;</span><div><div class="doc-name">Valid ID (Government-issued)</div><div style="font-size:10px;color:#aaa;">JPG &bull; 3.8 MB</div></div></div><div style="display:flex;align-items:center;gap:10px;"><span style="color:#56A66F;font-size:14px;">&#x2713;</span><span class="doc-link">View Document</span></div></div>
+          <div class="doc-item"><div class="doc-item-left"><span class="doc-icon">&#x1f4dd;</span><div><div class="doc-name">B-Ticket Merchant Contract</div><div style="font-size:10px;color:#56A66F;font-weight:500;">Signed by Kenji Tanaka on Mar 16, 2026</div></div></div><div style="display:flex;align-items:center;gap:10px;"><span style="color:#56A66F;font-size:14px;">&#x2713;</span><span class="doc-link">View Signed Contract</span></div></div>
+        </div>
+        <div class="card detail-section">
+          <div class="detail-section-title">&#x1f4f8; Photos</div>
+          <div class="photo-grid">
+            <div><div class="photo-thumb" style="background:#fff3e0;">&#x1f35c;</div><div class="photo-label">Logo</div></div>
+            <div><div class="photo-thumb" style="background:#e8f2ee;">&#x1f3ea;</div><div class="photo-label">Cover Photo</div></div>
+            <div><div class="photo-thumb" style="background:#e0f5fb;">&#x1f4f8;</div><div class="photo-label">Interior</div></div>
+            <div><div class="photo-thumb" style="background:#ffe8ef;">&#x1f363;</div><div class="photo-label">Food Photos</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-sidebar">
+        <div class="action-status pending">&#x23f3; PENDING REVIEW</div>
+        <div style="margin-bottom:16px;"><div style="font-size:12px;font-weight:700;color:#221F1F;margin-bottom:8px;">Admin Notes</div><textarea class="admin-notes-textarea" placeholder="Add internal notes for the team..."></textarea></div>
+        <div class="action-buttons">
+          <button class="action-btn approve">&#x2713; Approve Merchant</button>
+          <button class="action-btn reject" onclick="toggleReasonPanel('merchant-reason')">&#x2715; Reject Application</button>
+          <button class="action-btn changes" onclick="toggleReasonPanel('merchant-reason')">&#x23f8; Request Changes</button>
+        </div>
+        <div class="reason-panel" id="merchant-reason"><div class="reason-panel-title">Reason (required)</div><textarea placeholder="Provide a reason for rejection or changes needed..."></textarea></div>
+        <div class="checklist">
+          <div class="checklist-title">Verification Checklist</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Business information verified</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Photos are appropriate</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Documents are valid</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Contract is signed</div>
+          <div class="checklist-item"><div class="checklist-box"></div>Business exists (Google Maps verified)</div>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #eee;">
+          <div style="font-size:11px;color:#888;margin-bottom:6px;">Assignment</div>
+          <div style="display:flex;align-items:center;gap:8px;"><div style="width:24px;height:24px;border-radius:50%;background:#205C50;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">SC</div><span style="font-size:12px;color:#333;font-weight:500;">Sheena C.</span><span style="font-size:10px;color:#888;">&bull; Assigned just now</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: COUPONS ===== -->
+<div class="screen" id="screen-coupons">
+  <div class="topbar">
+    <div><div class="topbar-title">Coupon Moderation</div><div style="font-size:11px;color:#888;">4 coupons pending review</div></div>
+    <div class="topbar-right">
+      <div style="display:flex;gap:2px;background:#f0f0f5;border-radius:8px;padding:2px;">
+        <div style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;background:#fff;color:#221F1F;box-shadow:0 1px 2px rgba(0,0,0,0.08);cursor:pointer;">Pending <span style="color:#F9A250;">4</span></div>
+        <div style="padding:6px 14px;border-radius:6px;font-size:12px;color:#888;cursor:pointer;">Active</div>
+        <div style="padding:6px 14px;border-radius:6px;font-size:12px;color:#888;cursor:pointer;">Rejected</div>
+      </div>
+      <div class="topbar-admin"><div class="topbar-admin-avatar">SC</div>Sheena C.</div>
+    </div>
+  </div>
+  <div class="content-body">
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header"><div class="card-title">&#x1f3ab; Pending Coupon Approvals</div><div style="display:flex;gap:8px;"><button class="btn btn-ghost btn-sm">&#x1f50d; Filter</button><button class="btn btn-ghost btn-sm">&#x2195; Sort</button></div></div>
+      <table class="data-table">
+        <thead><tr><th>Coupon Title</th><th>Merchant</th><th>Discount</th><th>Submitted</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead>
+        <tbody>
+          <tr><td><span class="merchant-name">50% Off Hanger Steak</span></td><td><span style="font-size:12px;color:#555;">Maple Tree BGC</span></td><td><span style="font-size:12px;font-weight:600;color:#EE4036;">50% off</span></td><td><span class="time-ago">1h ago</span></td><td><span class="badge pending">Pending</span></td><td style="text-align:right;"><button class="btn btn-primary btn-sm" onclick="toggleCouponDetail('coupon-detail-1')" style="margin-right:4px;">Review</button><button class="btn btn-outline btn-sm">Quick Approve</button></td></tr>
+          <tr><td><span class="merchant-name">Free Matcha Latte</span></td><td><span style="font-size:12px;color:#555;">Caf&eacute; Selina</span></td><td><span style="font-size:12px;font-weight:600;color:#EE4036;">100% off</span></td><td><span class="time-ago">3h ago</span></td><td><span class="badge pending">Pending</span></td><td style="text-align:right;"><button class="btn btn-primary btn-sm" style="margin-right:4px;">Review</button><button class="btn btn-outline btn-sm">Quick Approve</button></td></tr>
+          <tr><td><span class="merchant-name">&#x20b1;500 Off Full Course</span></td><td><span style="font-size:12px;color:#555;">Tokyo Ramen House</span></td><td><span style="font-size:12px;font-weight:600;color:#205C50;">&#x20b1;500 off</span></td><td><span class="time-ago">5h ago</span></td><td><span class="badge pending">Pending</span></td><td style="text-align:right;"><button class="btn btn-primary btn-sm">Review</button></td></tr>
+          <tr style="background:#fff5f5;"><td><span class="merchant-name">Buy 1 Get 1 Massage</span> <span style="font-size:10px;color:#EE4036;">&#x26a0;</span></td><td><span style="font-size:12px;color:#555;">Zen Spa</span></td><td><span style="font-size:12px;font-weight:600;color:#EE4036;">BOGO</span></td><td><span class="time-ago">1 day ago</span></td><td><span class="badge flagged">&#x1f6a9; Flagged</span></td><td style="text-align:right;"><button class="btn btn-primary btn-sm" onclick="toggleCouponDetail('coupon-detail-2')">Review</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-bottom:20px;display:none;" id="coupon-detail-1">
+      <div class="card-header"><div><div class="card-title">&#x1f50d; Coupon Detail &mdash; 50% Off Hanger Steak</div><div class="card-subtitle">Maple Tree BGC &bull; Submitted 1h ago</div></div><span class="badge pending">Pending</span></div>
+      <div class="coupon-expanded-inner">
+        <div class="coupon-details-list">
+          <div><strong>Title:</strong> 50% Off Hanger Steak</div><div><strong>Merchant:</strong> Maple Tree BGC</div><div><strong>Category:</strong> Food &amp; Beverage</div><div><strong>Discount Type:</strong> Percentage &mdash; 50% off</div><div><strong>Original Price:</strong> &#x20b1;980</div><div><strong>Discounted Price:</strong> &#x20b1;490</div><div><strong>Validity:</strong> March 20 &ndash; April 20, 2026</div><div><strong>Max Redemptions:</strong> 200</div><div><strong>Terms:</strong> Valid for dine-in only. One per table per visit. Cannot be combined with other promos.</div>
+          <div style="margin-top:10px;display:flex;gap:8px;"><button class="btn btn-approve btn-sm">&#x2713; Approve</button><button class="btn btn-reject btn-sm">&#x2715; Reject</button><button class="btn btn-warning btn-sm">&#x23f8; Request Changes</button></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;text-align:center;">Consumer Preview</div>
+          <div class="mini-phone"><div class="mini-phone-notch"></div><div class="mini-phone-screen"><div style="font-size:7px;color:#888;text-align:center;padding:4px 0;">b-ticket</div><div class="mini-phone-card"><div class="mini-phone-card-img">&#x1f969;</div><div class="mini-phone-card-body"><div class="mini-phone-card-title">50% Off Hanger Steak</div><div class="mini-phone-card-merchant">Maple Tree BGC</div><div class="mini-phone-card-discount">50% OFF</div><div class="mini-phone-card-btn">Claim Coupon</div></div></div><div style="margin-top:6px;padding:4px 6px;background:rgba(255,255,255,0.1);border-radius:6px;"><div style="font-size:7px;color:#888;">&#x20b1;980 <span style="text-decoration:line-through;color:#555;">&#x2192;</span> <span style="color:#56A66F;font-weight:700;">&#x20b1;490</span></div><div style="font-size:6px;color:#666;margin-top:2px;">Valid until Apr 20, 2026</div></div></div></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Merchant History</div>
+          <div style="background:#f8f9fb;border-radius:8px;padding:12px;"><div style="font-size:11px;color:#555;margin-bottom:4px;">Previous coupons: <strong style="color:#333;">8</strong></div><div style="font-size:11px;color:#555;margin-bottom:4px;">Avg. rating: <strong style="color:#333;">4.6/5</strong></div><div style="font-size:11px;color:#555;margin-bottom:4px;">Total redemptions: <strong style="color:#333;">1,240</strong></div><div style="font-size:11px;color:#555;">Member since: <strong style="color:#333;">Aug 2025</strong></div></div>
+          <div style="margin-top:10px;background:#e8f2ee;border-radius:8px;padding:10px;"><div style="font-size:11px;font-weight:600;color:#56A66F;">&#x2713; Risk Assessment: Low</div><div style="font-size:10px;color:#555;margin-top:2px;">50% discount is within normal range for this category.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid #EE4036;display:none;" id="coupon-detail-2">
+      <div class="card-header"><div><div class="card-title">&#x1f6a9; Flagged Coupon &mdash; Buy 1 Get 1 Massage</div><div class="card-subtitle">Zen Spa &bull; Submitted 1 day ago</div></div><span class="badge flagged">&#x1f6a9; Flagged</span></div>
+      <div class="coupon-expanded-inner">
+        <div class="coupon-details-list">
+          <div><strong>Title:</strong> Buy 1 Get 1 Massage</div><div><strong>Merchant:</strong> Zen Spa</div><div><strong>Category:</strong> Wellness &amp; Beauty</div><div><strong>Discount Type:</strong> BOGO (Buy 1 Get 1)</div><div><strong>Original Price:</strong> &#x20b1;1,500</div><div><strong>Discounted Price:</strong> &#x20b1;1,500 (get 2)</div><div><strong>Validity:</strong> March 22 &ndash; April 22, 2026</div><div><strong>Max Redemptions:</strong> 50</div><div><strong>Terms:</strong> Valid for 60-min Swedish massage only. By appointment.</div>
+          <div class="flag-reason"><span>&#x26a0;&#xfe0f;</span><div><strong>Auto-flagged:</strong> Discount exceeds 80% &mdash; verify with merchant that this BOGO offer is sustainable and intentional.</div></div>
+          <div style="margin-top:12px;display:flex;gap:8px;"><button class="btn btn-approve btn-sm">&#x2713; Approve Anyway</button><button class="btn btn-reject btn-sm">&#x2715; Reject</button><button class="btn btn-warning btn-sm">&#x23f8; Request Changes</button></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;text-align:center;">Consumer Preview</div>
+          <div class="mini-phone"><div class="mini-phone-notch"></div><div class="mini-phone-screen"><div style="font-size:7px;color:#888;text-align:center;padding:4px 0;">b-ticket</div><div class="mini-phone-card"><div class="mini-phone-card-img" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2);">&#x1f487;</div><div class="mini-phone-card-body"><div class="mini-phone-card-title">Buy 1 Get 1 Massage</div><div class="mini-phone-card-merchant">Zen Spa</div><div class="mini-phone-card-discount" style="background:#9c27b0;">BOGO</div><div class="mini-phone-card-btn">Claim Coupon</div></div></div><div style="margin-top:6px;padding:4px 6px;background:rgba(255,255,255,0.1);border-radius:6px;"><div style="font-size:7px;color:#888;">&#x20b1;1,500 for 2 sessions</div><div style="font-size:6px;color:#666;margin-top:2px;">Valid until Apr 22, 2026</div></div></div></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Merchant History</div>
+          <div style="background:#f8f9fb;border-radius:8px;padding:12px;"><div style="font-size:11px;color:#555;margin-bottom:4px;">Previous coupons: <strong style="color:#333;">2</strong></div><div style="font-size:11px;color:#555;margin-bottom:4px;">Avg. rating: <strong style="color:#333;">4.2/5</strong></div><div style="font-size:11px;color:#555;margin-bottom:4px;">Total redemptions: <strong style="color:#333;">89</strong></div><div style="font-size:11px;color:#555;">Member since: <strong style="color:#333;">Jan 2026</strong></div></div>
+          <div style="margin-top:10px;background:#fff3e0;border-radius:8px;padding:10px;"><div style="font-size:11px;font-weight:600;color:#F9A250;">&#x26a0; Risk Assessment: Medium</div><div style="font-size:10px;color:#555;margin-top:2px;">BOGO effectively offers 50% discount. Merchant is relatively new (2 months). Recommend verifying sustainability.</div></div>
+          <div style="margin-top:10px;"><div style="font-size:11px;font-weight:600;color:#333;margin-bottom:4px;">Admin Contact Log</div><div style="font-size:10px;color:#888;">No prior contact logged.</div><button class="btn btn-ghost btn-sm" style="margin-top:6px;">&#x1f4de; Contact Merchant</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: AD APPROVALS ===== -->
+<div class="screen" id="screen-ads">
+  <div id="ads-list">
+    <div class="topbar">
+      <div><div class="topbar-title">Ad Management</div><div class="topbar-subtitle">Review ad creatives and manage placements</div></div>
+      <div class="topbar-right"><div class="topbar-date">March 18, 2026</div><div class="topbar-notif">&#x1f514;<div class="topbar-notif-dot"></div></div><div class="topbar-admin"><div class="topbar-admin-avatar">SC</div>Sheena C.</div></div>
+    </div>
+    <div class="content-body">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Pending Review</div><div class="stat-value" style="color:#F9A250;">4</div></div><div class="stat-icon orange">&#x23f3;</div></div><div class="stat-change" style="color:#F9A250;">Requires attention</div></div>
+        <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Active Ads</div><div class="stat-value">18</div></div><div class="stat-icon green">&#x1f4e2;</div></div><div class="stat-change up">Currently running</div></div>
+        <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Slot Utilization</div><div class="stat-value">22/33</div></div><div class="circular-progress"><svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="#e8e8ef" stroke-width="4"/><circle cx="24" cy="24" r="20" fill="none" stroke="#205C50" stroke-width="4" stroke-dasharray="125.6" stroke-dashoffset="41.5" stroke-linecap="round"/></svg><span class="progress-text">67%</span></div></div><div class="stat-change" style="color:#205C50;">11 slots available</div></div>
+        <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Ad Revenue (This Month)</div><div class="stat-value" style="color:#205C50;">&#x20b1;284K</div></div><div class="stat-icon purple">&#x1f4b0;</div></div><div class="stat-change up">&#x2191; 18% vs last month</div></div>
+      </div>
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header"><div class="card-title">&#x1f4cb; Ad Approval Queue</div><a class="card-link">Export Report &#x2192;</a></div>
+        <div class="filter-tabs">
+          <div class="filter-tab active">Pending Review <span class="tab-count">4</span></div>
+          <div class="filter-tab">Active <span class="tab-count">18</span></div>
+          <div class="filter-tab">Rejected <span class="tab-count">3</span></div>
+          <div class="filter-tab">Expired <span class="tab-count">7</span></div>
+          <div class="filter-tab">All</div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Creative</th><th>Campaign</th><th>Merchant</th><th>Format</th><th>Amount</th><th>Paid</th><th>Submitted</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div class="creative-thumb" style="background:linear-gradient(135deg,#8B4513,#D2691E);display:flex;align-items:center;justify-content:center;"><span style="font-size:6px;color:#fff;font-weight:700;text-align:center;line-height:1.2;padding:2px;">50% OFF<br>STEAK</span></div></td><td><span class="merchant-name">March Steak Promo</span></td><td><span style="font-size:13px;color:#333;">Maple Tree BGC</span></td><td><span class="format-pill hero">Hero Banner (357x96)</span></td><td><span style="font-weight:600;color:#221F1F;">&#x20b1;15,000</span></td><td><div class="paid-indicator"><div class="paid-check">&#x2713;</div><span style="font-size:11px;">Paid via GCash</span></div></td><td><span class="time-ago">2 hours ago</span></td><td><button class="btn btn-primary btn-sm" onclick="showAdDetail()">Review</button></td></tr>
+            <tr><td><div class="creative-thumb" style="background:linear-gradient(135deg,#e53935,#ff7043);display:flex;align-items:center;justify-content:center;"><span style="font-size:6px;color:#fff;font-weight:700;text-align:center;line-height:1.2;padding:2px;">PIZZA<br>DEAL</span></div></td><td><span class="merchant-name">Weekend Pizza Deal</span></td><td><span style="font-size:13px;color:#333;">Pizza Republic</span></td><td><span class="format-pill top">Top Banner (392x72)</span></td><td><span style="font-weight:600;color:#221F1F;">&#x20b1;8,000</span></td><td><div class="paid-indicator"><div class="paid-check">&#x2713;</div><span style="font-size:11px;">Paid via Maya</span></div></td><td><span class="time-ago">5 hours ago</span></td><td><button class="btn btn-primary btn-sm" onclick="showAdDetail()">Review</button></td></tr>
+            <tr><td><div class="creative-thumb" style="background:linear-gradient(135deg,#1a237e,#42a5f5);display:flex;align-items:center;justify-content:center;"><span style="font-size:6px;color:#fff;font-weight:700;text-align:center;line-height:1.2;padding:2px;">GRAND<br>OPENING</span></div></td><td><span class="merchant-name">Grand Opening BGC</span></td><td><span style="font-size:13px;color:#333;">Tokyo Ramen House</span></td><td><span class="format-pill fullscreen">Full-Screen (392x615)</span></td><td><span style="font-weight:600;color:#221F1F;">&#x20b1;25,000</span></td><td><div class="paid-indicator"><div class="paid-check">&#x2713;</div><span style="font-size:11px;">Paid via Credit Card</span></div></td><td><span class="time-ago">1 day ago</span></td><td><button class="btn btn-primary btn-sm" onclick="showAdDetail()">Review</button></td></tr>
+            <tr><td><div class="creative-thumb" style="background:linear-gradient(135deg,#e91e63,#f48fb1);display:flex;align-items:center;justify-content:center;"><span style="font-size:6px;color:#fff;font-weight:700;text-align:center;line-height:1.2;padding:2px;">FLASH<br>SALE</span></div></td><td><span class="merchant-name">Flash Sale Weekend</span></td><td><span style="font-size:13px;color:#333;">Glow Up Salon</span></td><td><span class="format-pill popup">Pop-up (310x371)</span></td><td><span style="font-weight:600;color:#221F1F;">&#x20b1;20,000</span></td><td><div class="paid-indicator"><div class="paid-check">&#x2713;</div><span style="font-size:11px;">Paid via GCash</span></div></td><td><span class="time-ago">1 day ago</span></td><td><button class="btn btn-primary btn-sm" onclick="showAdDetail()">Review</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">&#x1f4ca; Current Slot Availability</div><a class="card-link">Manage Slots &#x2192;</a></div>
+        <div class="slot-row"><div class="slot-label">Hero Banner</div><div class="slot-bar-bg"><div class="slot-bar-fill green" style="width:80%;"></div></div><div class="slot-count">12/15</div></div>
+        <div class="slot-row"><div class="slot-label">Top Banner</div><div class="slot-bar-bg"><div class="slot-bar-fill green" style="width:70%;"></div></div><div class="slot-count">7/10</div></div>
+        <div class="slot-row"><div class="slot-label">Pop-up</div><div class="slot-bar-bg"><div class="slot-bar-fill orange" style="width:80%;"></div></div><div class="slot-count">4/5</div></div>
+        <div class="slot-row"><div class="slot-label">Full-Screen</div><div class="slot-bar-bg"><div class="slot-bar-fill orange" style="width:67%;"></div></div><div class="slot-count">2/3</div></div>
+        <div class="slot-summary"><div><strong>Total:</strong> 25/33 slots filled</div><div><strong>Revenue:</strong> &#x20b1;284,000 of &#x20b1;480,000 capacity</div></div>
+      </div>
+    </div>
+  </div>
+  <div id="ads-detail" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;"><button class="back-btn" onclick="hideAdDetail()">&#x2190;</button><div><div class="topbar-title">Review Ad Creative</div><div class="topbar-subtitle">March Steak Promo &mdash; Maple Tree BGC</div></div></div>
+      <div class="topbar-right"><span class="badge pending" style="font-size:12px;padding:5px 14px;">Pending Review</span><div class="topbar-admin"><div class="topbar-admin-avatar">SC</div>Sheena C.</div></div>
+    </div>
+    <div class="detail-layout" style="grid-template-columns:1fr 380px;">
+      <div class="detail-main">
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div class="card-title">&#x1f4cb; Campaign Details</div></div>
+          <div class="detail-row"><div class="detail-label">Campaign Name</div><div class="detail-value" style="font-weight:600;">March Steak Promo</div></div>
+          <div class="detail-row"><div class="detail-label">Merchant</div><div class="detail-value"><a href="#" style="color:#205C50;font-weight:600;text-decoration:none;">Maple Tree BGC</a></div></div>
+          <div class="detail-row"><div class="detail-label">Format</div><div class="detail-value"><span class="format-pill hero">Hero Banner (357 x 96 px)</span></div></div>
+          <div class="detail-row"><div class="detail-label">Scheduled Period</div><div class="detail-value">April 1&ndash;30, 2026</div></div>
+          <div class="detail-row"><div class="detail-label">Destination</div><div class="detail-value">Merchant profile page</div></div>
+          <div class="detail-row"><div class="detail-label">Amount Paid</div><div class="detail-value" style="font-weight:600;color:#56A66F;">&#x20b1;15,000 via GCash</div></div>
+          <div class="detail-row"><div class="detail-label">Payment Date</div><div class="detail-value">March 16, 2026</div></div>
+          <div class="detail-row" style="border-bottom:none;"><div class="detail-label">Transaction ID</div><div class="detail-value" style="font-family:monospace;font-size:12px;color:#666;">TXN-2026-03-16-0042</div></div>
+        </div>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div class="card-title">&#x1f5bc;&#xfe0f; Submitted Creative</div></div>
+          <div class="creative-preview-area">
+            <div class="creative-preview-banner" style="width:357px;height:96px;background:linear-gradient(135deg,#8B4513 0%,#D2691E 40%,#CD853F 70%,#DEB887 100%);"><div style="padding:8px 16px;"><div style="font-size:20px;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,0.3);">50% OFF HANGER STEAK</div><div style="font-size:11px;font-weight:600;opacity:0.9;margin-top:2px;">MAPLE TREE BGC &mdash; Limited Time Only</div></div></div>
+            <div class="file-info">hero-banner-march.jpg &middot; 357x96 &middot; 312KB &middot; JPG</div>
+          </div>
+          <div style="padding:12px 0 0;"><div class="dimension-check pass"><span style="font-size:14px;">&#x2705;</span> Correct dimensions (357x96 px)</div><div class="dimension-check pass"><span style="font-size:14px;">&#x2705;</span> Under 500KB file size limit (312KB)</div></div>
+        </div>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><div class="card-title">&#x1f4f1; Preview in App</div></div>
+          <div style="display:flex;justify-content:center;padding:10px 0;">
+            <div class="mini-phone" style="width:180px;height:320px;border-radius:24px;"><div class="mini-phone-notch"></div><div class="mini-phone-screen"><div class="mini-phone-header"><div class="mini-phone-logo">B-Ticket</div><div class="mini-phone-icons">&#x1f50d; &#x1f514;</div></div><div style="width:100%;height:44px;border-radius:6px;overflow:hidden;background:linear-gradient(135deg,#8B4513,#D2691E,#CD853F);display:flex;align-items:center;justify-content:center;margin-bottom:6px;border:1.5px solid #205C50;"><div style="text-align:center;color:#fff;"><div style="font-size:7px;font-weight:800;">50% OFF HANGER STEAK</div><div style="font-size:5px;opacity:0.9;">MAPLE TREE BGC</div></div></div><div style="font-size:7px;font-weight:700;color:#fff;margin-bottom:4px;opacity:0.7;">Near You</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;"><div style="height:40px;background:#2d2a2a;border-radius:5px;"></div><div style="height:40px;background:#2d2a2a;border-radius:5px;"></div></div><div style="font-size:7px;font-weight:700;color:#fff;margin:6px 0 4px;opacity:0.7;">Popular</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;"><div style="height:40px;background:#2d2a2a;border-radius:5px;"></div><div style="height:40px;background:#2d2a2a;border-radius:5px;"></div></div></div></div>
+          </div>
+          <div style="text-align:center;font-size:11px;color:#888;margin-top:4px;">This ad will rotate with 12 other merchants every 5 seconds</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">&#x1f4c4; Previous Ads by Maple Tree BGC</div></div>
+          <div class="history-item"><div style="font-size:20px;">&#x1f4e2;</div><div class="history-item-details"><div class="history-item-name">Valentine's Day Special</div><div class="history-item-meta">Hero Banner &middot; Feb 1&ndash;28, 2026 &middot; &#x20b1;15,000</div></div><div class="history-item-status">&#x2713; Completed</div></div>
+          <div class="history-item"><div style="font-size:20px;">&#x1f4e2;</div><div class="history-item-details"><div class="history-item-name">Holiday Promo</div><div class="history-item-meta">Top Banner &middot; Dec 1&ndash;31, 2025 &middot; &#x20b1;8,000</div></div><div class="history-item-status">&#x2713; Completed</div></div>
+          <div style="margin-top:12px;padding:10px 14px;background:#e8f2ee;border-radius:8px;font-size:12px;color:#56A66F;display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">&#x2705;</span>Merchant has a clean ad history &mdash; no rejections</div>
+        </div>
+      </div>
+      <div class="detail-sidebar">
+        <div class="action-status pending">PENDING REVIEW</div>
+        <div style="margin-bottom:16px;"><div class="checklist-title">Admin Notes</div><textarea class="admin-notes-textarea" placeholder="Add internal notes about this ad review..."></textarea></div>
+        <div class="checklist">
+          <div class="checklist-title">Review Checklist</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Creative meets dimension requirements (357x96)</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>File size within limits (500KB)</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Content is appropriate (no offensive material)</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Text is legible and not misleading</div>
+          <div class="checklist-item"><div class="checklist-box" style="border-color:#ccc;"><span style="color:transparent;">&#x2713;</span></div>Brand guidelines compliance</div>
+          <div class="checklist-item"><div class="checklist-box checked">&#x2713;</div>Payment verified</div>
+        </div>
+        <div style="margin-top:16px;margin-bottom:16px;"><div class="checklist-title">Risk Assessment</div><div style="display:flex;align-items:center;gap:10px;"><span class="risk-badge low">&#x1f7e2; Low Risk</span></div><div style="font-size:11px;color:#888;margin-top:6px;">Established merchant, clean history</div></div>
+        <div class="action-buttons">
+          <button class="action-btn approve">&#x2713; Approve Ad</button>
+          <div style="font-size:10px;color:#888;text-align:center;margin-top:-4px;margin-bottom:4px;">Ad will go live on April 1, 2026</div>
+          <button class="action-btn reject" onclick="toggleReasonPanel('ad-reason')">&#x2715; Reject Creative</button>
+          <button class="action-btn changes" onclick="toggleReasonPanel('ad-reason')">&#x23f8; Request Revision</button>
+          <div style="font-size:10px;color:#888;text-align:center;margin-top:-4px;">Ask merchant to update their creative</div>
+        </div>
+        <div class="rejection-panel" id="ad-reason" style="display:none;">
+          <div style="font-size:12px;font-weight:700;color:#EE4036;margin-bottom:10px;">Rejection Reason</div>
+          <select><option value="">Select a reason...</option><option>Image quality too low</option><option>Text is unreadable</option><option>Contains misleading claims</option><option>Violates community guidelines</option><option>Incorrect dimensions</option><option>Other (specify below)</option></select>
+          <textarea placeholder="Add custom reason or additional details..."></textarea>
+          <button class="btn-reject-confirm">Reject &amp; Notify Merchant</button>
+        </div>
+        <div class="refund-note"><span class="info-icon">&#x2139;&#xfe0f;</span><div>If rejected, the merchant's <strong>&#x20b1;15,000</strong> payment will be refunded within 3&ndash;5 business days per our advertising terms.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: USERS & SUBSCRIBERS ===== -->
+<div class="screen" id="screen-users">
+  <div class="topbar"><div class="topbar-title">Users &amp; Subscribers</div><div class="topbar-right"><div class="search-bar">&#x1f50d; Search users...</div><button class="btn btn-outline">&#x1f4e5; Export CSV</button></div></div>
+  <div class="content-body">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Total Users</div><div class="stat-value">4,832</div></div><div class="stat-icon blue">&#x1f465;</div></div><div class="stat-change up">&#x2191; 18% vs last month</div></div>
+      <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Active Subscribers</div><div class="stat-value" style="color:#205C50;">2,847</div></div><div class="stat-icon green">&#x1f451;</div></div><div style="margin-top:2px;"><span class="badge active" style="font-size:10px;">&#x20b1;99/mo</span></div></div>
+      <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Free Users</div><div class="stat-value">1,985</div></div><div class="stat-icon purple">&#x1f464;</div></div><div class="stat-change" style="color:#888;">41% of total users</div></div>
+      <div class="stat-card"><div class="stat-card-top"><div><div class="stat-label">Churn Rate</div><div class="stat-value">4.2%</div></div><div class="stat-icon green">&#x1f4c9;</div></div><div class="stat-change up">&#x2193; Down from 5.1% &mdash; improving</div></div>
+    </div>
+    <div class="card" style="margin-bottom:24px;">
+      <div class="filter-tabs">
+        <div class="filter-tab active">All <span class="count">(4,832)</span></div>
+        <div class="filter-tab">Subscribers <span class="count">(2,847)</span></div>
+        <div class="filter-tab">Free Users <span class="count">(1,985)</span></div>
+        <div class="filter-tab">Expired <span class="count">(312)</span></div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>User</th><th>Email</th><th>Phone</th><th>Plan</th><th>Status</th><th>Joined</th><th>Savings</th><th>Redemptions</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><div class="user-info"><div class="user-avatar">MS</div><div class="user-name">Maria Santos</div></div></td><td style="font-size:12px;color:#666;">maria.santos@gmail.com</td><td style="font-size:12px;color:#666;">+63 917 123 4567</td><td><span class="badge active">Premium &#x20b1;99/mo</span></td><td><span class="status-dot green"></span>Active</td><td style="font-size:12px;color:#888;">Jan 15, 2026</td><td style="font-weight:600;color:#205C50;">&#x20b1;12,450</td><td style="font-weight:600;">47</td><td><button class="btn btn-sm btn-outline">View</button> <button class="btn btn-sm btn-warning">Suspend</button></td></tr>
+          <tr><td><div class="user-info"><div class="user-avatar blue">CR</div><div class="user-name">Carlos Reyes</div></div></td><td style="font-size:12px;color:#666;">carlos.reyes@yahoo.com</td><td style="font-size:12px;color:#666;">+63 918 234 5678</td><td><span class="badge active">Premium &#x20b1;949/yr</span> <span class="badge annual">Annual</span></td><td><span class="status-dot green"></span>Active</td><td style="font-size:12px;color:#888;">Feb 3, 2026</td><td style="font-weight:600;color:#205C50;">&#x20b1;8,200</td><td style="font-weight:600;">31</td><td><button class="btn btn-sm btn-outline">View</button> <button class="btn btn-sm btn-warning">Suspend</button></td></tr>
+          <tr><td><div class="user-info"><div class="user-avatar teal">YT</div><div class="user-name">Yuki Tanaka</div></div></td><td style="font-size:12px;color:#666;">yuki.tanaka@gmail.com</td><td style="font-size:12px;color:#666;">+63 920 345 6789</td><td><span class="badge free">Free</span></td><td><span class="status-dot green"></span>Active</td><td style="font-size:12px;color:#888;">Mar 1, 2026</td><td style="font-weight:600;color:#888;">&#x20b1;0</td><td style="font-weight:600;color:#888;">0</td><td><button class="btn btn-sm btn-outline">View</button> <button class="btn btn-sm btn-warning">Suspend</button></td></tr>
+          <tr><td><div class="user-info"><div class="user-avatar orange">AL</div><div class="user-name">Angela Lopez</div></div></td><td style="font-size:12px;color:#666;">angela.lopez@outlook.com</td><td style="font-size:12px;color:#666;">+63 917 456 7890</td><td><span class="badge expired">Expired</span></td><td><span class="status-dot red"></span>Expired</td><td style="font-size:12px;color:#888;">Dec 10, 2025</td><td style="font-weight:600;color:#205C50;">&#x20b1;5,600</td><td style="font-weight:600;">22</td><td><button class="btn btn-sm btn-outline">View</button></td></tr>
+          <tr><td><div class="user-info"><div class="user-avatar purple">KW</div><div class="user-name">Kenji Watanabe</div></div></td><td style="font-size:12px;color:#666;">kenji.w@gmail.com</td><td style="font-size:12px;color:#666;">+63 919 567 8901</td><td><span class="badge active">Premium &#x20b1;99/mo</span></td><td><span class="status-dot orange"></span><span class="badge suspended">Suspended</span></td><td style="font-size:12px;color:#888;">Nov 5, 2025</td><td style="font-weight:600;color:#205C50;">&#x20b1;3,100</td><td style="font-weight:600;">15</td><td><button class="btn btn-sm btn-outline">View</button> <button class="btn btn-sm btn-primary">Unsuspend</button></td></tr>
+        </tbody>
+      </table>
+      <div class="pagination"><div>Showing 5 of 4,832 users</div><div class="pagination-pages"><div class="page-btn">&laquo;</div><div class="page-btn active">1</div><div class="page-btn">2</div><div class="page-btn">3</div><div class="page-btn">...</div><div class="page-btn">967</div><div class="page-btn">&raquo;</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">&#x1f4c8; Subscriber Growth (Last 6 Months)</div><div class="stat-change up" style="font-size:13px;font-weight:700;">+137% growth since October</div></div>
+      <div class="chart-bars" style="height:140px;align-items:flex-end;gap:12px;">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="font-size:10px;font-weight:700;color:#555;margin-bottom:4px;">1,200</div><div class="chart-bar" style="width:100%;height:42%;"></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="font-size:10px;font-weight:700;color:#555;margin-bottom:4px;">1,580</div><div class="chart-bar" style="width:100%;height:55%;"></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="font-size:10px;font-weight:700;color:#555;margin-bottom:4px;">1,890</div><div class="chart-bar" style="width:100%;height:66%;"></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="font-size:10px;font-weight:700;color:#555;margin-bottom:4px;">2,210</div><div class="chart-bar" style="width:100%;height:78%;"></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="font-size:10px;font-weight:700;color:#555;margin-bottom:4px;">2,540</div><div class="chart-bar" style="width:100%;height:89%;"></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="font-size:10px;font-weight:700;color:#221F1F;margin-bottom:4px;">2,847</div><div class="chart-bar" style="width:100%;height:100%;background:#4a7a5d;"></div></div>
+      </div>
+      <div class="chart-labels" style="gap:12px;margin-top:8px;"><div class="chart-label">Oct</div><div class="chart-label">Nov</div><div class="chart-label">Dec</div><div class="chart-label">Jan</div><div class="chart-label">Feb</div><div class="chart-label" style="font-weight:700;color:#205C50;">Mar</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: REVENUE & ANALYTICS ===== -->
+<div class="screen" id="screen-revenue">
+  <div class="topbar"><div class="topbar-title">Revenue &amp; Analytics</div><div class="topbar-right"><div class="search-bar" style="min-width:160px;cursor:pointer;">&#x1f4c5; Last 12 Months &#x25bc;</div><button class="btn btn-primary">&#x1f4e5; Export Report</button></div></div>
+  <div class="content-body">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total MRR</div><div class="stat-value" style="font-size:28px;color:#205C50;">&#x20b1;373,400</div><div style="font-size:11px;color:#888;line-height:1.5;">Subscriptions: &#x20b1;284,000<br>Ads: &#x20b1;89,400</div></div>
+      <div class="stat-card"><div class="stat-label">Total ARR (Projected)</div><div class="stat-value" style="font-size:28px;">&#x20b1;4,480,800</div><div style="font-size:11px;color:#888;">Based on current MRR</div></div>
+      <div class="stat-card"><div class="stat-label">Revenue Growth</div><div class="stat-value" style="font-size:28px;color:#56A66F;">+23%</div><div class="stat-change up">&#x2191; Month-over-month</div></div>
+      <div class="stat-card"><div class="stat-label">LTV:CAC Ratio</div><div class="stat-value" style="font-size:28px;color:#56A66F;">4.2:1</div><div class="stat-change up">&#x2713; Healthy ratio (>3:1)</div></div>
+    </div>
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">&#x1f4ca; MRR Breakdown (6 Months)</div><div style="display:flex;gap:16px;font-size:11px;"><span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#205C50;display:inline-block;"></span><span style="color:#888;">Subscriptions</span></span><span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#4a7a5d;display:inline-block;"></span><span style="color:#888;">Ad Revenue</span></span></div></div>
+          <div class="stacked-bar-container">
+            <div class="stacked-bar-group"><div class="stacked-bar" style="background:#4a7a5d;height:31%;min-height:4px;"></div><div class="stacked-bar" style="background:#205C50;height:69%;border-radius:0;"></div><div class="stacked-bar-label">Oct</div><div class="stacked-bar-total">&#x20b1;142K</div></div>
+            <div class="stacked-bar-group"><div class="stacked-bar" style="background:#4a7a5d;height:30%;min-height:4px;"></div><div class="stacked-bar" style="background:#205C50;height:70%;border-radius:0;"></div><div class="stacked-bar-label">Nov</div><div class="stacked-bar-total">&#x20b1;185K</div></div>
+            <div class="stacked-bar-group"><div class="stacked-bar" style="background:#4a7a5d;height:28%;min-height:4px;"></div><div class="stacked-bar" style="background:#205C50;height:72%;border-radius:0;"></div><div class="stacked-bar-label">Dec</div><div class="stacked-bar-total">&#x20b1;223K</div></div>
+            <div class="stacked-bar-group"><div class="stacked-bar" style="background:#4a7a5d;height:26%;min-height:4px;"></div><div class="stacked-bar" style="background:#205C50;height:74%;border-radius:0;"></div><div class="stacked-bar-label">Jan</div><div class="stacked-bar-total">&#x20b1;278K</div></div>
+            <div class="stacked-bar-group"><div class="stacked-bar" style="background:#4a7a5d;height:25%;min-height:4px;"></div><div class="stacked-bar" style="background:#205C50;height:75%;border-radius:0;"></div><div class="stacked-bar-label">Feb</div><div class="stacked-bar-total">&#x20b1;328K</div></div>
+            <div class="stacked-bar-group"><div class="stacked-bar" style="background:#4a7a5d;height:24%;min-height:4px;"></div><div class="stacked-bar" style="background:#205C50;height:76%;border-radius:0;"></div><div class="stacked-bar-label" style="font-weight:700;color:#205C50;">Mar</div><div class="stacked-bar-total" style="font-weight:800;color:#221F1F;">&#x20b1;373K</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Revenue by Source</div></div>
+          <div class="h-bar-group"><div class="h-bar-label"><span class="h-bar-label-text">Subscription Revenue</span><span class="h-bar-label-value">&#x20b1;284,000 (76%)</span></div><div class="h-bar-track"><div class="h-bar-fill" style="width:76%;background:#205C50;">76%</div></div></div>
+          <div class="h-bar-group"><div class="h-bar-label"><span class="h-bar-label-text">Ad Revenue</span><span class="h-bar-label-value">&#x20b1;89,400 (24%)</span></div><div class="h-bar-track"><div class="h-bar-fill" style="width:24%;background:#4a7a5d;">24%</div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">&#x1f3ea; Top Spending Merchants (Ad Revenue)</div></div>
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Merchant</th><th>Ad Format</th><th>Monthly Spend</th><th>Since</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:700;color:#205C50;">1</td><td style="font-weight:600;">Maple Tree BGC</td><td><span class="badge active">Hero Banner</span></td><td style="font-weight:700;">&#x20b1;15,000</td><td style="color:#888;">Jan 2026</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">2</td><td style="font-weight:600;">Tokyo Ramen</td><td><span class="badge" style="background:#e0f5fb;color:#50C9EF;">Full-Screen</span></td><td style="font-weight:700;">&#x20b1;25,000</td><td style="color:#888;">Feb 2026</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">3</td><td style="font-weight:600;">Pizza Republic</td><td><span class="badge" style="background:#fff3e0;color:#F9A250;">Top Banner</span></td><td style="font-weight:700;">&#x20b1;8,000</td><td style="color:#888;">Mar 2026</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">4</td><td style="font-weight:600;">Glow Up Salon</td><td><span class="badge" style="background:#f3e5f5;color:#7b1fa2;">Pop-up</span></td><td style="font-weight:700;">&#x20b1;20,000</td><td style="color:#888;">Mar 2026</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">5</td><td style="font-weight:600;">Sushi Nori</td><td><span class="badge active">Hero Banner</span></td><td style="font-weight:700;">&#x20b1;15,000</td><td style="color:#888;">Jan 2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Subscription Breakdown</div></div>
+          <div class="donut-container"><div class="donut-chart"><div class="donut-hole"><div class="donut-hole-value">2,847</div><div class="donut-hole-label">Active</div></div></div><div class="donut-legend"><div class="donut-legend-item"><div class="donut-legend-dot" style="background:#205C50;"></div><div><div style="font-weight:600;">Monthly (&#x20b1;99/mo)</div><div style="font-size:11px;color:#888;">2,340 subscribers (82%)</div></div></div><div class="donut-legend-item"><div class="donut-legend-dot" style="background:#4a7a5d;"></div><div><div style="font-weight:600;">Annual (&#x20b1;949/yr)</div><div style="font-size:11px;color:#888;">507 subscribers (18%)</div></div></div></div></div>
+          <div style="margin-top:14px;padding:10px 12px;background:#f0f7f3;border-radius:8px;font-size:11px;color:#56A66F;font-weight:600;">&#x1f4a1; Annual subscribers have 3x lower churn</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">&#x1f4c9; Churn Analysis</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+            <div style="background:#ffe8ef;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:20px;font-weight:800;color:#EE4036;">4.2%</div><div style="font-size:10px;color:#EE4036;font-weight:500;">Monthly Churn</div></div>
+            <div style="background:#e8f2ee;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:20px;font-weight:800;color:#56A66F;">86</div><div style="font-size:10px;color:#56A66F;font-weight:500;">Net Churned</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid #f0f0f5;"><span style="color:#888;">Churned this month</span><span style="font-weight:700;color:#EE4036;">120</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid #f0f0f5;"><span style="color:#888;">Recovered (re-subscribed)</span><span style="font-weight:700;color:#56A66F;">34</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;margin-bottom:14px;"><span style="color:#888;">Net churn</span><span style="font-weight:700;color:#221F1F;">86</span></div>
+          <div style="font-size:11px;font-weight:700;color:#221F1F;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Top Churn Reasons</div>
+          <div class="churn-reason"><div class="churn-reason-text">"Not enough merchants near me"</div><div class="churn-reason-pct">38%</div></div><div style="height:6px;background:#f0f0f5;border-radius:3px;margin-bottom:10px;overflow:hidden;"><div style="height:100%;width:38%;background:#EE4036;border-radius:3px;"></div></div>
+          <div class="churn-reason"><div class="churn-reason-text">"Too expensive"</div><div class="churn-reason-pct">22%</div></div><div style="height:6px;background:#f0f0f5;border-radius:3px;margin-bottom:10px;overflow:hidden;"><div style="height:100%;width:22%;background:#F9A250;border-radius:3px;"></div></div>
+          <div class="churn-reason"><div class="churn-reason-text">"Don't use it enough"</div><div class="churn-reason-pct">18%</div></div><div style="height:6px;background:#f0f0f5;border-radius:3px;margin-bottom:10px;overflow:hidden;"><div style="height:100%;width:18%;background:#ffbd2e;border-radius:3px;"></div></div>
+          <div class="churn-reason"><div class="churn-reason-text">"Found better alternative"</div><div class="churn-reason-pct">12%</div></div><div style="height:6px;background:#f0f0f5;border-radius:3px;margin-bottom:10px;overflow:hidden;"><div style="height:100%;width:12%;background:#90caf9;border-radius:3px;"></div></div>
+          <div class="churn-reason"><div class="churn-reason-text">Other</div><div class="churn-reason-pct">10%</div></div><div style="height:6px;background:#f0f0f5;border-radius:3px;overflow:hidden;"><div style="height:100%;width:10%;background:#bbb;border-radius:3px;"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">&#x1f4cb; Key Metrics</div></div>
+          <div class="metric-row"><span class="metric-label">CAC (Consumer)</span><span class="metric-value">&#x20b1;85</span></div>
+          <div class="metric-row"><span class="metric-label">LTV (Consumer)</span><span class="metric-value">&#x20b1;356</span></div>
+          <div class="metric-row"><span class="metric-label">Payback Period</span><span class="metric-value">0.9 months</span></div>
+          <div class="metric-row"><span class="metric-label">ARPU</span><span class="metric-value">&#x20b1;99.70</span></div>
+          <div class="metric-row"><span class="metric-label">Net Revenue Retention</span><span class="metric-value" style="color:#56A66F;">108%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: CONTENT MANAGEMENT ===== -->
+<div class="screen" id="screen-content">
+  <div class="topbar"><div><div class="topbar-title">Content Management</div><div class="topbar-subtitle">Manage categories, featured content, and app banners</div></div><div class="topbar-right"></div></div>
+  <div class="content-body">
+    <div class="content-tabs"><div class="content-tab active">&#x1f4c2; Categories</div><div class="content-tab">&#x1f5bc;&#xfe0f; Featured Banners</div><div class="content-tab">&#x1f4da; Collections</div></div>
+    <div class="card mb-24">
+      <div class="card-header"><div class="card-title">&#x1f4c2; Categories</div><button class="btn btn-primary">+ Add Category</button></div>
+      <table class="data-table">
+        <thead><tr><th>Icon</th><th>Category Name</th><th>Slug</th><th>Merchants</th><th>Coupons</th><th>Sort Order</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td style="font-size:20px;">&#x1f37d;</td><td style="font-weight:600;">Food &amp; Beverage</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">food-beverage</code></td><td style="font-weight:600;">89</td><td style="font-weight:600;">312</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">1</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f3af;</td><td style="font-weight:600;">Leisure</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">leisure</code></td><td style="font-weight:600;">18</td><td style="font-weight:600;">45</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">2</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f486;</td><td style="font-weight:600;">Wellness &amp; Beauty</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">wellness-beauty</code></td><td style="font-weight:600;">22</td><td style="font-weight:600;">67</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">3</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f6cd;</td><td style="font-weight:600;">Retail &amp; Lifestyle</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">retail-lifestyle</code></td><td style="font-weight:600;">8</td><td style="font-weight:600;">23</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">4</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f527;</td><td style="font-weight:600;">Services</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">services</code></td><td style="font-weight:600;">4</td><td style="font-weight:600;">12</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">5</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f4da;</td><td style="font-weight:600;">Learning</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">learning</code></td><td style="font-weight:600;">2</td><td style="font-weight:600;">5</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">6</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f3e8;</td><td style="font-weight:600;">Accommodation</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">accommodation</code></td><td style="font-weight:600;color:#aaa;">0</td><td style="font-weight:600;color:#aaa;">0</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">7</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card mb-24">
+      <div class="card-header"><div class="card-title">&#x1f5bc;&#xfe0f; Home Screen Banners</div><button class="btn btn-primary">+ Add Banner</button></div>
+      <div class="banner-grid">
+        <div class="banner-card"><div class="banner-preview" style="background:linear-gradient(135deg,#205C50 0%,#4a7a5d 50%,#2d5a3f 100%);">Enjoy up to 50% OFF on B-ticket!</div><div class="banner-card-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><span class="badge active"><span class="status-dot green" style="margin-right:4px;"></span>Active</span><span style="font-size:11px;color:#888;font-weight:600;">Slot 1</span></div><div class="banner-meta">Link: Home screen</div><div class="banner-actions"><button class="btn btn-sm btn-outline">Edit</button><button class="btn btn-sm btn-reject">Deactivate</button><span class="sort-arrows" style="font-size:14px;">&#x25B2;&#x25BC;</span></div></div></div>
+        <div class="banner-card"><div class="banner-preview" style="background:linear-gradient(135deg,#221F1F 0%,#2d2a2a 50%,#3a3a5e 100%);">Advertise with us!</div><div class="banner-card-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><span class="badge active"><span class="status-dot green" style="margin-right:4px;"></span>Active</span><span style="font-size:11px;color:#888;font-weight:600;">Slot 2</span></div><div class="banner-meta">Link: /advertise</div><div class="banner-actions"><button class="btn btn-sm btn-outline">Edit</button><button class="btn btn-sm btn-reject">Deactivate</button></div></div></div>
+        <div class="banner-card"><div class="banner-preview" style="background:linear-gradient(135deg,#F9A250 0%,#f57c00 50%,#F9A250 100%);">Celebrate your birthday with cool treats!</div><div class="banner-card-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><span class="badge draft"><span class="status-dot gray" style="margin-right:4px;"></span>Draft</span><span style="font-size:11px;color:#888;font-weight:600;">Slot 3</span></div><div class="banner-meta">Link: &mdash;</div><div class="banner-actions"><button class="btn btn-sm btn-outline">Edit</button><button class="btn btn-sm btn-primary">Activate</button><button class="btn btn-sm btn-reject">Delete</button></div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">&#x1f4da; Curated Collections</div><button class="btn btn-primary">+ Create Collection</button></div>
+      <table class="data-table">
+        <thead><tr><th style="width:44px;"></th><th>Collection Name</th><th>Merchants</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><div class="collection-cover" style="background:linear-gradient(135deg,#EE4036,#EE4036);">&#x2B50;</div></td><td style="font-weight:600;">Most Popular</td><td style="font-weight:600;">25</td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+          <tr><td><div class="collection-cover" style="background:linear-gradient(135deg,#205C50,#4a7a5d);">&#x1f3ab;</div></td><td style="font-weight:600;">B-Ticket Exclusives</td><td style="font-weight:600;">12</td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+          <tr><td><div class="collection-cover" style="background:linear-gradient(135deg,#2196f3,#50C9EF);">&#x1f4cd;</div></td><td style="font-weight:600;">Popular Near You</td><td style="font-size:11px;color:#888;font-style:italic;">Auto-generated</td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-ghost">Settings</button></td></tr>
+          <tr><td><div class="collection-cover" style="background:linear-gradient(135deg,#e91e63,#ad1457);">&#x2764;&#xfe0f;</div></td><td style="font-weight:600;">Date Night Spots</td><td style="font-weight:600;">8</td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+          <tr><td><div class="collection-cover" style="background:linear-gradient(135deg,#F9A250,#F9A250);">&#x1f43e;</div></td><td style="font-weight:600;">Pet-Friendly Venues</td><td style="font-weight:600;">5</td><td><span class="badge draft">Draft</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-primary">Activate</button></td></tr>
+          <tr><td><div class="collection-cover" style="background:linear-gradient(135deg,#9c27b0,#6a1b9a);">&#x1f378;</div></td><td style="font-weight:600;">Girls' Night Out</td><td style="font-weight:600;">6</td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+          <tr><td><div class="collection-cover" style="background:linear-gradient(135deg,#455a64,#263238);">&#x1f4bc;</div></td><td style="font-weight:600;">Business Meeting Spots</td><td style="font-weight:600;">4</td><td><span class="badge draft">Draft</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <button class="btn btn-sm btn-primary">Activate</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: CATEGORIES ===== -->
+<div class="screen" id="screen-categories">
+  <div class="topbar"><div><div class="topbar-title">Category Management</div><div class="topbar-subtitle">Manage business categories for merchants and coupons</div></div><div class="topbar-right"><button class="btn btn-primary">+ Add Category</button></div></div>
+  <div class="content-body">
+    <div class="card">
+      <div class="card-header"><div class="card-title">&#x1f4c2; All Categories</div><div style="font-size:12px;color:#888;">7 categories &bull; 143 merchants &bull; 464 coupons</div></div>
+      <table class="data-table">
+        <thead><tr><th>Icon</th><th>Category Name</th><th>Slug</th><th>Merchants</th><th>Coupons</th><th>Sort Order</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td style="font-size:20px;">&#x1f37d;</td><td style="font-weight:600;">Food &amp; Beverage</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">food-beverage</code></td><td style="font-weight:600;">89</td><td style="font-weight:600;">312</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">1</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f3af;</td><td style="font-weight:600;">Leisure</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">leisure</code></td><td style="font-weight:600;">18</td><td style="font-weight:600;">45</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">2</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f486;</td><td style="font-weight:600;">Wellness &amp; Beauty</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">wellness-beauty</code></td><td style="font-weight:600;">22</td><td style="font-weight:600;">67</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">3</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f6cd;</td><td style="font-weight:600;">Retail &amp; Lifestyle</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">retail-lifestyle</code></td><td style="font-weight:600;">8</td><td style="font-weight:600;">23</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">4</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f527;</td><td style="font-weight:600;">Services</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">services</code></td><td style="font-weight:600;">4</td><td style="font-weight:600;">12</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">5</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f4da;</td><td style="font-weight:600;">Learning</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">learning</code></td><td style="font-weight:600;">2</td><td style="font-weight:600;">5</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">6</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+          <tr><td style="font-size:20px;">&#x1f3e8;</td><td style="font-weight:600;">Accommodation</td><td><code style="background:#f0f0f5;padding:2px 8px;border-radius:4px;font-size:11px;color:#666;">accommodation</code></td><td style="font-weight:600;color:#aaa;">0</td><td style="font-weight:600;color:#aaa;">0</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">7</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline">Edit</button> <span class="sort-arrows">&#x25B2;&#x25BC;</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: SETTINGS ===== -->
+<div class="screen" id="screen-settings">
+  <div class="topbar"><div class="topbar-title">Platform Settings</div><div class="topbar-right"><button class="btn btn-primary">Save Changes</button></div></div>
+  <div class="content-body">
+    <div class="card mb-24">
+      <div class="card-header"><div class="card-title">&#x2699;&#xfe0f; General Platform Settings</div></div>
+      <div class="detail-row"><div class="detail-label">Platform Name</div><div class="detail-value" style="font-weight:600;">B-Ticket</div></div>
+      <div class="detail-row"><div class="detail-label">Region</div><div class="detail-value">Metro Manila, Philippines</div></div>
+      <div class="detail-row"><div class="detail-label">Currency</div><div class="detail-value">PHP (&#x20b1;)</div></div>
+      <div class="detail-row"><div class="detail-label">Languages</div><div class="detail-value">English, Japanese, Korean</div></div>
+      <div class="detail-row"><div class="detail-label">Claim Expiry</div><div class="detail-value">7 days after collection</div></div>
+      <div class="detail-row"><div class="detail-label">Subscription Price</div><div class="detail-value">&#x20b1;99/month | &#x20b1;949/year</div></div>
+      <div class="detail-row" style="border-bottom:none;"><div class="detail-label">Auto-flag Threshold</div><div class="detail-value">Discounts exceeding 80%</div></div>
+    </div>
+    <div class="card mb-24">
+      <div class="card-header"><div class="card-title">&#x1f4e2; Ad Slot Configuration</div></div>
+      <table class="data-table">
+        <thead><tr><th>Format</th><th>Dimensions</th><th>Max Slots</th><th>Price/Month</th><th>Current</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:600;">Hero Banner</td><td style="color:#888;">357 x 96 px</td><td style="font-weight:600;">15</td><td style="font-weight:600;">&#x20b1;15,000</td><td style="font-weight:600;">12/15</td><td><span class="badge active">Active</span></td></tr>
+          <tr><td style="font-weight:600;">Top Banner</td><td style="color:#888;">392 x 72 px</td><td style="font-weight:600;">10</td><td style="font-weight:600;">&#x20b1;8,000</td><td style="font-weight:600;">7/10</td><td><span class="badge active">Active</span></td></tr>
+          <tr><td style="font-weight:600;">Pop-up</td><td style="color:#888;">310 x 371 px</td><td style="font-weight:600;">5</td><td style="font-weight:600;">&#x20b1;20,000</td><td style="font-weight:600;">4/5</td><td><span class="badge" style="background:#fff3e0;color:#F9A250;">Near Full</span></td></tr>
+          <tr><td style="font-weight:600;">Full-Screen</td><td style="color:#888;">392 x 615 px</td><td style="font-weight:600;">3</td><td style="font-weight:600;">&#x20b1;25,000</td><td style="font-weight:600;">2/3</td><td><span class="badge" style="background:#fff3e0;color:#F9A250;">Near Full</span></td></tr>
+        </tbody>
+      </table>
+      <div class="slot-summary"><div><strong>Max Monthly Revenue:</strong> &#x20b1;480,000</div><div><strong>Current:</strong> &#x20b1;284,000 (59%)</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">&#x1f465; Admin Accounts</div><button class="btn btn-primary">+ Add Admin</button></div>
+      <table class="data-table">
+        <thead><tr><th>Admin</th><th>Email</th><th>Role</th><th>Last Active</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><div class="user-info"><div class="user-avatar">SC</div><div class="user-name">Sheena C.</div></div></td><td style="font-size:12px;color:#666;">sheena@b-ticket.ph</td><td><span class="badge active">Super Admin</span></td><td style="font-size:12px;color:#888;">Just now</td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+          <tr><td><div class="user-info"><div class="user-avatar blue">KS</div><div class="user-name">Kento-san</div></div></td><td style="font-size:12px;color:#666;">kento@b-ticket.ph</td><td><span class="badge active">Super Admin</span></td><td style="font-size:12px;color:#888;">2 hours ago</td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+          <tr><td><div class="user-info"><div class="user-avatar teal">MS</div><div class="user-name">Mura-san</div></div></td><td style="font-size:12px;color:#666;">mura@b-ticket.ph</td><td><span class="badge" style="background:#e0f5fb;color:#50C9EF;">Admin</span></td><td style="font-size:12px;color:#888;">1 day ago</td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main-area -->
+
+<script>
+function navigateTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var target = document.getElementById('screen-' + screenId);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.dataset.screen === screenId) item.classList.add('active');
+  });
+  if (screenId === 'merchants') hideMerchantDetail();
+  if (screenId === 'ads') hideAdDetail();
+}
+
+document.querySelectorAll('.sidebar-item[data-screen]').forEach(item => {
+  item.addEventListener('click', function() { navigateTo(this.dataset.screen); });
+});
+
+function showMerchantDetail() {
+  navigateTo('merchants');
+  document.getElementById('merchants-list').style.display = 'none';
+  var d = document.getElementById('merchants-detail');
+  d.style.display = 'flex'; d.style.flexDirection = 'column';
+}
+function hideMerchantDetail() {
+  document.getElementById('merchants-list').style.display = '';
+  document.getElementById('merchants-detail').style.display = 'none';
+}
+
+function showAdDetail() {
+  document.getElementById('ads-list').style.display = 'none';
+  var d = document.getElementById('ads-detail');
+  d.style.display = 'flex'; d.style.flexDirection = 'column';
+}
+function hideAdDetail() {
+  document.getElementById('ads-list').style.display = '';
+  document.getElementById('ads-detail').style.display = 'none';
+}
+
+function toggleCouponDetail(id) {
+  var el = document.getElementById(id);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleReasonPanel(id) {
+  var el = document.getElementById(id);
+  if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+document.querySelectorAll('.merchant-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.merchant-tab').forEach(function(t) {
+      t.style.background = 'transparent'; t.style.color = '#888';
+      t.style.boxShadow = 'none'; t.style.fontWeight = '400';
+    });
+    this.style.background = '#fff'; this.style.color = '#221F1F';
+    this.style.boxShadow = '0 1px 2px rgba(0,0,0,0.08)'; this.style.fontWeight = '600';
+  });
+});
+
+document.querySelectorAll('.checklist-box').forEach(function(box) {
+  box.addEventListener('click', function() {
+    if (this.classList.contains('checked')) {
+      this.classList.remove('checked'); this.innerHTML = '';
+    } else {
+      this.classList.add('checked'); this.innerHTML = '&#x2713;';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

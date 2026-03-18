@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Admin Portal: Ad Approval Queue</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1110; color: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px; gap: 60px; min-height: 100vh;
+  }
+  h1 { font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 700px; line-height: 1.6; }
+  h2.section-label {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  /* ---- Browser frame ---- */
+  .browser-frame {
+    width: 100%; max-width: 1200px;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px #333;
+    background: #fff;
+  }
+  .browser-bar {
+    background: #2d2a2a; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots div { width: 12px; height: 12px; border-radius: 50%; }
+  .browser-dots .red { background: #ff5f57; }
+  .browser-dots .yellow { background: #ffbd2e; }
+  .browser-dots .green { background: #56A66F; }
+  .browser-url {
+    flex: 1; background: #2a2525; border-radius: 6px;
+    padding: 6px 12px; font-size: 12px; color: #888;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .browser-url .lock { color: #56A66F; font-size: 11px; }
+
+  .portal-layout {
+    display: flex; min-height: 860px;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: 230px; background: #221F1F; padding: 0;
+    flex-shrink: 0; display: flex; flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 18px 16px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #2d2a2a;
+  }
+  .sidebar-logo-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #fff;
+  }
+  .sidebar-logo-text { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .sidebar-logo-sub { font-size: 10px; color: #666; font-weight: 500; }
+
+  .sidebar-nav { padding: 10px 0; flex: 1; overflow-y: auto; }
+  .sidebar-section {
+    font-size: 9px; font-weight: 700; color: #555;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 14px 16px 6px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 16px; font-size: 12.5px; color: #888;
+    cursor: pointer; border-left: 3px solid transparent;
+    transition: all 0.15s; position: relative;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.04); color: #ccc; }
+  .sidebar-item.active {
+    background: rgba(107,155,125,0.12); color: #205C50;
+    border-left-color: #205C50; font-weight: 600;
+  }
+  .sidebar-item .icon { font-size: 15px; width: 22px; text-align: center; flex-shrink: 0; }
+  .sidebar-badge {
+    position: absolute; right: 12px;
+    background: #EE4036; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
+  }
+  .sidebar-badge.orange { background: #F9A250; }
+
+  .sidebar-profile {
+    padding: 14px 16px; border-top: 1px solid #2d2a2a;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+  }
+  .sidebar-profile-info { flex: 1; }
+  .sidebar-profile-name { font-size: 12px; font-weight: 600; color: #ddd; }
+  .sidebar-profile-role { font-size: 10px; color: #666; }
+  .sidebar-profile-gear { color: #555; font-size: 16px; cursor: pointer; }
+  .sidebar-profile-gear:hover { color: #888; }
+
+  /* ---- Main content ---- */
+  .main-content {
+    flex: 1; background: #f5f6f8; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .topbar {
+    background: #fff; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #e8e8ef;
+  }
+  .topbar-title { font-size: 18px; font-weight: 700; color: #221F1F; }
+  .topbar-subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-date { font-size: 12px; color: #888; }
+  .topbar-notif {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: #f5f6f8; display: flex; align-items: center;
+    justify-content: center; font-size: 16px; cursor: pointer;
+    position: relative;
+  }
+  .topbar-notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #EE4036; border: 2px solid #fff;
+  }
+  .topbar-admin {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: #333;
+  }
+  .topbar-admin-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #205C50; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  .content-body { padding: 24px; flex: 1; }
+
+  /* ---- Cards ---- */
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    padding: 20px;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title { font-size: 14px; font-weight: 700; color: #221F1F; }
+  .card-subtitle { font-size: 12px; color: #888; }
+  .card-link { font-size: 12px; color: #205C50; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .card-link:hover { text-decoration: underline; }
+
+  /* ---- Stats row ---- */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: #fff; border-radius: 12px; padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-card-top { display: flex; align-items: center; justify-content: space-between; }
+  .stat-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .stat-icon.orange { background: #fff3e0; }
+  .stat-icon.blue { background: #e0f5fb; }
+  .stat-icon.green { background: #e8f2ee; }
+  .stat-icon.purple { background: #f3e5f5; }
+  .stat-label { font-size: 12px; color: #888; font-weight: 500; }
+  .stat-value { font-size: 26px; font-weight: 800; color: #221F1F; }
+  .stat-change { font-size: 11px; font-weight: 600; }
+  .stat-change.up { color: #56A66F; }
+  .stat-change.down { color: #EE4036; }
+
+  /* ---- Tables ---- */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table thead th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 10px 12px; border-bottom: 1px solid #eee;
+  }
+  .data-table tbody td {
+    padding: 12px; font-size: 13px; color: #333;
+    border-bottom: 1px solid #f0f0f5;
+    vertical-align: middle;
+  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: #fafbfc; }
+
+  .merchant-name { font-weight: 600; color: #221F1F; }
+  .merchant-category { font-size: 11px; color: #888; }
+  .merchant-location { font-size: 12px; color: #666; }
+  .time-ago { font-size: 12px; color: #888; }
+
+  /* ---- Badges ---- */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.pending { background: #fff3e0; color: #F9A250; }
+  .badge.approved { background: #e8f2ee; color: #56A66F; }
+  .badge.rejected { background: #ffe8ef; color: #EE4036; }
+  .badge.flagged { background: #ffe8ef; color: #EE4036; }
+  .badge.active { background: #e8f2ee; color: #56A66F; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 14px; border-radius: 6px; font-size: 12px;
+    font-weight: 600; cursor: pointer; border: none;
+    transition: all 0.15s; text-decoration: none;
+    font-family: inherit;
+  }
+  .btn-primary { background: #205C50; color: #fff; }
+  .btn-primary:hover { background: #5a8a6c; }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .btn-approve { background: #56A66F; color: #fff; }
+  .btn-approve:hover { background: #218838; }
+  .btn-reject { background: transparent; color: #EE4036; border: 1.5px solid #EE4036; }
+  .btn-reject:hover { background: #FFF0F0; }
+  .btn-warning { background: transparent; color: #F9A250; border: 1.5px solid #F9A250; }
+  .btn-warning:hover { background: #FFF8E1; }
+  .btn-outline { background: transparent; color: #205C50; border: 1.5px solid #205C50; }
+  .btn-outline:hover { background: #f0f7f3; }
+  .btn-ghost { background: transparent; color: #888; border: 1px solid #ddd; }
+  .btn-ghost:hover { background: #f5f5f5; color: #333; }
+
+  /* ---- Filter tabs ---- */
+  .filter-tabs {
+    display: flex; gap: 0; margin-bottom: 16px;
+    border-bottom: 2px solid #e8e8ef;
+  }
+  .filter-tab {
+    padding: 10px 18px; font-size: 12.5px; font-weight: 600;
+    color: #888; cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -2px; transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-tab:hover { color: #555; }
+  .filter-tab.active {
+    color: #205C50; border-bottom-color: #205C50;
+  }
+  .filter-tab .tab-count {
+    background: #e8e8ef; color: #888; font-size: 10px;
+    padding: 2px 7px; border-radius: 10px; font-weight: 700;
+  }
+  .filter-tab.active .tab-count {
+    background: #e8f2ee; color: #56A66F;
+  }
+
+  /* ---- Format pills ---- */
+  .format-pill {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; white-space: nowrap;
+  }
+  .format-pill.hero { background: #e8f2ee; color: #56A66F; }
+  .format-pill.top { background: #e0f5fb; color: #50C9EF; }
+  .format-pill.fullscreen { background: #f3e5f5; color: #7b1fa2; }
+  .format-pill.popup { background: #fff3e0; color: #F9A250; }
+
+  /* ---- Paid indicator ---- */
+  .paid-indicator {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: #56A66F;
+  }
+  .paid-check {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #e8f2ee; display: flex; align-items: center;
+    justify-content: center; font-size: 10px; color: #56A66F;
+  }
+
+  /* ---- Creative thumbnail ---- */
+  .creative-thumb {
+    width: 80px; height: 30px; border-radius: 4px;
+    overflow: hidden; flex-shrink: 0;
+  }
+
+  /* ---- Slot bars ---- */
+  .slot-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid #f0f0f5;
+  }
+  .slot-row:last-child { border-bottom: none; }
+  .slot-label {
+    width: 120px; font-size: 12.5px; font-weight: 600;
+    color: #333; flex-shrink: 0;
+  }
+  .slot-bar-bg {
+    flex: 1; height: 10px; background: #e8e8ef;
+    border-radius: 5px; overflow: hidden;
+  }
+  .slot-bar-fill {
+    height: 100%; border-radius: 5px;
+    transition: width 0.3s;
+  }
+  .slot-bar-fill.green { background: #205C50; }
+  .slot-bar-fill.orange { background: #F9A250; }
+  .slot-count {
+    width: 60px; font-size: 12px; color: #888;
+    font-weight: 600; text-align: right; flex-shrink: 0;
+  }
+
+  /* ---- Circular progress ---- */
+  .circular-progress {
+    position: relative; width: 48px; height: 48px;
+  }
+  .circular-progress svg { transform: rotate(-90deg); }
+  .circular-progress .progress-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px; font-weight: 700; color: #221F1F;
+  }
+
+  /* ---- Screen 2: Detail view ---- */
+  .detail-layout { display: grid; grid-template-columns: 1fr 380px; gap: 0; flex: 1; }
+  .detail-main { padding: 24px; overflow-y: auto; }
+  .detail-sidebar {
+    background: #fff; border-left: 1px solid #e8e8ef;
+    padding: 24px; overflow-y: auto;
+  }
+
+  .detail-section { margin-bottom: 24px; }
+  .detail-section-title {
+    font-size: 13px; font-weight: 700; color: #221F1F;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .detail-row {
+    display: flex; padding: 7px 0; font-size: 13px;
+    border-bottom: 1px solid #f5f5f8;
+  }
+  .detail-label { width: 140px; color: #888; font-weight: 500; flex-shrink: 0; font-size: 12px; }
+  .detail-value { color: #333; flex: 1; font-size: 12.5px; }
+
+  /* Admin action panel */
+  .action-status {
+    padding: 10px 16px; border-radius: 8px;
+    text-align: center; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px; margin-bottom: 16px;
+  }
+  .action-status.pending { background: #fff3e0; color: #F9A250; }
+
+  .admin-notes-textarea {
+    width: 100%; border: 1.5px solid #e0e0e8; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; font-family: inherit;
+    resize: vertical; min-height: 70px; color: #333;
+    transition: border-color 0.15s;
+  }
+  .admin-notes-textarea:focus { outline: none; border-color: #205C50; }
+  .admin-notes-textarea::placeholder { color: #bbb; }
+
+  .action-buttons { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .action-btn {
+    width: 100%; padding: 10px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    border: none; font-family: inherit; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .action-btn.approve { background: #56A66F; color: #fff; }
+  .action-btn.approve:hover { background: #218838; }
+  .action-btn.reject { background: #fff; color: #EE4036; border: 1.5px solid #EE4036; }
+  .action-btn.reject:hover { background: #FFF0F0; }
+  .action-btn.changes { background: #fff; color: #F9A250; border: 1.5px solid #F9A250; }
+  .action-btn.changes:hover { background: #FFF8E1; }
+
+  .checklist { margin-top: 16px; }
+  .checklist-title { font-size: 12px; font-weight: 700; color: #221F1F; margin-bottom: 10px; }
+  .checklist-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; font-size: 12px; color: #555;
+  }
+  .checklist-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid #ccc; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 10px; cursor: pointer; flex-shrink: 0;
+  }
+  .checklist-box.checked { background: #205C50; border-color: #205C50; color: #fff; }
+
+  /* ---- Creative preview ---- */
+  .creative-preview-area {
+    background: #221F1F; border-radius: 10px; padding: 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .creative-preview-banner {
+    border-radius: 8px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; text-align: center;
+    line-height: 1.3;
+  }
+  .file-info {
+    font-size: 11px; color: #888; text-align: center;
+  }
+  .dimension-check {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11.5px; padding: 4px 0;
+  }
+  .dimension-check.pass { color: #56A66F; }
+  .dimension-check.fail { color: #EE4036; }
+
+  /* ---- Mini phone mockup ---- */
+  .mini-phone {
+    width: 180px; height: 320px; border-radius: 24px;
+    background: #221F1F; border: 2px solid #333;
+    overflow: hidden; margin: 0 auto;
+  }
+  .mini-phone-notch {
+    width: 60px; height: 6px; background: #333;
+    border-radius: 0 0 8px 8px; margin: 0 auto;
+  }
+  .mini-phone-screen { padding: 8px; }
+  .mini-phone-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 2px; margin-bottom: 6px;
+  }
+  .mini-phone-logo { font-size: 8px; font-weight: 800; color: #205C50; }
+  .mini-phone-icons { font-size: 8px; color: #888; }
+
+  /* ---- Merchant history ---- */
+  .history-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: #f8f9fb; border-radius: 8px;
+    margin-bottom: 8px; font-size: 12px;
+  }
+  .history-item-details { flex: 1; }
+  .history-item-name { font-weight: 600; color: #333; font-size: 12.5px; }
+  .history-item-meta { color: #888; font-size: 11px; margin-top: 2px; }
+  .history-item-status { font-size: 11px; font-weight: 600; color: #56A66F; }
+
+  /* ---- Risk badge ---- */
+  .risk-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .risk-badge.low { background: #e8f2ee; color: #56A66F; }
+  .risk-badge.medium { background: #fff3e0; color: #F9A250; }
+  .risk-badge.high { background: #ffe8ef; color: #EE4036; }
+
+  /* ---- Rejection panel ---- */
+  .rejection-panel {
+    margin-top: 12px; padding: 16px; background: #fef8f8;
+    border: 1.5px solid #ffe8ef; border-radius: 8px;
+  }
+  .rejection-panel select {
+    width: 100%; padding: 8px 12px; border: 1.5px solid #e0e0e8;
+    border-radius: 6px; font-family: inherit; font-size: 12px;
+    color: #333; margin-bottom: 10px; background: #fff;
+  }
+  .rejection-panel textarea {
+    width: 100%; border: 1.5px solid #e0e0e8; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; font-family: inherit;
+    resize: vertical; min-height: 60px; color: #333; margin-bottom: 10px;
+  }
+  .rejection-panel .btn-reject-confirm {
+    width: 100%; padding: 10px; border-radius: 8px;
+    background: #EE4036; color: #fff; font-size: 13px;
+    font-weight: 700; cursor: pointer; border: none;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .rejection-panel .btn-reject-confirm:hover { background: #e55555; }
+
+  /* ---- Refund note ---- */
+  .refund-note {
+    margin-top: 16px; padding: 12px 14px; background: #f0f7ff;
+    border: 1px solid #d0e4f5; border-radius: 8px;
+    font-size: 11.5px; color: #555; line-height: 1.5;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .refund-note .info-icon {
+    color: #2196f3; font-size: 14px; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ---- Slot summary footer ---- */
+  .slot-summary {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0 0; margin-top: 8px; border-top: 1px solid #e8e8ef;
+    font-size: 12.5px; color: #555;
+  }
+  .slot-summary strong { color: #221F1F; font-weight: 700; }
+
+  /* ---- Utility ---- */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .gap-20 { gap: 20px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-4 { margin-bottom: 4px; }
+  .text-sm { font-size: 12px; }
+  .text-muted { color: #888; }
+  .fw-600 { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>B-Ticket Admin Portal &mdash; Ad Management</h1>
+<p class="subtitle">Admin ad approval queue for reviewing merchant-submitted ad creatives. Merchants purchase ad placements and submit creatives for admin review before going live in the B-Ticket consumer app.</p>
+
+<!-- ========================================================= -->
+<!-- SCREEN 1: AD APPROVAL QUEUE                                -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 1 &mdash; Ad Approval Queue</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/ads
+    </div>
+  </div>
+
+  <div class="portal-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+          <span class="sidebar-badge orange">12</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ea;</span> Merchants
+          <span class="sidebar-badge">5</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ab;</span> Coupons
+          <span class="sidebar-badge orange">4</span>
+        </div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f4e2;</span> Ads
+          <span class="sidebar-badge orange">4</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c1;</span> Categories
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f5bc;&#xfe0f;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Ad Management</div>
+          <div class="topbar-subtitle">Review ad creatives and manage placements</div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-date">March 18, 2026</div>
+          <div class="topbar-notif">
+            &#x1f514;
+            <div class="topbar-notif-dot"></div>
+          </div>
+          <div class="topbar-admin">
+            <div class="topbar-admin-avatar">AU</div>
+            Admin User
+          </div>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Pending Review</div>
+                <div class="stat-value" style="color: #F9A250;">4</div>
+              </div>
+              <div class="stat-icon orange">&#x23f3;</div>
+            </div>
+            <div class="stat-change" style="color: #F9A250;">Requires attention</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Active Ads</div>
+                <div class="stat-value">18</div>
+              </div>
+              <div class="stat-icon green">&#x1f4e2;</div>
+            </div>
+            <div class="stat-change up">Currently running</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Slot Utilization</div>
+                <div class="stat-value">22/33</div>
+              </div>
+              <div class="circular-progress">
+                <svg width="48" height="48" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="#e8e8ef" stroke-width="4"/>
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="#205C50" stroke-width="4"
+                    stroke-dasharray="125.6" stroke-dashoffset="41.5" stroke-linecap="round"/>
+                </svg>
+                <span class="progress-text">67%</span>
+              </div>
+            </div>
+            <div class="stat-change" style="color: #205C50;">11 slots available</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div>
+                <div class="stat-label">Ad Revenue (This Month)</div>
+                <div class="stat-value" style="color: #205C50;">&#x20b1;284K</div>
+              </div>
+              <div class="stat-icon purple">&#x1f4b0;</div>
+            </div>
+            <div class="stat-change up">&#x2191; 18% vs last month</div>
+          </div>
+        </div>
+
+        <!-- Ad Queue Table -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <div class="card-title">&#x1f4cb; Ad Approval Queue</div>
+            <a class="card-link">Export Report &#x2192;</a>
+          </div>
+
+          <!-- Filter Tabs -->
+          <div class="filter-tabs">
+            <div class="filter-tab active">
+              Pending Review <span class="tab-count">4</span>
+            </div>
+            <div class="filter-tab">
+              Active <span class="tab-count">18</span>
+            </div>
+            <div class="filter-tab">
+              Rejected <span class="tab-count">3</span>
+            </div>
+            <div class="filter-tab">
+              Expired <span class="tab-count">7</span>
+            </div>
+            <div class="filter-tab">
+              All
+            </div>
+          </div>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Creative</th>
+                <th>Campaign</th>
+                <th>Merchant</th>
+                <th>Format</th>
+                <th>Amount</th>
+                <th>Paid</th>
+                <th>Submitted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr>
+                <td>
+                  <div class="creative-thumb" style="background: linear-gradient(135deg, #8B4513, #D2691E); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 6px; color: #fff; font-weight: 700; text-align: center; line-height: 1.2; padding: 2px;">50% OFF<br>STEAK</span>
+                  </div>
+                </td>
+                <td><span class="merchant-name">March Steak Promo</span></td>
+                <td>
+                  <span style="font-size: 13px; color: #333;">Maple Tree BGC</span>
+                </td>
+                <td><span class="format-pill hero">Hero Banner (357&times;96)</span></td>
+                <td><span style="font-weight: 600; color: #221F1F;">&#x20b1;15,000</span></td>
+                <td>
+                  <div class="paid-indicator">
+                    <div class="paid-check">&#x2713;</div>
+                    <span style="font-size: 11px;">Paid via GCash</span>
+                  </div>
+                </td>
+                <td><span class="time-ago">2 hours ago</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+              <!-- Row 2 -->
+              <tr>
+                <td>
+                  <div class="creative-thumb" style="background: linear-gradient(135deg, #e53935, #ff7043); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 6px; color: #fff; font-weight: 700; text-align: center; line-height: 1.2; padding: 2px;">PIZZA<br>DEAL</span>
+                  </div>
+                </td>
+                <td><span class="merchant-name">Weekend Pizza Deal</span></td>
+                <td>
+                  <span style="font-size: 13px; color: #333;">Pizza Republic</span>
+                </td>
+                <td><span class="format-pill top">Top Banner (392&times;72)</span></td>
+                <td><span style="font-weight: 600; color: #221F1F;">&#x20b1;8,000</span></td>
+                <td>
+                  <div class="paid-indicator">
+                    <div class="paid-check">&#x2713;</div>
+                    <span style="font-size: 11px;">Paid via Maya</span>
+                  </div>
+                </td>
+                <td><span class="time-ago">5 hours ago</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+              <!-- Row 3 -->
+              <tr>
+                <td>
+                  <div class="creative-thumb" style="background: linear-gradient(135deg, #1a237e, #42a5f5); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 6px; color: #fff; font-weight: 700; text-align: center; line-height: 1.2; padding: 2px;">GRAND<br>OPENING</span>
+                  </div>
+                </td>
+                <td><span class="merchant-name">Grand Opening BGC</span></td>
+                <td>
+                  <span style="font-size: 13px; color: #333;">Tokyo Ramen House</span>
+                </td>
+                <td><span class="format-pill fullscreen">Full-Screen (392&times;615)</span></td>
+                <td><span style="font-weight: 600; color: #221F1F;">&#x20b1;25,000</span></td>
+                <td>
+                  <div class="paid-indicator">
+                    <div class="paid-check">&#x2713;</div>
+                    <span style="font-size: 11px;">Paid via Credit Card</span>
+                  </div>
+                </td>
+                <td><span class="time-ago">1 day ago</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+              <!-- Row 4 -->
+              <tr>
+                <td>
+                  <div class="creative-thumb" style="background: linear-gradient(135deg, #e91e63, #f48fb1); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 6px; color: #fff; font-weight: 700; text-align: center; line-height: 1.2; padding: 2px;">FLASH<br>SALE</span>
+                  </div>
+                </td>
+                <td><span class="merchant-name">Flash Sale Weekend</span></td>
+                <td>
+                  <span style="font-size: 13px; color: #333;">Glow Up Salon</span>
+                </td>
+                <td><span class="format-pill popup">Pop-up (310&times;371)</span></td>
+                <td><span style="font-weight: 600; color: #221F1F;">&#x20b1;20,000</span></td>
+                <td>
+                  <div class="paid-indicator">
+                    <div class="paid-check">&#x2713;</div>
+                    <span style="font-size: 11px;">Paid via GCash</span>
+                  </div>
+                </td>
+                <td><span class="time-ago">1 day ago</span></td>
+                <td><button class="btn btn-primary btn-sm">Review</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Slot Availability Panel -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">&#x1f4ca; Current Slot Availability</div>
+            <a class="card-link">Manage Slots &#x2192;</a>
+          </div>
+
+          <div class="slot-row">
+            <div class="slot-label">Hero Banner</div>
+            <div class="slot-bar-bg">
+              <div class="slot-bar-fill green" style="width: 80%;"></div>
+            </div>
+            <div class="slot-count">12/15</div>
+          </div>
+          <div class="slot-row">
+            <div class="slot-label">Top Banner</div>
+            <div class="slot-bar-bg">
+              <div class="slot-bar-fill green" style="width: 70%;"></div>
+            </div>
+            <div class="slot-count">7/10</div>
+          </div>
+          <div class="slot-row">
+            <div class="slot-label">Pop-up</div>
+            <div class="slot-bar-bg">
+              <div class="slot-bar-fill orange" style="width: 80%;"></div>
+            </div>
+            <div class="slot-count">4/5</div>
+          </div>
+          <div class="slot-row">
+            <div class="slot-label">Full-Screen</div>
+            <div class="slot-bar-bg">
+              <div class="slot-bar-fill orange" style="width: 67%;"></div>
+            </div>
+            <div class="slot-count">2/3</div>
+          </div>
+
+          <div class="slot-summary">
+            <div><strong>Total:</strong> 25/33 slots filled</div>
+            <div><strong>Revenue:</strong> &#x20b1;284,000 of &#x20b1;480,000 capacity</div>
+          </div>
+        </div>
+
+      </div><!-- end content-body -->
+    </div><!-- end main-content -->
+  </div><!-- end portal-layout -->
+</div><!-- end browser-frame -->
+
+
+<!-- ========================================================= -->
+<!-- SCREEN 2: AD CREATIVE REVIEW DETAIL                        -->
+<!-- ========================================================= -->
+<h2 class="section-label">Screen 2 &mdash; Ad Creative Review Detail</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <div class="red"></div><div class="yellow"></div><div class="green"></div>
+    </div>
+    <div class="browser-url">
+      <span class="lock">&#x1f512;</span> https://admin.b-ticket.ph/ads/review/ad-001
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 1100px;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">B</div>
+        <div>
+          <div class="sidebar-logo-text">B-Ticket</div>
+          <div class="sidebar-logo-sub">Admin Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="sidebar-section">Main</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4ca;</span> Dashboard
+          <span class="sidebar-badge orange">12</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ea;</span> Merchants
+          <span class="sidebar-badge">5</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f3ab;</span> Coupons
+          <span class="sidebar-badge orange">4</span>
+        </div>
+        <div class="sidebar-item active">
+          <span class="icon">&#x1f4e2;</span> Ads
+          <span class="sidebar-badge orange">4</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f465;</span> Users &amp; Subscribers
+        </div>
+
+        <div class="sidebar-section">Analytics</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4b0;</span> Revenue &amp; Analytics
+        </div>
+
+        <div class="sidebar-section">Management</div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f4c1;</span> Categories
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x1f5bc;&#xfe0f;</span> Content
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">&#x2699;&#xfe0f;</span> Settings
+        </div>
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">AU</div>
+        <div class="sidebar-profile-info">
+          <div class="sidebar-profile-name">Admin User</div>
+          <div class="sidebar-profile-role">Super Admin</div>
+        </div>
+        <span class="sidebar-profile-gear">&#x2699;&#xfe0f;</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="topbar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: #f5f6f8; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;">&#x2190;</div>
+          <div>
+            <div class="topbar-title">Review Ad Creative</div>
+            <div class="topbar-subtitle">March Steak Promo &mdash; Maple Tree BGC</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="badge pending" style="font-size: 12px; padding: 5px 14px;">Pending Review</span>
+          <div class="topbar-admin">
+            <div class="topbar-admin-avatar">AU</div>
+            Admin User
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-column detail layout -->
+      <div class="detail-layout">
+        <!-- LEFT COLUMN (55%) -->
+        <div class="detail-main">
+
+          <!-- Campaign Details Card -->
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+              <div class="card-title">&#x1f4cb; Campaign Details</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Campaign Name</div>
+              <div class="detail-value" style="font-weight: 600;">March Steak Promo</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Merchant</div>
+              <div class="detail-value"><a href="#" style="color: #205C50; font-weight: 600; text-decoration: none;">Maple Tree BGC</a></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Format</div>
+              <div class="detail-value"><span class="format-pill hero">Hero Banner (357 &times; 96 px)</span></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Scheduled Period</div>
+              <div class="detail-value">April 1&ndash;30, 2026</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Destination</div>
+              <div class="detail-value">Merchant profile page</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Amount Paid</div>
+              <div class="detail-value" style="font-weight: 600; color: #56A66F;">&#x20b1;15,000 via GCash</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Payment Date</div>
+              <div class="detail-value">March 16, 2026</div>
+            </div>
+            <div class="detail-row" style="border-bottom: none;">
+              <div class="detail-label">Transaction ID</div>
+              <div class="detail-value" style="font-family: monospace; font-size: 12px; color: #666;">TXN-2026-03-16-0042</div>
+            </div>
+          </div>
+
+          <!-- Creative Preview Card -->
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+              <div class="card-title">&#x1f5bc;&#xfe0f; Submitted Creative</div>
+            </div>
+            <div class="creative-preview-area">
+              <div class="creative-preview-banner" style="width: 357px; height: 96px; background: linear-gradient(135deg, #8B4513 0%, #D2691E 40%, #CD853F 70%, #DEB887 100%);">
+                <div style="padding: 8px 16px;">
+                  <div style="font-size: 20px; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">50% OFF HANGER STEAK</div>
+                  <div style="font-size: 11px; font-weight: 600; opacity: 0.9; margin-top: 2px;">MAPLE TREE BGC &mdash; Limited Time Only</div>
+                </div>
+              </div>
+              <div class="file-info">hero-banner-march.jpg &middot; 357&times;96 &middot; 312KB &middot; JPG</div>
+            </div>
+            <div style="padding: 12px 0 0;">
+              <div class="dimension-check pass">
+                <span style="font-size: 14px;">&#x2705;</span> Correct dimensions (357&times;96 px)
+              </div>
+              <div class="dimension-check pass">
+                <span style="font-size: 14px;">&#x2705;</span> Under 500KB file size limit (312KB)
+              </div>
+            </div>
+          </div>
+
+          <!-- Creative in Context Card -->
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+              <div class="card-title">&#x1f4f1; Preview in App</div>
+            </div>
+            <div style="display: flex; justify-content: center; padding: 10px 0;">
+              <div class="mini-phone">
+                <div class="mini-phone-notch"></div>
+                <div class="mini-phone-screen">
+                  <div class="mini-phone-header">
+                    <div class="mini-phone-logo">B-Ticket</div>
+                    <div class="mini-phone-icons">&#x1f50d; &#x1f514;</div>
+                  </div>
+                  <!-- Hero banner position -->
+                  <div style="width: 100%; height: 44px; border-radius: 6px; overflow: hidden; background: linear-gradient(135deg, #8B4513, #D2691E, #CD853F); display: flex; align-items: center; justify-content: center; margin-bottom: 6px; border: 1.5px solid #205C50;">
+                    <div style="text-align: center; color: #fff;">
+                      <div style="font-size: 7px; font-weight: 800;">50% OFF HANGER STEAK</div>
+                      <div style="font-size: 5px; opacity: 0.9;">MAPLE TREE BGC</div>
+                    </div>
+                  </div>
+                  <!-- Other content placeholders -->
+                  <div style="font-size: 7px; font-weight: 700; color: #fff; margin-bottom: 4px; opacity: 0.7;">Near You</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <div style="height: 40px; background: #2d2a2a; border-radius: 5px;"></div>
+                    <div style="height: 40px; background: #2d2a2a; border-radius: 5px;"></div>
+                  </div>
+                  <div style="font-size: 7px; font-weight: 700; color: #fff; margin: 6px 0 4px; opacity: 0.7;">Popular</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    <div style="height: 40px; background: #2d2a2a; border-radius: 5px;"></div>
+                    <div style="height: 40px; background: #2d2a2a; border-radius: 5px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="text-align: center; font-size: 11px; color: #888; margin-top: 4px;">
+              This ad will rotate with 12 other merchants every 5 seconds
+            </div>
+          </div>
+
+          <!-- Merchant History Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">&#x1f4c4; Previous Ads by Maple Tree BGC</div>
+            </div>
+            <div class="history-item">
+              <div style="font-size: 20px;">&#x1f4e2;</div>
+              <div class="history-item-details">
+                <div class="history-item-name">Valentine's Day Special</div>
+                <div class="history-item-meta">Hero Banner &middot; Feb 1&ndash;28, 2026 &middot; &#x20b1;15,000</div>
+              </div>
+              <div class="history-item-status">&#x2713; Completed</div>
+            </div>
+            <div class="history-item">
+              <div style="font-size: 20px;">&#x1f4e2;</div>
+              <div class="history-item-details">
+                <div class="history-item-name">Holiday Promo</div>
+                <div class="history-item-meta">Top Banner &middot; Dec 1&ndash;31, 2025 &middot; &#x20b1;8,000</div>
+              </div>
+              <div class="history-item-status">&#x2713; Completed</div>
+            </div>
+            <div style="margin-top: 12px; padding: 10px 14px; background: #e8f2ee; border-radius: 8px; font-size: 12px; color: #56A66F; display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 14px;">&#x2705;</span>
+              Merchant has a clean ad history &mdash; no rejections
+            </div>
+          </div>
+
+        </div><!-- end detail-main -->
+
+        <!-- RIGHT COLUMN (45%) -->
+        <div class="detail-sidebar">
+
+          <!-- Admin Actions Card -->
+          <div class="action-status pending">PENDING REVIEW</div>
+
+          <div style="margin-bottom: 16px;">
+            <div class="checklist-title">Admin Notes</div>
+            <textarea class="admin-notes-textarea" placeholder="Add internal notes about this ad review..."></textarea>
+          </div>
+
+          <!-- Review Checklist -->
+          <div class="checklist">
+            <div class="checklist-title">Review Checklist</div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Creative meets dimension requirements (357&times;96)
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              File size within limits (500KB)
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Content is appropriate (no offensive material)
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Text is legible and not misleading
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box" style="border-color: #ccc;">
+                <span style="color: transparent;">&#x2713;</span>
+              </div>
+              Brand guidelines compliance
+            </div>
+            <div class="checklist-item">
+              <div class="checklist-box checked">&#x2713;</div>
+              Payment verified
+            </div>
+          </div>
+
+          <!-- Risk Assessment -->
+          <div style="margin-top: 16px; margin-bottom: 16px;">
+            <div class="checklist-title">Risk Assessment</div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="risk-badge low">&#x1f7e2; Low Risk</span>
+            </div>
+            <div style="font-size: 11px; color: #888; margin-top: 6px;">Established merchant, clean history</div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="action-btn approve">&#x2713; Approve Ad</button>
+            <div style="font-size: 10px; color: #888; text-align: center; margin-top: -4px; margin-bottom: 4px;">Ad will go live on April 1, 2026</div>
+            <button class="action-btn reject">&#x2715; Reject Creative</button>
+            <button class="action-btn changes">&#x23f8; Request Revision</button>
+            <div style="font-size: 10px; color: #888; text-align: center; margin-top: -4px;">Ask merchant to update their creative</div>
+          </div>
+
+          <!-- Rejection Reasons Panel -->
+          <div class="rejection-panel">
+            <div style="font-size: 12px; font-weight: 700; color: #EE4036; margin-bottom: 10px;">Rejection Reason</div>
+            <select>
+              <option value="">Select a reason...</option>
+              <option>Image quality too low</option>
+              <option>Text is unreadable</option>
+              <option>Contains misleading claims</option>
+              <option>Violates community guidelines</option>
+              <option>Incorrect dimensions</option>
+              <option>Other (specify below)</option>
+            </select>
+            <textarea placeholder="Add custom reason or additional details..."></textarea>
+            <button class="btn-reject-confirm">Reject &amp; Notify Merchant</button>
+          </div>
+
+          <!-- Refund Policy Note -->
+          <div class="refund-note">
+            <span class="info-icon">&#x2139;&#xfe0f;</span>
+            <div>If rejected, the merchant's <strong>&#x20b1;15,000</strong> payment will be refunded within 3&ndash;5 business days per our advertising terms.</div>
+          </div>
+
+        </div><!-- end detail-sidebar -->
+      </div><!-- end detail-layout -->
+    </div><!-- end main-content -->
+  </div><!-- end portal-layout -->
+</div><!-- end browser-frame -->
+
+</body>
+</html>
