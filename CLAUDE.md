@@ -129,3 +129,4 @@ B-ticket connects SMEs with local consumers and tourists through digital coupons
 - **CEO**: Kento-san
 - **CTO**: Mura-san
 - **PM**: Sheena
+- **IT Team Lead**: Vincent
