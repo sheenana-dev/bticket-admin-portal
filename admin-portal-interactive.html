@@ -2184,6 +2184,7 @@
   }
   .notif-modal-overlay.visible { display: flex; }
   @keyframes notifFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes revFadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
   .notif-modal {
     background: #fff; border-radius: 16px; width: 640px; max-width: 90vw;
@@ -5681,54 +5682,72 @@
       <div class="rev-period-tab" style="padding:12px 24px;font-size:12.5px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;">Last 12 Months</div>
       <div class="rev-period-tab" style="padding:12px 24px;font-size:12.5px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;">Custom</div>
     </div>
+    <!-- Custom Date Picker (hidden by default) -->
+    <div id="rev-custom-picker" style="display:none;margin-bottom:20px;padding:16px 20px;background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);animation:revFadeIn 0.2s ease;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:12px;font-weight:600;color:#555;">Date Range:</span>
+        <input type="date" id="rev-custom-from" value="2025-10-01" style="font-family:Poppins,sans-serif;font-size:12px;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:8px;color:#333;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='#205C50';this.style.boxShadow='0 0 0 3px rgba(32,92,80,0.08)'" onblur="this.style.borderColor='#e0e0e0';this.style.boxShadow='none'">
+        <span style="font-size:12px;color:#888;">to</span>
+        <input type="date" id="rev-custom-to" value="2026-03-21" style="font-family:Poppins,sans-serif;font-size:12px;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:8px;color:#333;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='#205C50';this.style.boxShadow='0 0 0 3px rgba(32,92,80,0.08)'" onblur="this.style.borderColor='#e0e0e0';this.style.boxShadow='none'">
+        <button onclick="updateRevenueDashboard('custom')" style="font-family:Poppins,sans-serif;font-size:12px;font-weight:600;padding:8px 20px;background:#205C50;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:all 0.15s;" onmouseenter="this.style.background='#1a4d42'" onmouseleave="this.style.background='#205C50'">Apply</button>
+        <span style="font-size:11px;color:#aaa;font-weight:400;margin-left:4px;">Select a custom date range</span>
+      </div>
+    </div>
+
     <script>
     (function(){
       var container = document.getElementById('rev-period-tabs');
       if (!container) return;
+      var periodMap = ['month', '3months', '6months', '12months', 'custom'];
       container.addEventListener('click', function(e) {
         var tab = e.target;
         if (!tab.classList.contains('rev-period-tab')) return;
         var allTabs = container.querySelectorAll('.rev-period-tab');
+        var periodIndex = 0;
         for (var i = 0; i < allTabs.length; i++) {
           allTabs[i].style.background = 'transparent';
           allTabs[i].style.color = '#888';
           allTabs[i].style.borderBottom = '2px solid transparent';
           allTabs[i].classList.remove('active');
+          if (allTabs[i] === tab) periodIndex = i;
         }
         tab.style.background = '#f0f7f3';
         tab.style.color = '#205C50';
         tab.style.borderBottom = '2px solid #205C50';
         tab.classList.add('active');
+        if (typeof updateRevenueDashboard === 'function') {
+          updateRevenueDashboard(periodMap[periodIndex]);
+        }
       });
     })();
     </script>
 
     <!-- Row 1: KPI Stats -->
-    <div class="stats-row" style="margin-bottom:24px;">
-      <div class="stat-card" style="border-top:3px solid #205C50;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
+    <div class="stats-row" style="margin-bottom:24px;" id="rev-stats-row">
+      <div class="stat-card" id="rev-stat-mrr" style="border-top:3px solid #205C50;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
         <div class="stat-label">Total MRR</div>
-        <div class="stat-value" style="font-size:32px;color:#205C50;">&#x20b1;373,400</div>
+        <div class="stat-value" id="rev-val-mrr" style="font-size:32px;color:#205C50;">&#x20b1;373,400</div>
         <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
-          <span style="display:inline-flex;align-items:center;gap:3px;background:#e8f2ee;color:#56A66F;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;">
+          <span id="rev-growth-badge" style="display:inline-flex;align-items:center;gap:3px;background:#e8f2ee;color:#56A66F;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
             +23% MoM
           </span>
         </div>
       </div>
-      <div class="stat-card" style="border-top:3px solid #56A66F;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
+      <div class="stat-card" id="rev-stat-sub" style="border-top:3px solid #56A66F;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
         <div class="stat-label">Subscription Revenue</div>
-        <div class="stat-value" style="font-size:32px;color:#221F1F;">&#x20b1;284,000</div>
-        <div style="font-size:11px;color:#888;font-weight:500;">2,847 active subscribers</div>
+        <div class="stat-value" id="rev-val-sub" style="font-size:32px;color:#221F1F;">&#x20b1;284,000</div>
+        <div id="rev-sub-detail" style="font-size:11px;color:#888;font-weight:500;">2,847 active subscribers</div>
       </div>
-      <div class="stat-card" style="border-top:3px solid #84BEA1;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
+      <div class="stat-card" id="rev-stat-ad" style="border-top:3px solid #84BEA1;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
         <div class="stat-label">Ad Revenue</div>
-        <div class="stat-value" style="font-size:32px;color:#221F1F;">&#x20b1;89,400</div>
-        <div style="font-size:11px;color:#888;font-weight:500;">25 of 33 slots filled</div>
+        <div class="stat-value" id="rev-val-ad" style="font-size:32px;color:#221F1F;">&#x20b1;89,400</div>
+        <div id="rev-ad-detail" style="font-size:11px;color:#888;font-weight:500;">25 of 33 slots filled</div>
       </div>
-      <div class="stat-card" style="border-top:3px solid #50C9EF;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
+      <div class="stat-card" id="rev-stat-net" style="border-top:3px solid #50C9EF;transition:transform 0.2s,box-shadow 0.2s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08), 0 12px 24px rgba(0,0,0,0.06)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
         <div class="stat-label">Net Revenue</div>
-        <div class="stat-value" style="font-size:32px;color:#221F1F;">&#x20b1;359,313</div>
-        <div style="font-size:11px;color:#888;font-weight:500;">After Xendit fees &amp; refunds</div>
+        <div class="stat-value" id="rev-val-net" style="font-size:32px;color:#221F1F;">&#x20b1;359,313</div>
+        <div id="rev-net-detail" style="font-size:11px;color:#888;font-weight:500;">After Xendit fees &amp; refunds</div>
       </div>
     </div>
 
@@ -5737,16 +5756,16 @@
       <!-- MRR Trend Chart -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title" style="display:flex;align-items:center;gap:8px;">
+          <div class="card-title" id="rev-chart-title" style="display:flex;align-items:center;gap:8px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            MRR Trend (6 Months)
+            <span id="rev-chart-title-text">MRR Trend (6 Months)</span>
           </div>
           <div style="display:flex;gap:16px;font-size:11px;">
             <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#205C50;display:inline-block;"></span><span style="color:#888;">Subscriptions</span></span>
             <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#84BEA1;display:inline-block;"></span><span style="color:#888;">Ad Revenue</span></span>
           </div>
         </div>
-        <div class="stacked-bar-container" style="height:180px;">
+        <div class="stacked-bar-container" id="rev-mrr-chart" style="height:180px;">
           <div class="stacked-bar-group"><div class="stacked-bar" style="background:#84BEA1;height:31%;min-height:4px;border-radius:3px 3px 0 0;"></div><div class="stacked-bar" style="background:#205C50;height:69%;border-radius:0;"></div><div class="stacked-bar-label">Oct</div><div class="stacked-bar-total">&#x20b1;142K</div></div>
           <div class="stacked-bar-group"><div class="stacked-bar" style="background:#84BEA1;height:30%;min-height:4px;border-radius:3px 3px 0 0;"></div><div class="stacked-bar" style="background:#205C50;height:70%;border-radius:0;"></div><div class="stacked-bar-label">Nov</div><div class="stacked-bar-total">&#x20b1;185K</div></div>
           <div class="stacked-bar-group"><div class="stacked-bar" style="background:#84BEA1;height:28%;min-height:4px;border-radius:3px 3px 0 0;"></div><div class="stacked-bar" style="background:#205C50;height:72%;border-radius:0;"></div><div class="stacked-bar-label">Dec</div><div class="stacked-bar-total">&#x20b1;223K</div></div>
@@ -6249,9 +6268,9 @@
   <div class="content-body">
     <div class="content-tabs"><div class="content-tab active" onclick="switchContentTab(this,0)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Categories</div><div class="content-tab" onclick="switchContentTab(this,1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Featured Banners</div><div class="content-tab" onclick="switchContentTab(this,2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Collections</div></div>
     <div class="card mb-24">
-      <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Categories</div><button class="btn btn-primary">+ Add Category</button></div>
+      <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Categories</div><button class="btn btn-primary" onclick="navigateTo('categories')">Manage Categories &#x2192;</button></div>
       <table class="data-table">
-        <thead><tr><th>Icon</th><th>Category Name</th><th>Slug</th><th>Merchants</th><th>Coupons</th><th>Sort Order</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Icon</th><th>Category Name</th><th>Sub-categories</th><th>Merchants</th><th>Coupons</th><th>Sort Order</th><th>Actions</th></tr></thead>
         <tbody>
           <tr><td style="font-size:20px;color:#205C50;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></td><td style="font-weight:600;">Food &amp; Beverage</td><td><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="subcategory-pill">Japanese</span><span class="subcategory-pill">Korean</span><span class="subcategory-pill">Chinese</span><span class="subcategory-pill">Asian</span><span class="subcategory-pill">Western</span><span class="subcategory-pill">Filipino</span><span class="subcategory-pill">Cafes</span><span class="subcategory-pill">Bars</span><span class="subcategory-pill">Fast Food</span><span class="subcategory-pill">Catering</span></div></td><td style="font-weight:600;">89</td><td style="font-weight:600;">312</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">1</span></td><td><button class="btn btn-sm btn-outline" onclick="showToast('Category editor coming soon','info')">Edit</button> <button class="btn btn-sm btn-ghost" onclick="showToast('Add sub-category coming soon','info')">+ Sub</button></td></tr>
           <tr><td style="font-size:20px;color:#205C50;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-4.97 0-9-2.24-9-5v-1c0-2.76 4.03-5 9-5s9 2.24 9 5v1c0 2.76-4.03 5-9 5z"/><path d="M12 2C9 2 6 5 6 9c0 2.38 2.01 4.47 3 5.33V16h6v-1.67c.99-.86 3-2.95 3-5.33 0-4-3-7-6-7z"/></svg></td><td style="font-weight:600;">Wellness &amp; Beauty</td><td><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="subcategory-pill">Spas</span><span class="subcategory-pill">Salons</span><span class="subcategory-pill">Lash Studios</span><span class="subcategory-pill">Aesthetics</span><span class="subcategory-pill">Sauna</span></div></td><td style="font-weight:600;">22</td><td style="font-weight:600;">67</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">2</span></td><td><button class="btn btn-sm btn-outline" onclick="showToast('Category editor coming soon','info')">Edit</button> <button class="btn btn-sm btn-ghost" onclick="showToast('Add sub-category coming soon','info')">+ Sub</button></td></tr>
@@ -9625,7 +9644,198 @@ function filterCoupons(clickedTab, filter) {
 }
 
 // Ad filter tabs
-// Revenue period tabs
+// Revenue period tabs — data switching logic
+var revPeriodData = {
+  month: {
+    mrr: '\u20b1373,400',
+    sub: '\u20b1284,000',
+    subDetail: '2,847 active subscribers',
+    ad: '\u20b189,400',
+    adDetail: '25 of 33 slots filled',
+    net: '\u20b1359,313',
+    netDetail: 'After Xendit fees & refunds',
+    growth: '+23% MoM',
+    growthColor: '#56A66F',
+    growthBg: '#e8f2ee',
+    chartTitle: 'MRR (March 2026)',
+    bars: [
+      { month: 'Mar', total: 373, adPct: 24, subPct: 76 }
+    ]
+  },
+  '3months': {
+    mrr: '\u20b1326,267',
+    sub: '\u20b1248,667',
+    subDetail: '2,490 avg subscribers',
+    ad: '\u20b177,600',
+    adDetail: '22 avg slots filled',
+    net: '\u20b1313,333',
+    netDetail: 'After Xendit fees & refunds',
+    growth: '+18% QoQ',
+    growthColor: '#56A66F',
+    growthBg: '#e8f2ee',
+    chartTitle: 'MRR Trend (3 Months)',
+    bars: [
+      { month: 'Jan', total: 278, adPct: 26, subPct: 74 },
+      { month: 'Feb', total: 328, adPct: 25, subPct: 75 },
+      { month: 'Mar', total: 373, adPct: 24, subPct: 76 }
+    ]
+  },
+  '6months': {
+    mrr: '\u20b1373,400',
+    sub: '\u20b1284,000',
+    subDetail: '2,847 active subscribers',
+    ad: '\u20b189,400',
+    adDetail: '25 of 33 slots filled',
+    net: '\u20b1359,313',
+    netDetail: 'After Xendit fees & refunds',
+    growth: '+23% MoM',
+    growthColor: '#56A66F',
+    growthBg: '#e8f2ee',
+    chartTitle: 'MRR Trend (6 Months)',
+    bars: [
+      { month: 'Oct', total: 142, adPct: 31, subPct: 69 },
+      { month: 'Nov', total: 185, adPct: 30, subPct: 70 },
+      { month: 'Dec', total: 223, adPct: 28, subPct: 72 },
+      { month: 'Jan', total: 278, adPct: 26, subPct: 74 },
+      { month: 'Feb', total: 328, adPct: 25, subPct: 75 },
+      { month: 'Mar', total: 373, adPct: 24, subPct: 76 }
+    ]
+  },
+  '12months': {
+    mrr: '\u20b1373,400',
+    sub: '\u20b1284,000',
+    subDetail: '2,847 active subscribers',
+    ad: '\u20b189,400',
+    adDetail: '25 of 33 slots filled',
+    net: '\u20b1359,313',
+    netDetail: 'After Xendit fees & refunds',
+    growth: '+162% YoY',
+    growthColor: '#56A66F',
+    growthBg: '#e8f2ee',
+    chartTitle: 'MRR Trend (12 Months)',
+    bars: [
+      { month: 'Apr', total: 45, adPct: 38, subPct: 62 },
+      { month: 'May', total: 58, adPct: 36, subPct: 64 },
+      { month: 'Jun', total: 72, adPct: 35, subPct: 65 },
+      { month: 'Jul', total: 89, adPct: 34, subPct: 66 },
+      { month: 'Aug', total: 98, adPct: 33, subPct: 67 },
+      { month: 'Sep', total: 118, adPct: 32, subPct: 68 },
+      { month: 'Oct', total: 142, adPct: 31, subPct: 69 },
+      { month: 'Nov', total: 185, adPct: 30, subPct: 70 },
+      { month: 'Dec', total: 223, adPct: 28, subPct: 72 },
+      { month: 'Jan', total: 278, adPct: 26, subPct: 74 },
+      { month: 'Feb', total: 328, adPct: 25, subPct: 75 },
+      { month: 'Mar', total: 373, adPct: 24, subPct: 76 }
+    ]
+  },
+  custom: {
+    mrr: '\u20b1373,400',
+    sub: '\u20b1284,000',
+    subDetail: '2,847 active subscribers',
+    ad: '\u20b189,400',
+    adDetail: '25 of 33 slots filled',
+    net: '\u20b1359,313',
+    netDetail: 'After Xendit fees & refunds',
+    growth: '+23% MoM',
+    growthColor: '#56A66F',
+    growthBg: '#e8f2ee',
+    chartTitle: 'MRR Trend (6 Months)',
+    bars: [
+      { month: 'Oct', total: 142, adPct: 31, subPct: 69 },
+      { month: 'Nov', total: 185, adPct: 30, subPct: 70 },
+      { month: 'Dec', total: 223, adPct: 28, subPct: 72 },
+      { month: 'Jan', total: 278, adPct: 26, subPct: 74 },
+      { month: 'Feb', total: 328, adPct: 25, subPct: 75 },
+      { month: 'Mar', total: 373, adPct: 24, subPct: 76 }
+    ]
+  }
+};
+
+function updateRevenueDashboard(period) {
+  var data = revPeriodData[period];
+  if (!data) return;
+
+  // Elements to update
+  var statsRow = document.getElementById('rev-stats-row');
+  var chartContainer = document.getElementById('rev-mrr-chart');
+  var chartTitle = document.getElementById('rev-chart-title-text');
+  var customPicker = document.getElementById('rev-custom-picker');
+
+  // Show/hide custom date picker
+  if (customPicker) {
+    customPicker.style.display = (period === 'custom') ? 'block' : 'none';
+  }
+
+  // Fade out content
+  if (statsRow) statsRow.style.opacity = '0.3';
+  if (chartContainer) chartContainer.style.opacity = '0.3';
+  statsRow && (statsRow.style.transition = 'opacity 0.15s ease');
+  chartContainer && (chartContainer.style.transition = 'opacity 0.15s ease');
+
+  setTimeout(function() {
+    // Update stat values
+    var mrrVal = document.getElementById('rev-val-mrr');
+    var subVal = document.getElementById('rev-val-sub');
+    var adVal = document.getElementById('rev-val-ad');
+    var netVal = document.getElementById('rev-val-net');
+    var subDetail = document.getElementById('rev-sub-detail');
+    var adDetail = document.getElementById('rev-ad-detail');
+    var netDetail = document.getElementById('rev-net-detail');
+    var growthBadge = document.getElementById('rev-growth-badge');
+
+    if (mrrVal) mrrVal.textContent = data.mrr;
+    if (subVal) subVal.textContent = data.sub;
+    if (adVal) adVal.textContent = data.ad;
+    if (netVal) netVal.textContent = data.net;
+    if (subDetail) subDetail.textContent = data.subDetail;
+    if (adDetail) adDetail.textContent = data.adDetail;
+    if (netDetail) netDetail.textContent = data.netDetail;
+
+    // Update growth badge
+    if (growthBadge) {
+      growthBadge.style.background = data.growthBg;
+      growthBadge.style.color = data.growthColor;
+      growthBadge.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg> ' + data.growth;
+    }
+
+    // Update chart title
+    if (chartTitle) chartTitle.textContent = data.chartTitle;
+
+    // Rebuild chart bars
+    if (chartContainer) {
+      var bars = data.bars;
+      var maxVal = 0;
+      for (var i = 0; i < bars.length; i++) {
+        if (bars[i].total > maxVal) maxVal = bars[i].total;
+      }
+
+      var html = '';
+      for (var j = 0; j < bars.length; j++) {
+        var bar = bars[j];
+        var heightPct = Math.round((bar.total / maxVal) * 100);
+        var adHeight = Math.round(heightPct * (bar.adPct / 100));
+        var subHeight = heightPct - adHeight;
+        var isLast = (j === bars.length - 1);
+        var labelStyle = isLast ? ' style="font-weight:700;color:#205C50;"' : '';
+        var totalStyle = isLast ? ' style="font-weight:800;color:#221F1F;"' : '';
+
+        html += '<div class="stacked-bar-group">';
+        html += '<div class="stacked-bar" style="background:#84BEA1;height:' + adHeight + '%;min-height:4px;border-radius:3px 3px 0 0;"></div>';
+        html += '<div class="stacked-bar" style="background:#205C50;height:' + subHeight + '%;border-radius:0;"></div>';
+        html += '<div class="stacked-bar-label"' + labelStyle + '>' + bar.month + '</div>';
+        html += '<div class="stacked-bar-total"' + totalStyle + '>\u20b1' + bar.total + 'K</div>';
+        html += '</div>';
+      }
+      chartContainer.innerHTML = html;
+    }
+
+    // Fade back in
+    if (statsRow) statsRow.style.opacity = '1';
+    if (chartContainer) chartContainer.style.opacity = '1';
+  }, 150);
+}
+
+// Legacy function kept for compatibility
 function switchRevPeriod(clickedTab) {
   var tabs = document.querySelectorAll('#rev-period-tabs .rev-period-tab');
   for (var i = 0; i < tabs.length; i++) {
