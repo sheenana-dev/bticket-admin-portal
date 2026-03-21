@@ -3664,7 +3664,7 @@
         <div class="card detail-section">
           <div class="detail-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg> Business Information</div>
           <div class="detail-row"><div class="detail-label">Business Name</div><div class="detail-value" style="font-weight:600;">Tokyo Ramen House</div></div>
-          <div class="detail-row"><div class="detail-label">Category</div><div class="detail-value"><span class="badge active">Food &amp; Beverage</span></div></div>
+          <div class="detail-row"><div class="detail-label">Category</div><div class="detail-value"><span class="badge active">Food &amp; Beverage</span> <span class="subcategory-pill" style="margin-left:4px;">Japanese</span></div></div>
           <div class="detail-row"><div class="detail-label">Owner</div><div class="detail-value">Kenji Tanaka</div></div>
           <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value" style="color:#205C50;">kenji@tokyoramen.ph</div></div>
           <div class="detail-row"><div class="detail-label">Phone</div><div class="detail-value">+63 917 555 1234</div></div>
@@ -3832,7 +3832,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Business Category <span class="required">*</span></label>
-                <select class="form-select" id="add-biz-category">
+                <select class="form-select" id="add-biz-category" onchange="updateAdminSubCategory()">
                   <option value="">Select a category</option>
                   <option value="food">Food &amp; Beverage</option>
                   <option value="wellness">Wellness &amp; Beauty</option>
@@ -3844,7 +3844,12 @@
                   <option value="travel">Travel &amp; Experiences</option>
                 </select>
               </div>
-              <div class="form-group" style="flex:1;"></div>
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Sub-category <span class="required">*</span></label>
+                <select class="form-select" id="add-biz-subcategory" disabled>
+                  <option value="">Select category first</option>
+                </select>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Business Description <span class="required">*</span></label>
@@ -4151,6 +4156,7 @@
                 <div class="review-item"><div class="review-label">Business Name</div><div class="review-value" id="review-biz-name">--</div></div>
                 <div class="review-item"><div class="review-label">Business Type</div><div class="review-value" id="review-biz-type">--</div></div>
                 <div class="review-item"><div class="review-label">Category</div><div class="review-value" id="review-biz-category">--</div></div>
+                <div class="review-item"><div class="review-label">Sub-category</div><div class="review-value" id="review-biz-subcategory">--</div></div>
                 <div class="review-item"><div class="review-label">Owner Name</div><div class="review-value" id="review-owner-name">--</div></div>
                 <div class="review-item"><div class="review-label">Email</div><div class="review-value" id="review-email">--</div></div>
                 <div class="review-item"><div class="review-label">Mobile</div><div class="review-value" id="review-phone">--</div></div>
@@ -7933,6 +7939,7 @@ var merchantData = {
   'tokyo-ramen': {
     name: 'Tokyo Ramen House',
     category: 'Food & Beverage',
+    subcategory: 'Japanese',
     owner: 'Kenji Tanaka',
     email: 'kenji@tokyoramen.ph',
     phone: '+63 917 555 1234',
@@ -7949,6 +7956,7 @@ var merchantData = {
   'glow-up': {
     name: 'Glow Up Salon',
     category: 'Wellness & Beauty',
+    subcategory: 'Hair & Nail Salons',
     owner: 'Patricia Mendoza',
     email: 'patricia@glowupsalon.ph',
     phone: '+63 918 234 5678',
@@ -7965,6 +7973,7 @@ var merchantData = {
   'pizza-republic': {
     name: 'Pizza Republic',
     category: 'Food & Beverage',
+    subcategory: 'Western',
     owner: 'Marco Santos',
     email: 'marco@pizzarepublic.ph',
     phone: '+63 920 345 6789',
@@ -7981,6 +7990,7 @@ var merchantData = {
   'zen-fitness': {
     name: 'Zen Fitness Gym',
     category: 'Fitness & Sports',
+    subcategory: 'Gyms & Training',
     owner: 'Rafael Cruz',
     email: 'rafael@zenfitness.ph',
     phone: '+63 917 456 7890',
@@ -7997,6 +8007,7 @@ var merchantData = {
   'kuya-j': {
     name: 'Kuya J Restaurant',
     category: 'Food & Beverage',
+    subcategory: 'Filipino',
     owner: 'Jose Antonio Reyes',
     email: 'jose@kuyaj.ph',
     phone: '+63 915 567 8901',
@@ -8013,6 +8024,7 @@ var merchantData = {
   'maple-tree': {
     name: 'Maple Tree BGC',
     category: 'Food & Beverage',
+    subcategory: 'Western',
     owner: 'David Kim',
     email: 'david@mapletreebgc.ph',
     phone: '+63 917 678 9012',
@@ -8029,6 +8041,7 @@ var merchantData = {
   'cafe-selina': {
     name: 'Caf\u00e9 Selina',
     category: 'Food & Beverage',
+    subcategory: 'Cafes & Dessert',
     owner: 'Selina Gutierrez',
     email: 'selina@cafeselina.ph',
     phone: '+63 918 789 0123',
@@ -8045,6 +8058,7 @@ var merchantData = {
   'zen-spa': {
     name: 'Zen Spa',
     category: 'Wellness & Beauty',
+    subcategory: 'Spas & Massage',
     owner: 'Maria Lourdes Tan',
     email: 'maria@zenspa.ph',
     phone: '+63 920 890 1234',
@@ -8061,6 +8075,7 @@ var merchantData = {
   'kpop-studio': {
     name: 'K-Pop Studio',
     category: 'Entertainment & Leisure',
+    subcategory: 'Karaoke / KTV',
     owner: 'Hannah Lee',
     email: 'hannah@kpopstudio.ph',
     phone: '+63 917 901 2345',
@@ -8077,6 +8092,7 @@ var merchantData = {
   'pet-paradise': {
     name: 'Pet Paradise',
     category: 'Services',
+    subcategory: 'Pet Services',
     owner: 'Carlo Villanueva',
     email: 'carlo@petparadise.ph',
     phone: '+63 915 012 3456',
@@ -8093,6 +8109,7 @@ var merchantData = {
   'burger-shack': {
     name: 'Burger Shack',
     category: 'Food & Beverage',
+    subcategory: 'Fast Food',
     owner: 'Miguel Fernandez',
     email: 'miguel@burgershack.ph',
     phone: '+63 919 876 5432',
@@ -8109,6 +8126,7 @@ var merchantData = {
   'lucky-nails': {
     name: 'Lucky Nails',
     category: 'Wellness & Beauty',
+    subcategory: 'Lash & Brow Studios',
     owner: 'Grace Lim',
     email: 'grace@luckynails.ph',
     phone: '+63 920 111 2233',
@@ -8159,7 +8177,7 @@ function showMerchantDetail(merchantId) {
   var rows = sections[0] ? sections[0].querySelectorAll('.detail-row') : [];
   if (rows.length >= 11) {
     rows[0].querySelector('.detail-value').innerHTML = '<span style="font-weight:600;">' + m.name + '</span>';
-    rows[1].querySelector('.detail-value').innerHTML = '<span class="badge active">' + m.category + '</span>';
+    rows[1].querySelector('.detail-value').innerHTML = '<span class="badge active">' + m.category + '</span>' + (m.subcategory ? ' <span class="subcategory-pill" style="margin-left:4px;">' + m.subcategory + '</span>' : '');
     rows[2].querySelector('.detail-value').textContent = m.owner;
     rows[3].querySelector('.detail-value').innerHTML = '<span style="color:#205C50;">' + m.email + '</span>';
     rows[4].querySelector('.detail-value').textContent = m.phone;
@@ -8389,6 +8407,35 @@ function bindMerchantContextualButtons(merchantName, status) {
 var currentAddStep = 1;
 var addStepLabels = ['Business Info', 'Details', 'Photos', 'Documents', 'Review'];
 
+function updateAdminSubCategory() {
+  var cat = document.getElementById('add-biz-category').value;
+  var sub = document.getElementById('add-biz-subcategory');
+  var opts = {
+    'food': ['Japanese', 'Korean', 'Chinese', 'Asian', 'Western', 'Filipino', 'Cafes & Dessert', 'Bars & Nightlife', 'Fast Food', 'Catering'],
+    'wellness': ['Spas & Massage', 'Hair & Nail Salons', 'Lash & Brow Studios', 'Aesthetics & Skincare', 'Sauna & Wellness'],
+    'services': ['Auto Services', 'Pet Services', 'Laundry & Cleaning', 'Repair & Maintenance', 'Event Services'],
+    'entertainment': ['Karaoke / KTV', 'Sports & Games', 'Theme Parks', 'Activity & Event Venues'],
+    'fitness': ['Gyms & Training', 'Yoga & Pilates', 'Dance & Movement', 'Sports Clubs'],
+    'hotels': ['Hotels & Resorts', 'Boutique Hotels', 'Serviced Apartments', 'Villas', 'Hostels', 'Staycation Packages'],
+    'academy': ['Language & Academic', 'Music & Dance', 'Art & Creative', 'Cooking & Lifestyle', 'Certification & Test Prep', 'Kids Programs'],
+    'travel': ['Tours & Packages', 'Transport Services', 'Vehicle Rentals', 'Adventure & Outdoor', 'City & Attraction Passes']
+  };
+  sub.innerHTML = '';
+  if (!cat || !opts[cat]) {
+    sub.innerHTML = '<option value="">Select category first</option>';
+    sub.disabled = true;
+    return;
+  }
+  sub.disabled = false;
+  sub.innerHTML = '<option value="">Select sub-category</option>';
+  opts[cat].forEach(function(o) {
+    var opt = document.createElement('option');
+    opt.value = o.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    opt.textContent = o;
+    sub.appendChild(opt);
+  });
+}
+
 function showAddMerchant() {
   // Navigate to merchants screen first
   var screenMerchants = document.getElementById('screen-merchants');
@@ -8556,6 +8603,7 @@ function populateReview() {
   var selectFields = {
     'review-biz-type': 'add-biz-type',
     'review-biz-category': 'add-biz-category',
+    'review-biz-subcategory': 'add-biz-subcategory',
     'review-city': 'add-city',
     'review-province': 'add-province'
   };
