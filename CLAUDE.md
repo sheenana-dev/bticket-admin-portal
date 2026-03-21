@@ -1,10 +1,10 @@
-# B-Ticket Admin Portal — Interactive Prototype
+# B-ticket Admin Portal — Interactive Prototype
 
 ## Project Overview
-This is the **Admin Portal** prototype for B-Ticket, the Philippines' leading digital coupon marketplace. The Admin Portal is where the B-Ticket team approves merchants, moderates coupons, manages ads, and oversees the platform.
+This is the **Admin Portal** prototype for B-ticket, the Philippines' leading digital coupon marketplace. The Admin Portal is where the B-ticket team approves merchants, moderates coupons, manages ads, and oversees the platform.
 
 ## Product Context
-B-Ticket connects SMEs with local consumers and tourists through digital coupons. The full ecosystem:
+B-ticket connects SMEs with local consumers and tourists through digital coupons. The full ecosystem:
 
 | # | Product | Repo |
 |---|---------|------|
@@ -41,7 +41,7 @@ B-Ticket connects SMEs with local consumers and tourists through digital coupons
 - Travel & Experiences (Tours, Transport, Rentals, Adventure, Passes)
 
 ## Key Entities
-- **Merchant**: Business applying to list on B-Ticket (status: pending/approved/rejected/suspended)
+- **Merchant**: Business applying to list on B-ticket (status: pending/approved/rejected/suspended)
 - **Coupon**: Digital voucher submitted by merchant (status: pending/approved/rejected/active/paused/expired)
 - **Ad**: Paid advertisement (status: pending/approved/rejected/active/completed)
 - **Consumer/Subscriber**: End user (₱99/mo subscription)
@@ -96,6 +96,7 @@ This project uses specialized Claude Code agents in `.claude/agents/`:
 | `data-analyst` | Analytics & metrics | KPIs, dashboards, data modeling |
 | `orchestrator` | Team coordination | Multi-agent workflows |
 | `senior-designer` | Premium UI design | High-quality, production-grade interfaces |
+| `admin` | Testing & review | Prototype QA, UI bugs, interaction testing, design compliance |
 
 ## Conventions
 - Self-contained HTML prototypes (no build tools needed)

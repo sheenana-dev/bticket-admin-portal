@@ -1,4 +1,4 @@
-# B-Ticket Business Categories & Sub-Categories
+# B-ticket Business Categories & Sub-Categories
 
 ## 1. Food & Beverage
 - Japanese
