@@ -5594,7 +5594,7 @@
 
 <!-- Category Edit Modal -->
 <div class="refund-panel-overlay" id="catEditOverlay" onclick="closeCatEditModal()"></div>
-<div class="refund-slide-panel" id="catEditPanel" style="width:480px;right:-480px;">
+<div class="refund-slide-panel" id="catEditPanel" style="width:480px;">
   <div class="refund-panel-header">
     <div class="refund-panel-header-title" id="catEditTitle">Edit Category</div>
     <button class="refund-panel-close" onclick="closeCatEditModal()">
@@ -6337,13 +6337,172 @@
 
 <!-- ===== SCREEN: CATEGORIES ===== -->
 <div class="screen" id="screen-categories">
-  <div class="topbar"><div><div class="topbar-title">Category Management</div><div class="topbar-subtitle">Manage business categories for merchants and coupons</div></div><div class="topbar-right"><button class="btn btn-primary" onclick="showToast('Add category form coming soon','info')">+ Add Category</button></div></div>
+  <div class="topbar"><div><div class="topbar-title">Category Management</div><div class="topbar-subtitle">8 categories &bull; 50 sub-categories &bull; 145 merchants</div></div><div class="topbar-right"><button class="btn btn-primary" onclick="openCatEditModal(null,'add')">+ Add Category</button><button class="btn btn-outline" style="margin-left:8px;" onclick="openCatEditModal(null,'addsub')">+ Add Sub-category</button></div></div>
   <div class="content-body">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> All Categories</div><div style="font-size:12px;color:#888;">8 categories &bull; 50 sub-categories &bull; 145 merchants &bull; 470 coupons</div></div>
-      <table class="data-table" id="categories-table">
-        <thead><tr><th>Icon</th><th>Category Name</th><th>Sub-categories</th><th>Merchants</th><th>Coupons</th><th>Sort Order</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
+    <!-- Category Tree View -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Category &rarr; Sub-category &rarr; Merchants</div></div>
+
+      <!-- Food & Beverage -->
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x1F35C;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Food &amp; Beverage</span><span style="font-size:11px;color:#888;margin-left:8px;">10 sub-categories &bull; 89 merchants</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Japanese</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Tokyo Ramen House</span>
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Botejyu BGC</span>
+          </div>
+          <span style="font-size:10px;color:#888;">2 merchants</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Korean</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Seoul Kitchen</span>
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">K-BBQ House</span>
+          </div>
+          <span style="font-size:10px;color:#888;">2 merchants</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Filipino</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Kuya J Restaurant</span>
+          </div>
+          <span style="font-size:10px;color:#888;">1 merchant</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Western</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Maple Tree BGC</span>
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Pizza Republic</span>
+          </div>
+          <span style="font-size:10px;color:#888;">2 merchants</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Cafes</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
+            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Caf&eacute; Selina</span>
+          </div>
+          <span style="font-size:10px;color:#888;">1 merchant</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">
+          + 5 more sub-categories: Chinese, Asian, Bars, Fast Food, Catering
+        </div>
+      </div>
+
+      <!-- Wellness & Beauty -->
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x1F486;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Wellness &amp; Beauty</span><span style="font-size:11px;color:#888;margin-left:8px;">5 sub-categories &bull; 22 merchants</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Spas</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Zen Spa</span></div>
+          <span style="font-size:10px;color:#888;">1 merchant</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Salons</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Glow Up Salon</span></div>
+          <span style="font-size:10px;color:#888;">1 merchant</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Lash Studios</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Lash Bar PH</span></div>
+          <span style="font-size:10px;color:#888;">1 merchant</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 2 more: Aesthetics, Sauna</div>
+      </div>
+
+      <!-- Services -->
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x1F527;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Services</span><span style="font-size:11px;color:#888;margin-left:8px;">5 sub-categories &bull; 4 merchants</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
+          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Pet</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Pet Paradise</span></div>
+          <span style="font-size:10px;color:#888;">1 merchant</span>
+        </div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 4 more: Auto, Laundry, Repair, Events</div>
+      </div>
+
+      <!-- Entertainment, Fitness, Hotels, Academy, Travel (collapsed) -->
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x1F3A4;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Entertainment &amp; Leisure</span><span style="font-size:11px;color:#888;margin-left:8px;">4 sub-categories &bull; 18 merchants</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:70px;text-align:center;">KTV</span><div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">K-Pop Studio</span></div><span style="font-size:10px;color:#888;">1 merchant</span></div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 3 more: Sports, Theme Parks, Venues</div>
+      </div>
+
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x1F3CB;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Fitness &amp; Sports</span><span style="font-size:11px;color:#888;margin-left:8px;">4 sub-categories &bull; 6 merchants</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:70px;text-align:center;">Gyms</span><div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Zen Fitness Gym</span><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Flow Studio Manila</span></div><span style="font-size:10px;color:#888;">2 merchants</span></div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 3 more: Yoga, Dance, Sports Clubs</div>
+      </div>
+
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x1F3E8;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Hotels &amp; Stays</span><span style="font-size:11px;color:#888;margin-left:8px;">6 sub-categories &bull; 3 merchants</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:70px;text-align:center;">Staycation</span><div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Palm Suites Makati</span></div><span style="font-size:10px;color:#888;">1 merchant</span></div>
+        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 5 more: Hotels, Boutique, Apartments, Villas, Hostels</div>
+      </div>
+
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x1F4DA;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Academy &amp; Learning</span><span style="font-size:11px;color:#888;margin-left:8px;">6 sub-categories &bull; 2 merchants</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;"><div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">Language, Music, Art, Cooking, Certification, Kids</div></div>
+
+      <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+        <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="font-size:18px;">&#x2708;&#xFE0F;</span>
+        <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Travel &amp; Experiences</span><span style="font-size:11px;color:#888;margin-left:8px;">5 sub-categories &bull; 1 merchant</span></div>
+        <span class="badge active" style="font-size:10px;">Active</span>
+        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
+      </div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;"><div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">Tours, Transport, Rentals, Adventure, Passes</div></div>
+
+    </div>
           <tr><td style="font-size:20px;color:#205C50;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></td><td style="font-weight:600;">Food &amp; Beverage</td><td><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="subcategory-pill">Japanese</span><span class="subcategory-pill">Korean</span><span class="subcategory-pill">Chinese</span><span class="subcategory-pill">Asian</span><span class="subcategory-pill">Western</span><span class="subcategory-pill">Filipino</span><span class="subcategory-pill">Cafes</span><span class="subcategory-pill">Bars</span><span class="subcategory-pill">Fast Food</span><span class="subcategory-pill">Catering</span></div></td><td style="font-weight:600;">89</td><td style="font-weight:600;">312</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">1</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openCatEditModal(this,'edit')">Edit</button> <button class="btn btn-sm btn-ghost" onclick="openCatEditModal(this,'sub')">+ Sub</button></td></tr>
           <tr><td style="font-size:20px;color:#205C50;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-4.97 0-9-2.24-9-5v-1c0-2.76 4.03-5 9-5s9 2.24 9 5v1c0 2.76-4.03 5-9 5z"/><path d="M12 2C9 2 6 5 6 9c0 2.38 2.01 4.47 3 5.33V16h6v-1.67c.99-.86 3-2.95 3-5.33 0-4-3-7-6-7z"/></svg></td><td style="font-weight:600;">Wellness &amp; Beauty</td><td><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="subcategory-pill">Spas</span><span class="subcategory-pill">Salons</span><span class="subcategory-pill">Lash Studios</span><span class="subcategory-pill">Aesthetics</span><span class="subcategory-pill">Sauna</span></div></td><td style="font-weight:600;">22</td><td style="font-weight:600;">67</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">2</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openCatEditModal(this,'edit')">Edit</button> <button class="btn btn-sm btn-ghost" onclick="openCatEditModal(this,'sub')">+ Sub</button></td></tr>
           <tr><td style="font-size:20px;color:#205C50;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></td><td style="font-weight:600;">Services</td><td><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="subcategory-pill">Auto</span><span class="subcategory-pill">Pet</span><span class="subcategory-pill">Laundry</span><span class="subcategory-pill">Repair</span><span class="subcategory-pill">Events</span></div></td><td style="font-weight:600;">4</td><td style="font-weight:600;">12</td><td><span style="display:inline-flex;background:#f0f0f5;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#555;">3</span></td><td><span class="badge active">Active</span></td><td><button class="btn btn-sm btn-outline" onclick="openCatEditModal(this,'edit')">Edit</button> <button class="btn btn-sm btn-ghost" onclick="openCatEditModal(this,'sub')">+ Sub</button></td></tr>
@@ -9217,6 +9376,21 @@ function suspendUser() {
       closeUserDetail();
     }
   });
+}
+
+/* Category Tree Toggle */
+function toggleCatTree(item) {
+  var children = item.nextElementSibling;
+  var chevron = item.querySelector('.cat-chevron');
+  if (children && children.classList.contains('cat-tree-children')) {
+    if (children.style.display === 'none') {
+      children.style.display = 'block';
+      chevron.style.transform = 'rotate(90deg)';
+    } else {
+      children.style.display = 'none';
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
 }
 
 /* Category Edit & Sub-category Management */
