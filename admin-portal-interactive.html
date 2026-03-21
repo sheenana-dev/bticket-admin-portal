@@ -6346,161 +6346,131 @@
       <!-- Food & Beverage -->
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x1F35C;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Food &amp; Beverage</span><span style="font-size:11px;color:#888;margin-left:8px;">10 sub-categories &bull; 89 merchants</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
-      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Japanese</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Tokyo Ramen House</span>
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Botejyu BGC</span>
-          </div>
-          <span style="font-size:10px;color:#888;">2 merchants</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Korean</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Seoul Kitchen</span>
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">K-BBQ House</span>
-          </div>
-          <span style="font-size:10px;color:#888;">2 merchants</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Filipino</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Kuya J Restaurant</span>
-          </div>
-          <span style="font-size:10px;color:#888;">1 merchant</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Western</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Maple Tree BGC</span>
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Pizza Republic</span>
-          </div>
-          <span style="font-size:10px;color:#888;">2 merchants</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Cafes</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;">
-            <span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Caf&eacute; Selina</span>
-          </div>
-          <span style="font-size:10px;color:#888;">1 merchant</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">
-          + 5 more sub-categories: Chinese, Asian, Bars, Fast Food, Catering
-        </div>
+<div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Japanese</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">12 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Japanese','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Korean</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">8 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Korean','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Chinese</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">6 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Chinese','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Asian</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">5 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Asian','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Western</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">14 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Western','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Filipino</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">18 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Filipino','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Cafes</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">11 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Cafes','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Bars</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">7 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Bars','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Fast Food</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">5 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Fast Food','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Catering</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">3 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Catering','info')">View &rarr;</a></div>
       </div>
 
       <!-- Wellness & Beauty -->
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x1F486;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Wellness &amp; Beauty</span><span style="font-size:11px;color:#888;margin-left:8px;">5 sub-categories &bull; 22 merchants</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
       <div class="cat-tree-children" style="display:none;background:#fafbfc;">
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Spas</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Zen Spa</span></div>
-          <span style="font-size:10px;color:#888;">1 merchant</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Salons</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Glow Up Salon</span></div>
-          <span style="font-size:10px;color:#888;">1 merchant</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Lash Studios</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Lash Bar PH</span></div>
-          <span style="font-size:10px;color:#888;">1 merchant</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 2 more: Aesthetics, Sauna</div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Spas</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">8 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Spas','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Salons</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">6 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Salons','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Lash Studios</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">3 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Lash Studios','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Aesthetics</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">3 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Aesthetics','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Sauna</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">2 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Sauna','info')">View &rarr;</a></div>
       </div>
 
       <!-- Services -->
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x1F527;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Services</span><span style="font-size:11px;color:#888;margin-left:8px;">5 sub-categories &bull; 4 merchants</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
       <div class="cat-tree-children" style="display:none;background:#fafbfc;">
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;">
-          <span class="subcategory-pill" style="min-width:70px;text-align:center;">Pet</span>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Pet Paradise</span></div>
-          <span style="font-size:10px;color:#888;">1 merchant</span>
-        </div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 4 more: Auto, Laundry, Repair, Events</div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Auto</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Auto','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Pet</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Pet','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Laundry</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Laundry','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Repair</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Repair','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Events</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Events','info')">View &rarr;</a></div>
       </div>
 
       <!-- Entertainment, Fitness, Hotels, Academy, Travel (collapsed) -->
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x1F3A4;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Entertainment &amp; Leisure</span><span style="font-size:11px;color:#888;margin-left:8px;">4 sub-categories &bull; 18 merchants</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
       <div class="cat-tree-children" style="display:none;background:#fafbfc;">
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:70px;text-align:center;">KTV</span><div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">K-Pop Studio</span></div><span style="font-size:10px;color:#888;">1 merchant</span></div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 3 more: Sports, Theme Parks, Venues</div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">KTV</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">5 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by KTV','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Sports</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">4 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Sports','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Theme Parks</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">6 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Theme Parks','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Venues</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">3 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Venues','info')">View &rarr;</a></div>
       </div>
 
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x1F3CB;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Fitness &amp; Sports</span><span style="font-size:11px;color:#888;margin-left:8px;">4 sub-categories &bull; 6 merchants</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
       <div class="cat-tree-children" style="display:none;background:#fafbfc;">
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:70px;text-align:center;">Gyms</span><div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Zen Fitness Gym</span><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Flow Studio Manila</span></div><span style="font-size:10px;color:#888;">2 merchants</span></div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 3 more: Yoga, Dance, Sports Clubs</div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Gyms</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">2 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Gyms','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Yoga</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">2 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Yoga','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Dance</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Dance','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Sports Clubs</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Sports Clubs','info')">View &rarr;</a></div>
       </div>
 
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x1F3E8;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Hotels &amp; Stays</span><span style="font-size:11px;color:#888;margin-left:8px;">6 sub-categories &bull; 3 merchants</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
       <div class="cat-tree-children" style="display:none;background:#fafbfc;">
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:70px;text-align:center;">Staycation</span><div style="display:flex;flex-wrap:wrap;gap:6px;flex:1;"><span style="font-size:11px;color:#333;background:#fff;padding:3px 10px;border-radius:8px;border:1px solid #eee;">Palm Suites Makati</span></div><span style="font-size:10px;color:#888;">1 merchant</span></div>
-        <div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">+ 5 more: Hotels, Boutique, Apartments, Villas, Hostels</div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Hotels</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Hotels','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Boutique</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Boutique','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Apartments</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Apartments','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Villas</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Villas','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Hostels</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Hostels','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Staycation</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Staycation','info')">View &rarr;</a></div>
       </div>
 
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x1F4DA;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Academy &amp; Learning</span><span style="font-size:11px;color:#888;margin-left:8px;">6 sub-categories &bull; 2 merchants</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
-      <div class="cat-tree-children" style="display:none;background:#fafbfc;"><div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">Language, Music, Art, Cooking, Certification, Kids</div></div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Language</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Language','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Music</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Music','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Art</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Art','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Cooking</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Cooking','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Certification</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Certification','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Kids</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Kids','info')">View &rarr;</a></div>
+      </div>
 
       <div class="cat-tree-item" onclick="toggleCatTree(this)" style="cursor:pointer;padding:14px 20px;display:flex;align-items:center;gap:12px;">
         <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        <span style="font-size:18px;">&#x2708;&#xFE0F;</span>
         <div style="flex:1;"><span style="font-weight:600;color:#221F1F;">Travel &amp; Experiences</span><span style="font-size:11px;color:#888;margin-left:8px;">5 sub-categories &bull; 1 merchant</span></div>
         <span class="badge active" style="font-size:10px;">Active</span>
         <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openCatEditModal(this,'edit')">Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCatEditModal(this,'sub')">+ Sub</button>
       </div>
-      <div class="cat-tree-children" style="display:none;background:#fafbfc;"><div class="cat-sub-row" style="padding:10px 20px 10px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;color:#888;font-size:11px;font-style:italic;">Tours, Transport, Rentals, Adventure, Passes</div></div>
+      <div class="cat-tree-children" style="display:none;background:#fafbfc;">
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Tours</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">1 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Tours','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Transport</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Transport','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Rentals</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Rentals','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Adventure</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Adventure','info')">View &rarr;</a></div>
+        <div style="padding:8px 20px 8px 52px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;gap:10px;"><span class="subcategory-pill" style="min-width:80px;text-align:center;">Passes</span><span style="font-size:12px;color:#555;flex:1;font-weight:500;">0 merchants</span><a style="font-size:11px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('merchants');showToast('Filtered by Passes','info')">View &rarr;</a></div>
+      </div>
 
     </div>
   </div>
