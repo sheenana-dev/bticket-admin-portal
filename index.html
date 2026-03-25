@@ -1309,6 +1309,10 @@
   .add-merchant-form .step-card-subtitle {
     font-size: 12px; color: #888; margin-bottom: 20px; line-height: 1.5;
   }
+  .admin-filter-chip{display:flex;align-items:center;gap:7px;padding:9px 12px;border:1.5px solid #e0e0e8;border-radius:8px;cursor:pointer;font-size:12px;color:#555;font-weight:500;transition:all .15s;background:#fff;user-select:none}
+  .admin-filter-chip:hover{border-color:#84BEA1;background:rgba(32,92,80,.02)}
+  .admin-filter-chip input[type="checkbox"]{width:15px;height:15px;accent-color:#205C50;cursor:pointer;flex-shrink:0}
+  .admin-filter-chip:has(input:checked){border-color:#205C50;background:rgba(32,92,80,.04);color:#205C50;font-weight:600}
   .add-merchant-form .form-divider {
     height: 1px; background: #f0f0f5; margin: 20px 0;
   }
@@ -4010,6 +4014,50 @@
               </div>
               <div class="form-group" style="flex:1;"></div>
             </div>
+
+            <div class="form-divider"></div>
+
+            <div class="step-card-title" style="font-size:14px;">Amenities &amp; Facilities</div>
+            <div class="step-card-subtitle">Select all amenities available at this business.</div>
+            <div style="padding:10px 14px;background:rgba(32,92,80,.04);border:1px dashed rgba(32,92,80,.2);border-radius:8px;margin-bottom:14px;font-size:11.5px;color:#666;display:flex;align-items:center;gap:8px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              To request an additional filter option, contact the support team.
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+              <label class="admin-filter-chip"><input type="checkbox"><span>Outdoor Seating</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Fast Service</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Drive-Thru Service</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Free Wi-Fi</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Smoking Rooms</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Pet Friendly</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Parking</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>VIP Rooms</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Event Space</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Family Friendly</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Age Restriction</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Reservation Required</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Full Course</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Course Only</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Drink All You Can</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Eat All You Can</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Multi Course Meal</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Celebrations</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Wheelchair Accessible</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Delivery</span></label>
+            </div>
+
+            <div class="form-divider"></div>
+
+            <div class="step-card-title" style="font-size:14px;">Accepted Payment Methods</div>
+            <div class="step-card-subtitle">Select all payment methods this business accepts.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+              <label class="admin-filter-chip"><input type="checkbox"><span>Cash</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>GCash</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Maya</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Credit Card</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Debit Card</span></label>
+              <label class="admin-filter-chip"><input type="checkbox"><span>Bank Transfer</span></label>
+            </div>
           </div>
         </div>
 
@@ -4455,9 +4503,8 @@
                       <div style="font-size:11px;font-weight:600;">Fixed Amount</div>
                     </div>
                     <div class="discount-type-card" data-type="bogo" onclick="selectDiscountType(this,'bogo')">
-                      <div style="font-size:14px;font-weight:800;color:#205C50;">B1G1</div>
-                      <div style="font-size:11px;font-weight:600;">Buy 1 Get 1</div>
-                      <div style="font-size:9px;color:#888;margin-top:2px;">Customizable</div>
+                      <div style="font-size:14px;font-weight:800;color:#205C50;">BxGy</div>
+                      <div style="font-size:11px;font-weight:600;">Buy X Get Y</div>
                     </div>
                     <div class="discount-type-card" data-type="free_item" onclick="selectDiscountType(this,'free_item')">
                       <div style="font-size:18px;color:#205C50;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
@@ -4473,6 +4520,13 @@
                 <div class="form-group" id="cpn-discount-value-group">
                   <label class="form-label">Discount Value <span style="color:#EE4036;">*</span></label>
                   <input type="text" class="form-input" id="cpn-discount-value" placeholder="e.g. 50">
+                </div>
+              </div>
+              <div id="cpn-free-item-config" style="display:none;margin-bottom:14px;">
+                <div class="form-group">
+                  <label class="form-label">Free Item Description <span style="color:#EE4036;">*</span></label>
+                  <input type="text" class="form-input" id="cpn-free-item-desc" placeholder="e.g., Free Iced Latte, Free Dessert, Free Trial Class">
+                  <div style="font-size:11px;color:#888;margin-top:4px;">Describe what the customer will receive for free.</div>
                 </div>
               </div>
               <div id="cpn-bogo-config" style="display:none;margin-bottom:14px;">
@@ -4735,8 +4789,8 @@
           <select id="edit-coupon-discount-type">
             <option value="percentage">Percentage</option>
             <option value="fixed">Fixed Amount (&#x20b1;)</option>
-            <option value="bogo">Buy 1 Get 1 (Customizable)</option>
-            <option value="free_item">Free Item</option>
+            <option value="bogo">Buy X Get Y (e.g., Buy 1 Get 1)</option>
+            <option value="free_item">Free Item (e.g., Free Dessert)</option>
           </select>
         </div>
         <div class="coupon-edit-field">
@@ -9177,15 +9231,12 @@ function selectDiscountType(el, type) {
   document.querySelectorAll('#cpn-discount-type-options .discount-type-card').forEach(function(c) { c.classList.remove('selected'); });
   el.classList.add('selected');
   document.getElementById('cpn-discount-type').value = type;
-  // Show/hide BOGO config
   var bogoConfig = document.getElementById('cpn-bogo-config');
+  var freeItemConfig = document.getElementById('cpn-free-item-config');
   var discountGroup = document.getElementById('cpn-discount-value-group');
-  if (bogoConfig) {
-    bogoConfig.style.display = (type === 'bogo') ? 'block' : 'none';
-  }
-  if (discountGroup) {
-    discountGroup.style.display = (type === 'bogo') ? 'none' : '';
-  }
+  if (bogoConfig) bogoConfig.style.display = (type === 'bogo') ? 'block' : 'none';
+  if (freeItemConfig) freeItemConfig.style.display = (type === 'free_item') ? 'block' : 'none';
+  if (discountGroup) discountGroup.style.display = (type === 'bogo' || type === 'free_item') ? 'none' : '';
 }
 function selectFrequency(el, freq) {
   document.querySelectorAll('#cpn-frequency-options .discount-type-card').forEach(function(c) { c.classList.remove('selected'); });
