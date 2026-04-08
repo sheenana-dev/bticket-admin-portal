@@ -331,6 +331,84 @@
   .photo-thumb:hover { background: #e8e8ef; }
   .photo-label { font-size: 9px; color: #888; text-align: center; margin-top: 4px; }
 
+  /* ---- Editable Photo Management (Merchant Detail) ---- */
+  .photo-mgmt-section { margin-bottom: 16px; }
+  .photo-mgmt-section:last-child { margin-bottom: 0; }
+  .photo-mgmt-label {
+    font-size: 11px; font-weight: 600; color: #555; margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .photo-mgmt-count { font-size: 10px; font-weight: 500; color: #999; }
+
+  .photo-upload-zone {
+    border: 2px dashed #d0d0d8; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; background: #fafafa;
+    position: relative; overflow: hidden;
+  }
+  .photo-upload-zone:hover { border-color: #205C50; background: rgba(32,92,80,0.03); }
+  .photo-upload-zone.has-photo {
+    border-style: solid; border-color: #e0e0e8; background: #f0f0f5;
+  }
+  .photo-upload-zone .upload-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .photo-upload-zone .upload-placeholder svg { color: #bbb; }
+  .photo-upload-zone .upload-placeholder span { font-size: 10px; color: #aaa; }
+  .photo-upload-zone .change-overlay {
+    position: absolute; inset: 0; background: rgba(32,92,80,0.6);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s; border-radius: 8px;
+  }
+  .photo-upload-zone:hover .change-overlay { opacity: 1; }
+  .photo-upload-zone .change-overlay span {
+    font-size: 10px; font-weight: 700; color: #fff; letter-spacing: 0.5px;
+  }
+
+  .photo-upload-zone--logo { width: 80px; height: 80px; border-radius: 10px; }
+  .photo-upload-zone--cover { width: 200px; height: 80px; border-radius: 10px; }
+
+  .photo-mgmt-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+  }
+  .photo-mgmt-thumb {
+    aspect-ratio: 1; border-radius: 8px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; border: 2px dashed #d0d0d8;
+    background: #fafafa;
+  }
+  .photo-mgmt-thumb:hover { border-color: #205C50; }
+  .photo-mgmt-thumb.filled {
+    border-style: solid; border-color: #e0e0e8; background: #f0f0f5;
+  }
+  .photo-mgmt-thumb .thumb-check {
+    width: 100%; height: 100%; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #56A66F;
+  }
+  .photo-mgmt-thumb .thumb-add {
+    font-size: 18px; color: #ccc; font-weight: 300;
+  }
+  .photo-mgmt-thumb .thumb-delete {
+    position: absolute; top: -5px; right: -5px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #E74C3C; color: #fff;
+    font-size: 10px; font-weight: 700; border: 2px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0; transition: opacity 0.15s;
+    line-height: 1; z-index: 2;
+  }
+  .photo-mgmt-thumb.filled:hover .thumb-delete { opacity: 1; }
+  .photo-mgmt-thumb .thumb-hover-overlay {
+    position: absolute; inset: 0; background: rgba(32,92,80,0.5);
+    border-radius: 6px; opacity: 0; transition: opacity 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-mgmt-thumb.filled:hover .thumb-hover-overlay { opacity: 1; }
+  .photo-mgmt-thumb .thumb-hover-overlay span {
+    font-size: 9px; font-weight: 700; color: #fff;
+  }
+
   /* Admin action panel */
   .action-status {
     padding: 10px 16px; border-radius: 8px;
@@ -2796,6 +2874,8 @@
     .bottom-grid-3 { grid-template-columns: 1fr; }
     .banner-grid { grid-template-columns: 1fr; }
     .photo-grid { grid-template-columns: repeat(2, 1fr); }
+    .photo-mgmt-grid { grid-template-columns: repeat(3, 1fr); }
+    .photo-upload-zone--cover { width: 160px; height: 64px; }
     .review-photo-grid { grid-template-columns: repeat(2, 1fr); }
     .refund-info-grid { grid-template-columns: 1fr; }
     .review-info-grid { grid-template-columns: 1fr; }
@@ -3686,13 +3766,138 @@
           <div class="doc-item"><div class="doc-item-left"><span class="doc-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span><div><div class="doc-name">Valid ID (Government-issued)</div><div style="font-size:10px;color:#aaa;">JPG &bull; 3.8 MB</div></div></div><div style="display:flex;align-items:center;gap:10px;"><span style="color:#56A66F;font-size:14px;">&#x2713;</span><span class="doc-link">View Document</span></div></div>
           <div class="doc-item"><div class="doc-item-left"><span class="doc-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span><div><div class="doc-name">B-ticket Merchant Contract</div><div style="font-size:10px;color:#56A66F;font-weight:500;">Signed by Kenji Tanaka on Mar 16, 2026</div></div></div><div style="display:flex;align-items:center;gap:10px;"><span style="color:#56A66F;font-size:14px;">&#x2713;</span><span class="doc-link">View Signed Contract</span></div></div>
         </div>
-        <div class="card detail-section">
+        <div class="card detail-section" id="merchant-photos-section">
           <div class="detail-section-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Photos</div>
-          <div class="photo-grid">
-            <div><div class="photo-thumb" style="background:#fff3e0;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18c0 4.97-4.03 9-9 9s-9-4.03-9-9z"/><path d="M3 12c0-1 .5-2 1-2.5"/><path d="M8 3v3c0 1.5-.5 2.5-.5 3.5"/><path d="M12 3v3c0 1.5-.5 2.5-.5 3.5"/></svg></div><div class="photo-label">Logo</div></div>
-            <div><div class="photo-thumb" style="background:#e8f2ee;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="photo-label">Cover Photo</div></div>
-            <div><div class="photo-thumb" style="background:#e0f5fb;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div><div class="photo-label">Interior</div></div>
-            <div><div class="photo-thumb" style="background:#ffe8ef;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="9" ry="4"/><path d="M3 14v2c0 2.21 4.03 4 9 4s9-1.79 9-4v-2"/><circle cx="12" cy="8" r="3"/></svg></div><div class="photo-label">Food Photos</div></div>
+
+          <!-- Logo & Cover row -->
+          <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+            <div class="photo-mgmt-section" style="margin-bottom:0;">
+              <div class="photo-mgmt-label">Logo</div>
+              <div class="photo-upload-zone photo-upload-zone--logo has-photo" onclick="handleDetailPhotoUpload('logo', this)" title="Click to change logo">
+                <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18c0 4.97-4.03 9-9 9s-9-4.03-9-9z"/><path d="M3 12c0-1 .5-2 1-2.5"/><path d="M8 3v3c0 1.5-.5 2.5-.5 3.5"/><path d="M12 3v3c0 1.5-.5 2.5-.5 3.5"/></svg>
+                </div>
+                <div class="change-overlay"><span>CHANGE</span></div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'logo')">
+              </div>
+            </div>
+            <div class="photo-mgmt-section" style="margin-bottom:0;">
+              <div class="photo-mgmt-label">Cover Photo</div>
+              <div class="photo-upload-zone photo-upload-zone--cover has-photo" onclick="handleDetailPhotoUpload('cover', this)" title="Click to change cover photo">
+                <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <div class="change-overlay"><span>CHANGE</span></div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'cover')">
+              </div>
+            </div>
+          </div>
+
+          <!-- Interior / Exterior Photos -->
+          <div class="photo-mgmt-section">
+            <div class="photo-mgmt-label">
+              Interior / Exterior Photos
+              <span class="photo-mgmt-count" id="interior-photo-count">4 of 10 uploaded</span>
+            </div>
+            <div class="photo-mgmt-grid" id="interior-photo-grid">
+              <div class="photo-mgmt-thumb filled" title="Interior photo 1">
+                <div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto('interior',0,this)" title="Remove photo">&times;</div>
+                <div class="thumb-hover-overlay"><span>VIEW</span></div>
+              </div>
+              <div class="photo-mgmt-thumb filled" title="Interior photo 2">
+                <div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto('interior',1,this)" title="Remove photo">&times;</div>
+                <div class="thumb-hover-overlay"><span>VIEW</span></div>
+              </div>
+              <div class="photo-mgmt-thumb filled" title="Interior photo 3">
+                <div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto('interior',2,this)" title="Remove photo">&times;</div>
+                <div class="thumb-hover-overlay"><span>VIEW</span></div>
+              </div>
+              <div class="photo-mgmt-thumb filled" title="Interior photo 4">
+                <div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto('interior',3,this)" title="Remove photo">&times;</div>
+                <div class="thumb-hover-overlay"><span>VIEW</span></div>
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('interior',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'interior')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('interior',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'interior')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('interior',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'interior')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('interior',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'interior')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('interior',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'interior')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('interior',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'interior')">
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu / Product Photos -->
+          <div class="photo-mgmt-section">
+            <div class="photo-mgmt-label">
+              Menu / Product Photos
+              <span class="photo-mgmt-count" id="menu-photo-count">3 of 10 uploaded</span>
+            </div>
+            <div class="photo-mgmt-grid" id="menu-photo-grid">
+              <div class="photo-mgmt-thumb filled" title="Menu photo 1">
+                <div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto('menu',0,this)" title="Remove photo">&times;</div>
+                <div class="thumb-hover-overlay"><span>VIEW</span></div>
+              </div>
+              <div class="photo-mgmt-thumb filled" title="Menu photo 2">
+                <div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto('menu',1,this)" title="Remove photo">&times;</div>
+                <div class="thumb-hover-overlay"><span>VIEW</span></div>
+              </div>
+              <div class="photo-mgmt-thumb filled" title="Menu photo 3">
+                <div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto('menu',2,this)" title="Remove photo">&times;</div>
+                <div class="thumb-hover-overlay"><span>VIEW</span></div>
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('menu',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'menu')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('menu',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'menu')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('menu',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'menu')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('menu',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'menu')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('menu',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'menu')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('menu',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'menu')">
+              </div>
+              <div class="photo-mgmt-thumb" onclick="addDetailPhoto('menu',this)" title="Add photo">
+                <div class="thumb-add">+</div>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, 'menu')">
+              </div>
+            </div>
           </div>
         </div>
         <div class="card detail-section">
@@ -8587,6 +8792,102 @@ function bindMerchantContextualButtons(merchantName, status) {
       };
     }
   }
+}
+
+/* ---- Photo Management Functions (Merchant Detail Panel) ---- */
+function handleDetailPhotoUpload(type, zone) {
+  var input = zone.querySelector('input[type="file"]');
+  if (input) input.click();
+}
+
+function handleDetailPhotoSelected(input, type) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  var maxSize = 5 * 1024 * 1024;
+  if (file.size > maxSize) {
+    showToast('File too large. Maximum 5MB allowed.', 'reject');
+    input.value = '';
+    return;
+  }
+  var allowed = ['image/jpeg', 'image/png', 'image/webp'];
+  if (allowed.indexOf(file.type) === -1) {
+    showToast('Invalid file type. Use JPG, PNG, or WebP.', 'reject');
+    input.value = '';
+    return;
+  }
+  if (type === 'logo' || type === 'cover') {
+    showToast(type === 'logo' ? 'Logo updated' : 'Cover photo updated', 'approve');
+  } else {
+    var thumb = input.closest('.photo-mgmt-thumb');
+    if (thumb && !thumb.classList.contains('filled')) {
+      thumb.classList.add('filled');
+      thumb.removeAttribute('onclick');
+      thumb.innerHTML = '<div class="thumb-check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<div class="thumb-delete" onclick="event.stopPropagation();removeDetailPhoto(\'' + type + '\',' + 0 + ',this)" title="Remove photo">&times;</div>' +
+        '<div class="thumb-hover-overlay"><span>VIEW</span></div>';
+      updatePhotoCount(type);
+      showToast('Photo uploaded', 'approve');
+    }
+  }
+  input.value = '';
+}
+
+function addDetailPhoto(type, thumb) {
+  var input = thumb.querySelector('input[type="file"]');
+  if (input) input.click();
+}
+
+function removeDetailPhoto(type, index, btn) {
+  showConfirmDialog({
+    type: 'reject',
+    title: 'Remove Photo?',
+    message: 'Are you sure you want to remove this photo? This cannot be undone.',
+    confirmText: 'Remove',
+    onConfirm: function() {
+      var thumb = btn.closest('.photo-mgmt-thumb');
+      if (thumb) {
+        thumb.classList.remove('filled');
+        thumb.setAttribute('onclick', "addDetailPhoto('" + type + "',this)");
+        thumb.innerHTML = '<div class="thumb-add">+</div>' +
+          '<input type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="handleDetailPhotoSelected(this, \'' + type + '\')">';
+        var grid = thumb.parentElement;
+        reorderPhotoGrid(grid);
+        updatePhotoCount(type);
+        showToast('Photo removed', 'info');
+      }
+    }
+  });
+}
+
+function reorderPhotoGrid(grid) {
+  if (!grid) return;
+  var filled = [];
+  var empty = [];
+  var thumbs = grid.querySelectorAll('.photo-mgmt-thumb');
+  for (var i = 0; i < thumbs.length; i++) {
+    if (thumbs[i].classList.contains('filled')) {
+      filled.push(thumbs[i]);
+    } else {
+      empty.push(thumbs[i]);
+    }
+  }
+  for (var j = 0; j < filled.length; j++) {
+    grid.appendChild(filled[j]);
+  }
+  for (var k = 0; k < empty.length; k++) {
+    grid.appendChild(empty[k]);
+  }
+}
+
+function updatePhotoCount(type) {
+  var gridId = type === 'interior' ? 'interior-photo-grid' : 'menu-photo-grid';
+  var countId = type === 'interior' ? 'interior-photo-count' : 'menu-photo-count';
+  var grid = document.getElementById(gridId);
+  var countEl = document.getElementById(countId);
+  if (!grid || !countEl) return;
+  var filled = grid.querySelectorAll('.photo-mgmt-thumb.filled').length;
+  var total = grid.querySelectorAll('.photo-mgmt-thumb').length;
+  countEl.textContent = filled + ' of ' + total + ' uploaded';
 }
 
 /* ---- Add Merchant Functions (5-Step Registration) ---- */
