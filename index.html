@@ -3600,6 +3600,22 @@
         <div class="stat-change up">&#x2191; 23% vs yesterday</div>
       </div>
     </div>
+    <!-- Ad Platform Health Bar -->
+    <div style="background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:14px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div style="font-size:13px;font-weight:700;color:#221F1F;display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Ad Platform Health
+        </div>
+        <div style="display:flex;gap:20px;font-size:12px;">
+          <div><span style="color:#888;">Impressions Today</span> <span style="font-weight:700;color:#205C50;margin-left:4px;">29,747</span></div>
+          <div><span style="color:#888;">CTR</span> <span style="font-weight:700;color:#56A66F;margin-left:4px;">2.39%</span></div>
+          <div><span style="color:#888;">Slots</span> <span style="font-weight:700;color:#221F1F;margin-left:4px;">25/33</span></div>
+          <div><span style="color:#888;">Revenue</span> <span style="font-weight:700;color:#F9A250;margin-left:4px;">&#x20b1;89.4K</span></div>
+        </div>
+      </div>
+      <a style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;text-decoration:none;" onclick="navigateTo('ads')">View Ad Analytics &#x2192;</a>
+    </div>
     <div class="card" style="margin-bottom:24px;">
       <div class="card-header">
         <div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg> Pending Merchant Approvals</div>
@@ -5291,6 +5307,230 @@
         <div class="slot-row"><div class="slot-label">Full-Screen</div><div class="slot-bar-bg"><div class="slot-bar-fill orange" style="width:67%;"></div></div><div class="slot-count">2/3</div></div>
         <div class="slot-summary"><div><strong>Total:</strong> 25/33 slots filled</div><div><strong>Revenue:</strong> &#x20b1;284,000 of &#x20b1;480,000 capacity</div></div>
       </div>
+
+      <!-- Ad Performance Analytics -->
+      <div style="font-size:16px;font-weight:700;color:#221F1F;margin:32px 0 20px;display:flex;align-items:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        Ad Performance Analytics
+      </div>
+
+      <!-- KPI Stat Cards -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div><div class="stat-label">Total Impressions Served</div><div class="stat-value">892.4K</div></div>
+            <div class="stat-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          </div>
+          <div class="stat-change up">&#x2191; 15% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div><div class="stat-label">Total Taps</div><div class="stat-value">21,340</div></div>
+            <div class="stat-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/></svg></div>
+          </div>
+          <div class="stat-change" style="color:#205C50;">18 active campaigns</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div><div class="stat-label">Avg Platform CTR</div><div class="stat-value" style="color:#56A66F;">2.39%</div></div>
+            <div class="stat-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          </div>
+          <div class="stat-change up">&#x2191; +0.2pp vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-top">
+            <div><div class="stat-label">Revenue vs Capacity</div><div class="stat-value" style="color:#205C50;">&#x20b1;89.4K</div></div>
+            <div class="stat-icon purple"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          </div>
+          <div class="stat-change" style="color:#F9A250;">18.6% of &#x20b1;480K capacity</div>
+        </div>
+      </div>
+
+      <!-- Row 2: CTR by Ad Format + Top Performing Ads -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+        <!-- CTR by Ad Format -->
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg> CTR by Ad Format</div></div>
+          <!-- Full-Screen -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:90px;font-size:12px;font-weight:600;color:#333;flex-shrink:0;">Full-Screen</div>
+            <div style="flex:1;background:#f0f0f5;border-radius:6px;height:22px;overflow:hidden;">
+              <div style="width:86%;height:100%;background:#205C50;border-radius:6px;"></div>
+            </div>
+            <div style="width:42px;font-size:13px;font-weight:700;color:#221F1F;text-align:right;">5.2%</div>
+          </div>
+          <div style="font-size:10px;color:#888;margin-top:-8px;margin-bottom:14px;padding-left:102px;">6,800 impressions</div>
+          <!-- Pop-up -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:90px;font-size:12px;font-weight:600;color:#333;flex-shrink:0;">Pop-up</div>
+            <div style="flex:1;background:#f0f0f5;border-radius:6px;height:22px;overflow:hidden;">
+              <div style="width:68%;height:100%;background:#56A66F;border-radius:6px;"></div>
+            </div>
+            <div style="width:42px;font-size:13px;font-weight:700;color:#221F1F;text-align:right;">4.1%</div>
+          </div>
+          <div style="font-size:10px;color:#888;margin-top:-8px;margin-bottom:14px;padding-left:102px;">8,400 impressions</div>
+          <!-- Hero Banner -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:90px;font-size:12px;font-weight:600;color:#333;flex-shrink:0;">Hero Banner</div>
+            <div style="flex:1;background:#f0f0f5;border-radius:6px;height:22px;overflow:hidden;">
+              <div style="width:40%;height:100%;background:#84BEA1;border-radius:6px;"></div>
+            </div>
+            <div style="width:42px;font-size:13px;font-weight:700;color:#221F1F;text-align:right;">2.4%</div>
+          </div>
+          <div style="font-size:10px;color:#888;margin-top:-8px;margin-bottom:14px;padding-left:102px;">23,650 impressions</div>
+          <!-- Top Banner -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:90px;font-size:12px;font-weight:600;color:#333;flex-shrink:0;">Top Banner</div>
+            <div style="flex:1;background:#f0f0f5;border-radius:6px;height:22px;overflow:hidden;">
+              <div style="width:30%;height:100%;background:#a8cfb8;border-radius:6px;"></div>
+            </div>
+            <div style="width:42px;font-size:13px;font-weight:700;color:#221F1F;text-align:right;">1.8%</div>
+          </div>
+          <div style="font-size:10px;color:#888;margin-top:-8px;margin-bottom:8px;padding-left:102px;">12,400 impressions</div>
+          <div style="margin-top:12px;padding:10px 14px;background:#f8fdf9;border-radius:8px;font-size:11px;color:#205C50;font-weight:500;display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Full-Screen ads deliver 2.2x higher CTR than Hero Banners
+          </div>
+        </div>
+
+        <!-- Top Performing Ads -->
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Top Performing Ads</div></div>
+          <table class="data-table">
+            <thead><tr><th style="width:30px;">#</th><th>Campaign</th><th>Merchant</th><th>Format</th><th style="text-align:right;">Impressions</th><th style="text-align:right;">CTR</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:700;color:#205C50;">1</td><td style="font-weight:600;">March Steak Promo</td><td style="font-size:12px;">Maple Tree BGC</td><td><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:rgba(32,92,80,0.1);color:#205C50;">Hero</span></td><td style="text-align:right;font-size:12px;">12,450</td><td style="text-align:right;font-weight:700;color:#205C50;">2.75%</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">2</td><td style="font-weight:600;">Ramen Festival</td><td style="font-size:12px;">Tokyo Ramen House</td><td><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:rgba(32,92,80,0.1);color:#205C50;">Hero</span></td><td style="text-align:right;font-size:12px;">11,200</td><td style="text-align:right;font-weight:700;color:#205C50;">3.10%</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">3</td><td style="font-weight:600;">K-Pop Night Out</td><td style="font-size:12px;">K-Pop Studio</td><td><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:rgba(249,162,80,0.1);color:#F9A250;">Pop-up</span></td><td style="text-align:right;font-size:12px;">8,400</td><td style="text-align:right;font-weight:700;color:#205C50;">4.50%</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">4</td><td style="font-weight:600;">Staycation Special</td><td style="font-size:12px;">Palm Suites</td><td><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:rgba(238,64,54,0.1);color:#EE4036;">Full-Screen</span></td><td style="text-align:right;font-size:12px;">6,800</td><td style="text-align:right;font-weight:700;color:#205C50;">5.80%</td></tr>
+              <tr><td style="font-weight:700;color:#205C50;">5</td><td style="font-weight:600;">Korean BBQ Fest</td><td style="font-size:12px;">Seoul Kitchen</td><td><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:rgba(80,201,239,0.1);color:#50C9EF;">Top</span></td><td style="text-align:right;font-size:12px;">5,200</td><td style="text-align:right;font-weight:700;color:#205C50;">2.10%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Row 3: Top Spending Merchants + Ads-to-Redemption Attribution -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+        <!-- Top Ad Spending Merchants -->
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Top Ad Spending Merchants</div></div>
+          <!-- 1. Tokyo Ramen House -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:20px;font-size:13px;font-weight:800;color:#205C50;text-align:center;flex-shrink:0;">1</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:12px;font-weight:600;color:#333;">Tokyo Ramen House</span>
+                <span style="font-size:12px;font-weight:700;color:#221F1F;">&#x20b1;40,000</span>
+              </div>
+              <div style="background:#f0f0f5;border-radius:4px;height:8px;overflow:hidden;">
+                <div style="width:100%;height:100%;background:#205C50;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+          <!-- 2. Palm Suites Makati -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:20px;font-size:13px;font-weight:800;color:#205C50;text-align:center;flex-shrink:0;">2</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:12px;font-weight:600;color:#333;">Palm Suites Makati</span>
+                <span style="font-size:12px;font-weight:700;color:#221F1F;">&#x20b1;25,000</span>
+              </div>
+              <div style="background:#f0f0f5;border-radius:4px;height:8px;overflow:hidden;">
+                <div style="width:62.5%;height:100%;background:#56A66F;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+          <!-- 3. K-Pop Studio -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:20px;font-size:13px;font-weight:800;color:#205C50;text-align:center;flex-shrink:0;">3</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:12px;font-weight:600;color:#333;">K-Pop Studio</span>
+                <span style="font-size:12px;font-weight:700;color:#221F1F;">&#x20b1;20,000</span>
+              </div>
+              <div style="background:#f0f0f5;border-radius:4px;height:8px;overflow:hidden;">
+                <div style="width:50%;height:100%;background:#84BEA1;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+          <!-- 4. Maple Tree BGC -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:20px;font-size:13px;font-weight:800;color:#205C50;text-align:center;flex-shrink:0;">4</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:12px;font-weight:600;color:#333;">Maple Tree BGC</span>
+                <span style="font-size:12px;font-weight:700;color:#221F1F;">&#x20b1;15,000</span>
+              </div>
+              <div style="background:#f0f0f5;border-radius:4px;height:8px;overflow:hidden;">
+                <div style="width:37.5%;height:100%;background:#a8cfb8;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+          <!-- 5. Seoul Kitchen -->
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:20px;font-size:13px;font-weight:800;color:#205C50;text-align:center;flex-shrink:0;">5</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:12px;font-weight:600;color:#333;">Seoul Kitchen</span>
+                <span style="font-size:12px;font-weight:700;color:#221F1F;">&#x20b1;8,000</span>
+              </div>
+              <div style="background:#f0f0f5;border-radius:4px;height:8px;overflow:hidden;">
+                <div style="width:20%;height:100%;background:#c8ddd0;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ads-to-Redemption Attribution -->
+        <div class="card">
+          <div class="card-header"><div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Ads-to-Redemption Attribution</div></div>
+          <div style="font-size:12px;color:#888;margin-bottom:12px;">Source of 38,520 redemptions this month</div>
+          <!-- Stacked bar -->
+          <div style="display:flex;height:32px;border-radius:8px;overflow:hidden;margin-bottom:16px;">
+            <div style="width:11%;background:#56A66F;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">11%</div>
+            <div style="width:75%;background:#205C50;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">75%</div>
+            <div style="width:14%;background:#d0d0d8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#555;">14%</div>
+          </div>
+          <!-- Legend -->
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#56A66F;flex-shrink:0;"></div>
+                <span style="font-size:12px;font-weight:600;color:#333;">From Ad Taps</span>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:13px;font-weight:700;color:#221F1F;">4,230</span>
+                <span style="font-size:11px;color:#888;margin-left:4px;">11.0%</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#205C50;flex-shrink:0;"></div>
+                <span style="font-size:12px;font-weight:600;color:#333;">From Organic Browse</span>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:13px;font-weight:700;color:#221F1F;">28,890</span>
+                <span style="font-size:11px;color:#888;margin-left:4px;">75.0%</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#d0d0d8;flex-shrink:0;"></div>
+                <span style="font-size:12px;font-weight:600;color:#333;">From Search/Direct</span>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:13px;font-weight:700;color:#221F1F;">5,400</span>
+                <span style="font-size:11px;color:#888;margin-left:4px;">14.0%</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:10px 14px;background:#f8fdf9;border-radius:8px;font-size:11px;color:#205C50;font-weight:500;display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Ad taps drive 11% of all redemptions &mdash; &#x20b1;21.15 effective cost per ad-attributed redemption
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
   <div id="ads-detail" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
